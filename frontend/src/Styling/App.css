@@ -1,0 +1,32 @@
+.app {
+  font-family: Helvetica, sans-serif; /* Change font family */
+  padding: 0%;
+  margin: 0%;
+}
+
+.main-container {
+  display: flex;
+}
+
+.categories-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.category-card h2 {
+  margin-top: 0;
+}
+
+.category-card {
+  background: #8ad5d2; /* Lighter blue background */
+  border: 1px solid #ddd;
+  padding: 20px;
+  width: calc(33.333% - 40px);
+  box-sizing: border-box;
+  /* Added some margin for spacing */
+  margin-bottom: 20px;
+  position: relative; /* For overlaying icon */
+}

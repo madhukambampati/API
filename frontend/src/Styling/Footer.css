@@ -1,0 +1,17 @@
+.footer {
+    padding: 20px;
+    text-align: center;
+    color: #fcfff4; /* Light beige text color */
+    background-color: #343a40; /* Dark blue background color */
+  }
+  
+  .footer a {
+    color: #fff; /* White color for links */
+    text-decoration: none; /* Remove underline from links */
+  }
+  
+  .footer a:hover {
+    color: #007bff; /* Blue color on link hover */
+    text-decoration: underline; /* Add underline on link hover */
+  }
+  

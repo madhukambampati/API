@@ -1,0 +1,29 @@
+.category-card {
+  display: block; /* Ensure the Link takes up the full space */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none; /* Remove underline from links */
+  color: inherit; /* Inherit the text color */
+  background-color: #ffffff; /* Ensure the background color is white */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions for hover effects */
+}
+
+.category-card:hover {
+  background-color: #f0f0f0; /* Optional hover effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow on hover */
+}
+
+.category-card h2 {
+  font-size: 1.5rem;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.category-card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #666666;
+  margin: 0;
+}

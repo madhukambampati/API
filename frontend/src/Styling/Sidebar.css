@@ -1,0 +1,27 @@
+.sidebar {
+    width: 300px;
+    padding: 30px;
+    background-color: #343a40; /* Dark blue background for sidebar */
+    color: #fff; /* White text for sidebar */
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0; /* Remove default padding */
+  }
+  
+  .sidebar ul li {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Light border between list items */
+  }
+  
+  .sidebar ul li a {
+    color: inherit; /* Inherit white text color from sidebar */
+    text-decoration: none;
+  }
+  
+  .sidebar ul li:hover {
+    background-color: #29323a; /* Slightly darken background on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  
