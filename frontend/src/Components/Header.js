@@ -6,7 +6,7 @@ const Header = ({ onSearch }) => {
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
-    onSearch(event.target.value);
+    onSearch(event.target);
   };
 
   return (
