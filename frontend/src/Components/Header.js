@@ -7,6 +7,8 @@ const Header = ({ onSearch }) => {
 
   const handleInputChange = (event) => {
     onSearch(event.target);
+    navigate('/'); // Navigating to the main landing page
+
   };
 
   return (
