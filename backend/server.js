@@ -15,6 +15,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/data', require('./routes/apiRoutes'));
+
+
+process.env.NODE_ENV = 'production'
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
