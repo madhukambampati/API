@@ -48,8 +48,22 @@ const AdminApiContainer = () => {
         endpointschange(newEndpoints);
     };
 
+    // Navigate to manage categories
+    const handleManageCategories = () => {
+        navigate('/admin/manage-categories');
+    };
+
     return (
         <div>
+            <div className="container">
+                <button
+                    className="btn btn-warning"
+                    onClick={handleManageCategories}
+                    style={{ marginBottom: '20px' }}
+                >
+                    Manage Categories
+                </button>
+            </div>
             <form className="container" onSubmit={handlesubmit}>
                 <div className="row">
                     <div className="col-lg-6 offset-lg-3">
