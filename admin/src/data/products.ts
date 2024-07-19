@@ -73,6 +73,8 @@ export const rows: DataRow[] = [
       title: 'Watch',
       subtitle: 'Digital watch',
     },
+
+  
     orders: 2000,
     price: 15,
     adsSpent: 2.5,

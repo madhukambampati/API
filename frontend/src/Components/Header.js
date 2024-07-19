@@ -11,6 +11,10 @@ const Header = ({ onSearch }) => {
 
   };
 
+  const handleLoginClick = () => {
+    navigate('/login'); // Navigating to the login page
+  };
+
   return (
     <div className='header-container'>
       <div className='logo' onClick={() => navigate('/')}>API-HUB</div>
@@ -28,6 +32,9 @@ const Header = ({ onSearch }) => {
             <i className='fa fa-search' aria-hidden='true'></i>
           </button>
         </form>
+      </div>
+      <div className='login-button-container'>
+        <button className='login-button' onClick={handleLoginClick}>Login</button>
       </div>
     </div>
   );
