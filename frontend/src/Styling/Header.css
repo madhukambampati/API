@@ -1,55 +1,74 @@
-/* Styling/Header.css */
 .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: #2c3e50;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .logo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .search-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  #search-fs {
-    display: flex;
-    align-items: center;
-  }
-  
-  #search-text {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px 0 0 20px;
-    outline: none;
-    width: 250px;
-  }
-  
-  .search-button {
-    background-color: #e67e22;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 0 20px 20px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-  
-  .search-button .fa-search {
-    font-size: 16px;
-  }
-  
-  .search-button:hover {
-    background-color: #d35400;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #2c3e50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+#search-fs {
+  display: flex;
+  align-items: center;
+}
+
+#search-text {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+  width: 250px;
+}
+
+.search-button {
+  background-color: #e67e22;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.search-button .fa-search {
+  font-size: 16px;
+}
+
+.search-button:hover {
+  background-color: #d35400;
+}
+
+/* New styles for login button */
+.login-button-container {
+  margin-left: 20px;
+}
+
+.login-button {
+  background-color: #3498db;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #2980b9;
+}

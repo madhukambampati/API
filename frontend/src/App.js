@@ -5,6 +5,8 @@ import Sidebar from "./Components/Sidebar";
 import CategoryCard from "./Components/CategoryCard";
 import CategoryPage from "./Components/CategoryPage.js";
 import Footer from "./Components/Footer";
+import Login from "./Components/login.jsx"; // Import the Login component
+
 //import { FaBeer } from "react-icons/fa";
 import "font-awesome/css/font-awesome.min.css";
 import "./Styling/App.css";
@@ -101,6 +103,7 @@ const App = () => {
               }
             />
           ))}
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
       <Footer />
