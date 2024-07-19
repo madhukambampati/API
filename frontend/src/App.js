@@ -6,6 +6,7 @@ import CategoryCard from "./Components/CategoryCard";
 import CategoryPage from "./Components/CategoryPage.js";
 import Footer from "./Components/Footer";
 import Login from "./Components/login.jsx"; // Import the Login component
+import ManageCategories from "./Components/ManageCategory.js"
 
 //import { FaBeer } from "react-icons/fa";
 import "font-awesome/css/font-awesome.min.css";
@@ -104,6 +105,7 @@ const App = () => {
             />
           ))}
           <Route path="/login" element={<Login />} />
+          <Route path="/admin/manage-categories" element={<ManageCategories />} />
         </Routes>
       </div>
       <Footer />

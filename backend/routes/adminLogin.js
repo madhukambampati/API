@@ -33,5 +33,16 @@ router.post('/create_category', async (req, res) => {
         res.status(400).json({ error: error.message });
       }
 });
+router.delete('/delete_category/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await Category.findByIdAndDelete(id);
+  
+      if (!result) return res.status(404).json({ message: 'Category not found' });
+      res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+});
 module.exports = router;
 
