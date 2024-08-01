@@ -20,6 +20,7 @@ import "./Styling/Footer.css";
 
 const App = () => {
   const [categories, setCategories] = useState([])
+  const location = useLocation(); // Define useLocation here
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,8 +35,10 @@ const App = () => {
             }
           };
      fetchData()
-    }, [])
-  const location = useLocation(); // Define useLocation here
+
+    }, [location])
+
+    
 
   const getEndpointsForCurrentCategory = (location) => {
     const currentCategory = categories.find((category) =>
