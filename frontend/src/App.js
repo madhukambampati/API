@@ -34,15 +34,6 @@ const App = () => {
     fetchData();
   }, [location]);
 
-  const getEndpointsForCurrentCategory = (location) => {
-    const currentCategory = categories.find((category) =>
-      location.pathname.includes(category.title.toLowerCase().replace(/ /g, "-"))
-    );
-    return currentCategory
-      ? currentCategory.endpoints.map((endpoint) => endpoint.name)
-      : [];
-  };
-
   const [filteredCategories, setFilteredCategories] = useState(categories);
 
   const onSearch = ({ value }) => {
@@ -56,11 +47,7 @@ const App = () => {
     <div className="app">
       <Header onSearch={onSearch} />
       <div className="main-container">
-        {location.pathname === "/" ? (
-          <Sidebar links={categories.map((category) => category.title)} />
-        ) : (
-          <Sidebar links={getEndpointsForCurrentCategory(location)} />
-        )}
+        <Sidebar links={categories.map((category) => category.title)} />
         <Routes>
           <Route
             path="/"

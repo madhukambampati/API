@@ -1,33 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-const CustomInputLabel = styled(InputLabel)({
-  //Before clicking on the input
-  "&.Mui-focused": {
-    //After clicking on the input
-    top: "-10px",
-  },
-});
+import '../Styling/CategoryPage.css';
 
 const CategoryPage = ({ title, description, endpoints, website }) => {
   const [selectedEndpoint, setSelectedEndpoint] = useState("");
   const [endpointData, setEndpointData] = useState(null);
-  
 
   useEffect(() => {
     // For testing purposes, log endpoints when they change
     console.log('Endpoints:', endpoints);
-    console.log('website:',website)
-
-  }, [endpoints,website]);
+    console.log('website:', website);
+  }, [endpoints, website]);
 
   const handleEndpointChange = (event) => {
     const endpointName = event.target.value;
@@ -39,44 +21,42 @@ const CategoryPage = ({ title, description, endpoints, website }) => {
   };
 
   return (
-    <Box p={3}>
-      <Typography variant="h4">{title}</Typography>
-      <Typography variant="subtitle1">{description}</Typography>
-      <FormControl fullWidth margin="normal">
-        <CustomInputLabel>Select Endpoint</CustomInputLabel>
-        <Select value={selectedEndpoint} onChange={handleEndpointChange}>
-        {endpoints &&
+    <div className="container">
+      <div className="header">
+        <h1>{title}</h1>
+        <p className="subtitle">{description}</p>
+      </div>
+      <div className="form-control">
+        <label htmlFor="endpoint-select">Select Endpoint</label>
+        <select
+          id="endpoint-select"
+          value={selectedEndpoint}
+          onChange={handleEndpointChange}
+        >
+          <option value="" disabled>Select an endpoint</option>
+          {endpoints &&
             endpoints.map((endpoint) => (
-              <MenuItem key={endpoint.name} value={endpoint.name}>
+              <option key={endpoint.name} value={endpoint.name}>
                 {endpoint.name}
-              </MenuItem>
+              </option>
             ))}
-        </Select>
-      </FormControl>
+        </select>
+      </div>
       {endpointData && (
-        <Box mt={3}>
-          <Typography variant="h6">Endpoint Description:</Typography>
-          <br />
-          <Typography variant="body1">{endpointData.description}</Typography>
-          <br>
-          </br>
-          <Typography variant="h6">Http Endpoint Link:</Typography>
+        <div className="endpoint-details">
+          <h2>Endpoint Description:</h2>
+          <p>{endpointData.description}</p>
+          <h2>Http Endpoint Link:</h2>
           <pre>{JSON.stringify(endpointData.value, null, 2)}</pre>
-          <br />
-          <br />
-          <br />
-          <Typography variant="body1">
+          <p>
             For more information, please visit the website below:
-            <br />
-            <br />
-            <a href={website} target="_blank" rel="noopener noreferrer">
-              {website}
-            </a>
-</Typography>
-
-        </Box>
+          </p>
+          <a href={website} target="_blank" rel="noopener noreferrer">
+            {website}
+          </a>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
