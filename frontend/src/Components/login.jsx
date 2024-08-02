@@ -13,7 +13,7 @@ export const Login = (props) => {
             password:pass,
             userType:'admin'
         }
-        fetch('/admin/login',{
+        fetch('http://localhost:5000/admin/login',{
             method:'POST',
             headers:{
                 'Content-type':'application/json'
