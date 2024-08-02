@@ -46,6 +46,7 @@
 
 .card-button:hover {
   background-color: rgb(1, 96, 191);
+  cursor: pointer;
 }
 
 .card-icon {

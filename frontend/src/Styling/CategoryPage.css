@@ -1,42 +1,105 @@
-.category-page {
-    padding: 20px;
-    margin: 20px;
+/* Container */
+.container {
+    padding: 60px;
+    /* max-width: 800px; */
+    margin: auto;
+    font-family: Arial, sans-serif;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.category-page h2 {
-    font-size: 2rem;
-    color: #333333;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+  }
+  
+  /* Header */
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2.5em;
+    color: #333;
     margin-bottom: 10px;
-}
-
-.category-page p {
-    font-size: 1.2rem;
+  }
+  
+  .header .subtitle {
+    font-size: 1.2em;
+    color: #666;
+  }
+  
+  /* Form Control */
+  .form-control {
+    margin-bottom: 20px;
+  }
+  
+  .form-control label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .form-control select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-control select:focus {
+    border-color: #2085de;
+    outline: none;
+  }
+  
+  /* Endpoint Details */
+  .endpoint-details {
+    margin-top: 30px;
+  }
+  
+  .endpoint-details h2 {
+    font-size: 1.5em;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .endpoint-details p {
+    font-size: 1em;
+    color: #555;
     line-height: 1.6;
-    color: #666666;
-}
-.select-title{
-    margin-bottom: 10px;
-    color:red;
-}
-
-/* Additional styles for responsiveness */
-@media (max-width: 768px) {
-    .category-page {
-        padding: 15px;
-        margin: 15px;
+  }
+  
+  .endpoint-details pre {
+    background: #f4f4f4;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: Consolas, 'Courier New', monospace;
+  }
+  
+  .endpoint-details a {
+    color: #2085de;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .endpoint-details a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
     }
-
-    .category-page h2 {
-        font-size: 1.5rem;
+  
+    .header h1 {
+      font-size: 2em;
     }
-
-    .category-page p {
-        font-size: 1rem;
+  
+    .header .subtitle {
+      font-size: 1em;
     }
-}
+  }
+  
