@@ -1,12 +1,16 @@
 .app {
-  font-family: "Tahoma";
-  padding: 0%;
-  margin: 0%;
+  font-family: 'Tahoma', sans-serif;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .main-container {
   display: flex;
   min-height: 80vh;
+  /* margin-left: 250px;  */
 }
 
 .categories-grid {
@@ -18,31 +22,61 @@
   background-color: rgb(246, 254, 247);
 }
 
-.category-card h2 {
-  margin-top: 0;
-}
-
 .category-card {
   background: #8ad5d2; /* Lighter blue background */
   border: 1px solid #ddd;
   padding: 20px;
   width: calc(33.333% - 40px);
   box-sizing: border-box;
-  /* Added some margin for spacing */
   margin-bottom: 20px;
   position: relative; /* For overlaying icon */
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.category-card h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.category-card p {
+  color: #666;
+}
+
+.category-card .explore-btn {
+  align-self: flex-start;
+  background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.category-card .explore-btn:hover {
+  background: linear-gradient(90deg, #fecfef 0%, #ff9a9e 100%);
 }
 
 .no-cards {
+  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   margin: auto;
 }
+
 .no-cards-title {
   font-weight: 800;
   color: black;
 }
+
 .no-cards-message {
   color: gray;
 }

@@ -2,23 +2,23 @@ import React from 'react';
 import { Box, Grid, Paper, Typography, Button, TextField } from '@mui/material';
 import { styled } from '@mui/system';
 
-const categories = [
-  { title: 'Sports', description: 'APIs that encompass various sports-related data...' },
-  { title: 'Finance', description: 'Finance APIs offer users diverse datasets and insights...' },
-  { title: 'Data', description: 'Data APIs provide access to a wide range of datasets...' },
-  { title: 'Entertainment', description: 'APIs for entertainment including movies, music, and games...' },
-  { title: 'Travel', description: 'Travel APIs for booking, information, and reviews...' },
-  { title: 'Location', description: 'Location-based APIs for maps and geolocation services...' },
-  { title: 'Science', description: 'APIs providing scientific data and services...' },
-  { title: 'Food', description: 'APIs for food-related information, recipes, and nutrition...' },
-  { title: 'Tools', description: 'APIs offering various tools and utilities...' },
-  { title: 'Text Analysis', description: 'APIs for text analysis and natural language processing...' },
-  { title: 'Weather', description: 'APIs providing weather forecasts and data...' },
-  { title: 'Gaming', description: 'APIs for game-related data and services...' },
-  { title: 'SMS', description: 'APIs for sending and receiving SMS messages...' },
-  { title: 'Events', description: 'APIs for event information and management...' },
-  { title: 'Health and Fitness', description: 'APIs for health and fitness data...' }
-];
+// const categories = [
+//   { title: 'Sports', description: 'APIs that encompass various sports-related data...' },
+//   { title: 'Finance', description: 'Finance APIs offer users diverse datasets and insights...' },
+//   { title: 'Data', description: 'Data APIs provide access to a wide range of datasets...' },
+//   { title: 'Entertainment', description: 'APIs for entertainment including movies, music, and games...' },
+//   { title: 'Travel', description: 'Travel APIs for booking, information, and reviews...' },
+//   { title: 'Location', description: 'Location-based APIs for maps and geolocation services...' },
+//   { title: 'Science', description: 'APIs providing scientific data and services...' },
+//   { title: 'Food', description: 'APIs for food-related information, recipes, and nutrition...' },
+//   { title: 'Tools', description: 'APIs offering various tools and utilities...' },
+//   { title: 'Text Analysis', description: 'APIs for text analysis and natural language processing...' },
+//   { title: 'Weather', description: 'APIs providing weather forecasts and data...' },
+//   { title: 'Gaming', description: 'APIs for game-related data and services...' },
+//   { title: 'SMS', description: 'APIs for sending and receiving SMS messages...' },
+//   { title: 'Events', description: 'APIs for event information and management...' },
+//   { title: 'Health and Fitness', description: 'APIs for health and fitness data...' }
+// ];
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),

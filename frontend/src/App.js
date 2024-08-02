@@ -5,40 +5,34 @@ import Sidebar from "./Components/Sidebar";
 import CategoryCard from "./Components/CategoryCard";
 import CategoryPage from "./Components/CategoryPage.js";
 import Footer from "./Components/Footer";
-import Login from "./Components/login.jsx"; // Import the Login component
-import ManageCategories from "./Components/ManageCategory.js"
-
-//import { FaBeer } from "react-icons/fa";
+import Login from "./Components/login.jsx";
+import ManageCategories from "./Components/ManageCategory.js";
 import "font-awesome/css/font-awesome.min.css";
 import "./Styling/App.css";
 import "./Styling/Header.css";
 import "./Styling/Sidebar.css";
 import "./Styling/CategoryCard.css";
 import "./Styling/Footer.css";
-//import { cardClasses } from "@mui/material";
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const App = () => {
-  const [categories, setCategories] = useState([])
-  const location = useLocation(); // Define useLocation here
+  const [categories, setCategories] = useState([]);
+  const location = useLocation();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-              const response = await fetch('http://localhost:5000/api/data');  
-              const responseData = await response.json();
-              setCategories(responseData)
-              setFilteredCategories(responseData)
-              console.log('responseData', responseData)
-            } catch (error) {
-              console.log('ERROR',error)
-            }
-          };
-     fetchData()
-
-    }, [location])
-
-    
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/data');  
+        const responseData = await response.json();
+        setCategories(responseData);
+        setFilteredCategories(responseData);
+        console.log('responseData', responseData);
+      } catch (error) {
+        console.log('ERROR', error);
+      }
+    };
+    fetchData();
+  }, [location]);
 
   const getEndpointsForCurrentCategory = (location) => {
     const currentCategory = categories.find((category) =>
@@ -48,6 +42,7 @@ const App = () => {
       ? currentCategory.endpoints.map((endpoint) => endpoint.name)
       : [];
   };
+
   const [filteredCategories, setFilteredCategories] = useState(categories);
 
   const onSearch = ({ value }) => {
@@ -64,7 +59,7 @@ const App = () => {
         {location.pathname === "/" ? (
           <Sidebar links={categories.map((category) => category.title)} />
         ) : (
-          <Sidebar links={getEndpointsForCurrentCategory(location)} /> // Pass location prop
+          <Sidebar links={getEndpointsForCurrentCategory(location)} />
         )}
         <Routes>
           <Route
