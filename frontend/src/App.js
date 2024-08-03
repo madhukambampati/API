@@ -7,13 +7,16 @@ import CategoryPage from "./Components/CategoryPage.js";
 import Footer from "./Components/Footer";
 import Login from "./Components/login.jsx";
 import ManageCategories from "./Components/ManageCategory.js";
+import Register from "./Components/Register.js";
 import "font-awesome/css/font-awesome.min.css";
 import "./Styling/App.css";
 import "./Styling/Header.css";
 import "./Styling/Sidebar.css";
 import "./Styling/CategoryCard.css";
 import "./Styling/Footer.css";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import AdminApiContainer from './Components/adminApiContainer.js';
+
 
 const App = () => {
   const [categories, setCategories] = useState([]);
@@ -90,6 +93,8 @@ const App = () => {
           ))}
           <Route path="/login" element={<Login />} />
           <Route path="/admin/manage-categories" element={<ManageCategories />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/adminApi" element={<AdminApiContainer />} />
         </Routes>
       </div>
       <Footer />
