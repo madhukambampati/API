@@ -8,7 +8,7 @@ const AdminApiContainer = () => {
     const [icon, iconchange] = useState('');
     const [title, titlechange] = useState('');
     const [description, descriptionchange] = useState('');
-    const [endpoints, endpointschange] = useState([{ name: '', description: '', value: '' }]);
+    const [endpoints, endpointschange] = useState([{ name: '', description: '', httplink: '', apikey: '', apihost: '' }]);
     const [website, websitechange] = useState('');
 
     const navigate = useNavigate();
@@ -23,11 +23,11 @@ const AdminApiContainer = () => {
             headers: { "content-type": "application/json" },
             body: JSON.stringify(data)
         })
-        .then(() => {
-            alert('Category added successfully!');
-            navigate(-1);
-        })
-        .catch((err) => alert('Error: ' + err.message));
+            .then(() => {
+                alert('Category added successfully!');
+                navigate(-1);
+            })
+            .catch((err) => alert('Error: ' + err.message));
     };
 
     // Handle endpoint changes
@@ -39,7 +39,7 @@ const AdminApiContainer = () => {
 
     // Add a new endpoint
     const addEndpoint = () => {
-        endpointschange([...endpoints, { name: '', description: '', value: '' }]);
+        endpointschange([...endpoints, { name: '', description: '', httplink: '', apikey: '', apihost: '' }]);
     };
 
     // Remove an endpoint
@@ -110,10 +110,25 @@ const AdminApiContainer = () => {
                                         className="form-control"
                                     />
                                     <input
-                                        name="value"
-                                        value={endpoint.value}
+                                        name="httplink"
+                                        value={endpoint.httplink}
                                         onChange={(e) => handleEndpointChange(index, e)}
-                                        placeholder="Endpoint Value"
+                                        placeholder="Enter HTTP request Link"
+                                        className="form-control"
+                                    />
+
+                                    <input
+                                        name="apikey"
+                                        value={endpoint.apikey}
+                                        onChange={(e) => handleEndpointChange(index, e)}
+                                        placeholder="Enter the API KEY"
+                                        className="form-control"
+                                    />
+                                     <input
+                                        name="apihost"
+                                        value={endpoint.apihost}
+                                        onChange={(e) => handleEndpointChange(index, e)}
+                                        placeholder="Enter the API HOST"
                                         className="form-control"
                                     />
                                     <button

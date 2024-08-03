@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const endpointSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  value: { type: String, required: true }
+  httplink : { type: String, required: true },
+  apikey : { type: String, required: true },
+  apihost : { type: String, required: true }
 });
 
 const categorySchema = new mongoose.Schema({

@@ -8,6 +8,9 @@ const apiDataSchema = new mongoose.Schema({
     {
       name: { type: String, required: true },
       description: { type: String },
+      httplink : { type: String, required: true },
+      apikey : { type: String, required: true },
+      apihost : { type: String, required: true }
     }
   ],
   website:{ type: String }

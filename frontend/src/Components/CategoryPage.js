@@ -56,7 +56,10 @@ const CategoryPage = ({ title, description, endpoints, website }) => {
           <h2>Endpoint Description:</h2>
           <p>{endpointData.description}</p>
           <h2>Http Endpoint Link:</h2>
-          <pre>{JSON.stringify(endpointData.value, null, 2)}</pre>
+          <pre>{JSON.stringify(endpointData.httplink, null, 2)}</pre>
+          <h2>API Key and Host</h2>
+          <pre>{endpointData.apikey}</pre><pre>{endpointData.apihost}</pre>
+          
           <p>
             For more information, please visit the website below:
           </p>
