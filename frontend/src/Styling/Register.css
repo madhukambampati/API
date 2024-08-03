@@ -1,0 +1,64 @@
+/* Styling for the auth form container */
+.auth-form-container {
+    max-width: 400px; /* Match the width of login form */
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Styling for the form title */
+.auth-form-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Styling for the form */
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styling for form labels */
+.register-form label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Styling for form inputs */
+.register-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Styling for the submit button */
+.register-submit-button {
+    background-color: #3498db; /* Match the button color in login form */
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.register-submit-button:hover {
+    background-color: #2980b9; /* Match the button hover color in login form */
+}
+
+/* Error message styling */
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Center the form container vertically and horizontally */
+.register_app{
+    margin-left: 30%
+}

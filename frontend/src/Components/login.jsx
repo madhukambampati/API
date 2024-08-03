@@ -1,47 +1,69 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import '../Styling/login.css'; // Import the CSS file
-import AdminApiContainer from './adminApiContainer'
+import AdminApiContainer from './adminApiContainer';
+
 export const Login = (props) => {
     const [userName, setuserName] = useState('');
     const [pass, setPass] = useState('');
     const [loginStatus, setLoginStatus] = useState('');
+    const navigate = useNavigate(); // Initialize useNavigate for navigation
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const requestObj={
-            userName:userName,
-            password:pass,
-            userType:'admin'
-        }
-        fetch('http://localhost:5000/admin/login',{
-            method:'POST',
-            headers:{
-                'Content-type':'application/json'
+        const requestObj = {
+            userName: userName,
+            password: pass,
+            userType: 'admin'
+        };
+        fetch('http://localhost:5000/admin/login', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
             },
-            body:JSON.stringify(requestObj)
-        }).then(res=>{
-            console.log('resss',res)
-            setLoginStatus(res.status == 200 ? 'success' : 'fail')
-        }).catch(err=> console.log('err',err))
-    }
+            body: JSON.stringify(requestObj)
+        }).then(res => {
+            console.log('resss', res);
+            setLoginStatus(res.status === 200 ? 'success' : 'fail');
+            navigate('/adminApi')
+        }).catch(err => console.log('err', err));
+    };
+
+    const handleRegister = () => {
+        navigate('/register'); // Navigate to the register page
+    };
 
     return (
         <>
-        {loginStatus != 'success' && <div className="auth-form-container">
-            <h2>Login</h2>
-            <form className="login-form" onSubmit={handleSubmit}>
-                <label htmlFor="userName">User Name</label>
-                <input value={userName} onChange={(e) => setuserName(e.target.value)}placeholder="Enter user name" id="userName" name="userName" />
-                <label htmlFor="password">password</label>
-                <input value={pass} onChange={(e) => setPass(e.target.value)} type="password" placeholder="********" id="password" name="password" />
-                <button type="submit">Log In</button>
-            </form>
-            {loginStatus =='fail' && <div>Please Enter valid credentials</div>}
-        </div>}
-            {loginStatus == 'success' && <div>
-                <AdminApiContainer />
-            </div>}
-            </>
-    )
+        {loginStatus !== 'success' && (
+            <div className="auth-form-container">
+                <h2>Login</h2>
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <label htmlFor="userName">User Name</label>
+                    <input
+                        value={userName}
+                        onChange={(e) => setuserName(e.target.value)}
+                        placeholder="Enter user name"
+                        id="userName"
+                        name="userName"
+                    />
+                    <label htmlFor="password">Password</label>
+                    <input
+                        value={pass}
+                        onChange={(e) => setPass(e.target.value)}
+                        type="password"
+                        placeholder="********"
+                        id="password"
+                        name="password"
+                    />
+                    <button type="submit">Log In</button>
+                </form>
+                {loginStatus === 'fail' && <div>Please Enter valid credentials</div>}
+                <button onClick={handleRegister}>Don't have an account? Register</button>
+            </div>
+        )}
+        </>
+    );
 }
+
 export default Login;
