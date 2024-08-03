@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
 import '../Styling/CategoryPage.css';
+import { useLocation } from 'react-router-dom';
 
 const CategoryPage = ({ title, description, endpoints, website }) => {
+  const { pathname } = useLocation();
   const [selectedEndpoint, setSelectedEndpoint] = useState("");
   const [endpointData, setEndpointData] = useState(null);
 
   useEffect(() => {
     // For testing purposes, log endpoints when they change
-    console.log('Endpoints:', endpoints);
+    console.log('Endpoints:',pathname, endpoints);
     console.log('website:', website);
-  }, [endpoints, website]);
+    return () => {
+      // removing selected fileds when navigating to new page
+      setSelectedEndpoint('');
+      setEndpointData(null);
+    };
+
+  }, [useLocation,pathname]);
+  
 
   const handleEndpointChange = (event) => {
     const endpointName = event.target.value;
