@@ -4,7 +4,7 @@ import '../Styling/ManageCategory.css'; // Adjust path as needed
 
 const ManageCategories = () => {
     const [categories, setCategories] = useState([]);
-    const [selectedCategoryName, setSelectedCategoryName] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,29 +19,29 @@ const ManageCategories = () => {
     };
 
     const handleDelete = () => {
-        if (!selectedCategoryName) {
+        if (!selectedCategoryId) {
             alert('Please select a category to delete.');
             return;
         }
-        fetch(`http://localhost:5000/admin/login/delete_category/${selectedCategoryName}`, {
+        fetch(`http://localhost:5000/admin/login/delete_category/${selectedCategoryId}`, {
             method: "DELETE",
-            headers:{
-                'Content-type':'application/json'
-            } 
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === 'Category deleted successfully') {
-                alert('Category deleted successfully!');
-                // Remove deleted category from state
-                setCategories(categories.filter(category => category.title !== selectedCategoryName));
-                // Reset selected category
-                setSelectedCategoryName('');
-            } else {
-                alert('Error: ' + data.message);
+            headers: {
+                'Content-type': 'application/json'
             }
         })
-        .catch((err) => alert('Error: ' + err.message));
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Category deleted successfully') {
+                    alert('Category deleted successfully!');
+                    // Remove deleted category from state
+                    setCategories(categories.filter(category => category._id !== selectedCategoryId));
+                    // Reset selected category
+                    setSelectedCategoryId('');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch((err) => alert('Error: ' + err.message));
     };
 
     return (
@@ -52,8 +52,8 @@ const ManageCategories = () => {
                 <h4>Category List</h4>
                 <select
                     className="form-control"
-                    value={selectedCategoryName}
-                    onChange={(e) => setSelectedCategoryName(e.target.value)}
+                    value={selectedCategoryId}
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
                 >
                     <option value="">Select a category</option>
                     {categories.map(category => (

@@ -4,7 +4,7 @@
   text-align: center;
   color: #fcfff4; /* Light beige text color */
   background-color: #2c3e50; /* Dark blue background color */
-  position: relative;
+  position: fixed;
   overflow: hidden; /* To contain the animations */
 }
 

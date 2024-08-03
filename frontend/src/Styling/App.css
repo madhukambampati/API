@@ -11,7 +11,7 @@ body {
   background: linear-gradient(135deg, #e0eafc, #cfdef3); /* Light gradient background */
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 
