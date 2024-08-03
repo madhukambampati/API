@@ -13,7 +13,7 @@ import "./Styling/Header.css";
 import "./Styling/Sidebar.css";
 import "./Styling/CategoryCard.css";
 import "./Styling/Footer.css";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const App = () => {
   const [categories, setCategories] = useState([]);
