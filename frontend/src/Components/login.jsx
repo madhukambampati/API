@@ -25,9 +25,9 @@ export const Login = (props) => {
         }).then(res => {
             console.log('resss', res);
             setLoginStatus(res.status === 200 ? 'success' : 'fail');
-            if (res.status === 200) {
+            
                 navigate('/adminApi');
-            }
+            
         }).catch(err => console.log('err', err));
     };
 
