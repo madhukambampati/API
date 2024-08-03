@@ -5,7 +5,7 @@ const { getAllApiData } = require('../controllers/apiController');
 // GET all API data
 router.get('/', async (req, res) => {
   try {
-    const apiData = await getAllApiData();
+    const apiData = await getAllApiData(userId);
     res.json(apiData);
   } catch (err) {
     console.error(err);

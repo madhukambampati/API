@@ -11,7 +11,8 @@ router.post('/', async (req, res) => {
         const adminUser = await AdminUser.findOne({ userName: req.body.userName });
         console.log('adminUser:', adminUser); 
         if (adminUser && adminUser.password === req.body.password) {
-            res.status(200).json({ loginStatus: true })
+          userId= adminUser._id.toString();
+          res.status(200).json({ loginStatus: true , userId : adminUser._id  })
         } else
             res.status(401).json({ loginStatus: false })
 

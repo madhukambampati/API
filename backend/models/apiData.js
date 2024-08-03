@@ -13,7 +13,8 @@ const apiDataSchema = new mongoose.Schema({
       apihost : { type: String, required: true }
     }
   ],
-  website:{ type: String }
+  website:{ type: String },
+  loggedUserId:{ type: String,required: true }
 });
 
 const ApiData = mongoose.model('ApiData', apiDataSchema,'categories');
