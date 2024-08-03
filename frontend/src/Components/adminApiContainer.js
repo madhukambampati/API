@@ -4,8 +4,8 @@ import '../Styling/adminApiContainer.css';
 
 const AdminApiContainer = () => {
     // State variables
-    const [id, idchange] = useState('');
-    const [icon, iconchange] = useState('');
+    // const [id, idchange] = useState('');
+    // const [icon, iconchange] = useState('');
     const [title, titlechange] = useState('');
     const [description, descriptionchange] = useState('');
     const [endpoints, endpointschange] = useState([{ name: '', description: '', httplink: '', apikey: '', apihost: '' }]);
@@ -57,9 +57,9 @@ const AdminApiContainer = () => {
         <div>
             <div className="container">
                 <button
-                    className="btn btn-warning"
+                    className="btn btn-success"
                     onClick={handleManageCategories}
-                    style={{ marginBottom: '20px' }}
+                    // style={{ marginBottom: '20px' }}
                 >
                     Manage Categories
                 </button>
