@@ -21,9 +21,10 @@ app.use(express.urlencoded({extended : true}))
 // app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/data', require('./routes/apiRoutes'));
 app.use('/admin/login', require('./routes/adminLogin'));
+app.use('/admin/logout', require('./routes/adminLogout'));
 
 
-
+console.log('user_server.js',userId)
 
 
 // process.env.NODE_ENV = 'production'

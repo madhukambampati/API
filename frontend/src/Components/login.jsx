@@ -23,6 +23,7 @@ export const Login = (props) => {
             },
             body: JSON.stringify(requestObj)
         })
+        
         .then(response => response.json())
         .then(res => {
             console.log('resss', res);
