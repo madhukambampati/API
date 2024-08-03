@@ -1,34 +1,96 @@
-.root{
-  padding: 0%;
-  margin: 0%;
-}
-body{
-  margin: 0px;
-  font-family: 'Tahoma', sans-serif;
-}
-.app {
-  font-family: 'Tahoma', sans-serif;
+/* Root and Body Styles */
+.root, .app {
   padding: 0;
-  margin: 0px;
+  margin: 0;
+  font-family: 'Tahoma', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: 'Tahoma', sans-serif;
+  background: linear-gradient(135deg, #e0eafc, #cfdef3); /* Light gradient background */
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating Particles */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(50vw, -50vh) scale(0.5);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, 50vh) scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* App Container */
+.app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
+/* Main Container */
 .main-container {
   display: flex;
   min-height: 80vh;
+  z-index: 1; /* Ensures main content is above particles */
 }
 
+/* Categories Grid */
 .categories-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
   flex-grow: 1;
-  background-color: rgb(246, 254, 247);
+  background-color: rgba(246, 254, 247, 0.8); /* Slight transparency to show background animation */
+  z-index: 1; /* Ensures content is above particles */
 }
 
+/* Category Card */
 .category-card {
   background: #8ad5d2; /* Lighter blue background */
   border: 1px solid #ddd;
@@ -38,12 +100,13 @@ body{
   margin-bottom: 20px;
   position: relative; /* For overlaying icon */
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
 }
 
 .category-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #79c3c2; /* Slightly darker on hover */
 }
 
 .category-card h2 {
@@ -56,6 +119,7 @@ body{
   color: #666;
 }
 
+/* Explore Button */
 .category-card .explore-btn {
   align-self: flex-start;
   background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
@@ -64,13 +128,15 @@ body{
   color: #fff;
   padding: 10px 20px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
 
 .category-card .explore-btn:hover {
   background: linear-gradient(90deg, #fecfef 0%, #ff9a9e 100%);
+  transform: translateY(-3px);
 }
 
+/* No Cards Message */
 .no-cards {
   display: flex;
   justify-content: center;
@@ -86,4 +152,121 @@ body{
 
 .no-cards-message {
   color: gray;
+}
+
+/* Footer */
+.footer {
+  min-height: 7vh;
+  padding: 2vh;
+  text-align: center;
+  color: #fcfff4; /* Light beige text color */
+  background-color: #343a40; /* Dark blue background color */
+  position: relative;
+  overflow: hidden; /* To contain the animations */
+}
+
+.footer p {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1; /* Make sure text is above the animations */
+  font-size: 1.2em; /* Adjust the font size for better visibility */
+}
+
+.footer::before, .footer::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -100%;
+  left: -100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  transform: rotate(45deg);
+  animation: animate 5s linear infinite;
+  z-index: 0; /* Ensure animations are below the text */
+}
+
+.footer::after {
+  animation-direction: reverse;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateX(0) translateY(0) rotate(45deg);
+  }
+  100% {
+    transform: translateX(200%) translateY(200%) rotate(45deg);
+  }
+}
+
+.footer a {
+  color: #fff; /* White color for links */
+  text-decoration: none; /* Remove underline from links */
+  transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.footer a:hover {
+  color: #007bff; /* Blue color on link hover */
+  text-decoration: underline; /* Add underline on link hover */
+}
+
+/* Search Input */
+#search-text {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+  width: 250px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#search-text:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+}
+
+.search-button {
+  background-color: #e67e22;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.search-button .fa-search {
+  font-size: 16px;
+}
+
+.search-button:hover {
+  background-color: #d35400;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(211, 84, 0, 0.5);
+}
+
+/* Login Button */
+.login-button-container {
+  margin-left: 20px;
+}
+
+.login-button {
+  background-color: #3498db;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.login-button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(41, 128, 185, 0.5);
 }
