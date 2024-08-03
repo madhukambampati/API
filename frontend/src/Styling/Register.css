@@ -1,12 +1,19 @@
 /* Styling for the auth form container */
 .auth-form-container {
-    max-width: 400px; /* Match the width of login form */
+    max-width: 600px; /* Increased the width */
     margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-}
+    height: 340px;
+    padding: 47px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #b9cace, #c3d4d9);
+    color: #fff;
+    position: absolute; /* Added position absolute */
+    top: 50%; /* Move to the middle of the page */
+    left: 50%; /* Move to the middle of the page */
+    transform: translate(-50%, -50%); /* Adjust position to center */
+  }
+  
 
 /* Styling for the form title */
 .auth-form-container h2 {

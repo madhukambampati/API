@@ -1,70 +1,97 @@
 /* Styling for the auth form container */
 .auth-form-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
-  
-  /* Styling for the form title */
-  .auth-form-container h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Styling for the form */
-  .login-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Styling for form labels */
-  .login-form label {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 5px;
-  }
-  
-  /* Styling for form inputs */
-  .login-form input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
-  }
-  
-  /* Styling for the submit button */
-  .login-form button[type="submit"] {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .login-form button[type="submit"]:hover {
-    background-color: #2980b9;
-  }
-  
-  /* Styling for the link button */
-  .link-btn {
-    background: none;
-    border: none;
-    color: #3498db;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: center;
-    display: block;
-    margin-top: 10px;
-  }
-  
-  .link-btn:hover {
-    text-decoration: underline;
-  }
-  
+  max-width: 600px; /* Increased the width */
+  margin: 50px auto;
+  height: 340px;
+  padding: 47px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #b9cace, #c3d4d9);
+  color: #fff;
+  position: absolute; /* Added position absolute */
+  top: 50%; /* Move to the middle of the page */
+  left: 50%; /* Move to the middle of the page */
+  transform: translate(-50%, -50%); /* Adjust position to center */
+}
+
+/* Styling for the form title */
+.auth-form-container h2 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Styling for the form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styling for form labels */
+.login-form label {
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+/* Styling for form inputs */
+.login-form input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.login-form input:focus {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Styling for the submit button */
+.login-form button[type="submit"] {
+  background-color: #52d2d2;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.login-form button[type="submit"]:hover {
+  background-color: #44c7c9;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(15, 164, 210, 0.3);
+}
+
+/* Styling for the register button */
+.register-button {
+  background: none;
+  border: none;
+  color: #2f2b19;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+  transition: color 0.3s ease;
+}
+
+.register-button:hover {
+  color: #1a0e10;
+  text-decoration: underline;
+}
+
+/* Styling for error message */
+.error-message {
+  color: #231310;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
