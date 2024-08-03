@@ -20,6 +20,7 @@ import AdminApiContainer from './Components/adminApiContainer.js';
 
 const App = () => {
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const App = () => {
         const response = await fetch('http://localhost:5000/api/data');  
         const responseData = await response.json();
         setCategories(responseData);
-        setFilteredCategories(responseData);
+        setFilteredCategories(responseData); // Ensure filteredCategories is also set initially
         console.log('responseData', responseData);
       } catch (error) {
         console.log('ERROR', error);
@@ -37,9 +38,7 @@ const App = () => {
     fetchData();
   }, [location]);
 
-  const [filteredCategories, setFilteredCategories] = useState(categories);
-
-  const onSearch = ({ value }) => {
+  const onSearch = (value) => {
     const filtered = categories.filter((category) =>
       category.title.toLowerCase().includes(value.toLowerCase())
     );
