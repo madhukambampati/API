@@ -11,6 +11,10 @@
   z-index: 10; 
 }
 
+.dashboard{
+  cursor: pointer;
+}
+
 .sidebar-header {
   padding: 20px;
   text-align: center;
