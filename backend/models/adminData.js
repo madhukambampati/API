@@ -12,7 +12,8 @@ const categorySchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   endpoints: [endpointSchema],
-  website: { type: String, required: true }
+  website: { type: String, required: true },
+  loggedUserId: { type: String, required: true }
 });
 
 const Category = mongoose.model('Category', categorySchema);

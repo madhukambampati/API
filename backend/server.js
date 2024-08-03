@@ -11,7 +11,7 @@ connectDB();
 const app = express();
 
 const cors = require('cors');
-
+global.userId =null;
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"))

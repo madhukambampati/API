@@ -22,12 +22,13 @@ export const Login = (props) => {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(requestObj)
-        }).then(res => {
+        })
+        .then(response => response.json())
+        .then(res => {
             console.log('resss', res);
             setLoginStatus(res.status === 200 ? 'success' : 'fail');
-            
-                navigate('/adminApi');
-            
+            sessionStorage.setItem("userId", res.userId);
+            navigate('/adminApi')
         }).catch(err => console.log('err', err));
     };
 

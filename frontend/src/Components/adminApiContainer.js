@@ -16,7 +16,8 @@ const AdminApiContainer = () => {
     // Handle form submission
     const handlesubmit = (e) => {
         e.preventDefault();
-        const data = { title, description, endpoints, website };
+        const loggedUserId = sessionStorage.getItem("userId").toString();
+        const data = { title, description, endpoints, website ,loggedUserId};
 
         fetch("http://localhost:5000/admin/login/create_category", {
             method: "POST",
@@ -25,7 +26,10 @@ const AdminApiContainer = () => {
         })
             .then(() => {
                 alert('Category added successfully!');
-                navigate(-1);
+                titlechange('');
+                descriptionchange('');
+                endpointschange([]);
+                websitechange('')
             })
             .catch((err) => alert('Error: ' + err.message));
     };
