@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+
 import '../Styling/Sidebar.css';
 
 const Sidebar = ({ links }) => {
@@ -18,12 +20,14 @@ const Sidebar = ({ links }) => {
         events: "fas fa-calendar-alt",
         health: "fas fa-heartbeat",
         sms: "fas fa-sms"
+        
     };
+    const navigate = useNavigate();
 
     return (
         <aside className="sidebar">
             <div className="sidebar-header">
-                <h1>CodingLab</h1>
+                <h1 class="dashboard" onClick={() => navigate('/')}>Dashboard</h1>
             </div>
             <nav>
                 <ul>
