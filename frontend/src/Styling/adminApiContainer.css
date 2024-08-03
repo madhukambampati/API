@@ -1,10 +1,29 @@
 .container {
-    margin: 20px auto;
+    margin: 20px ;
     padding: 20px;
     max-width: 800px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    resize: none;
+    /* Allows the user to resize the height but not the width */
+}
+
+textarea:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
 }
 
 h3 {
@@ -32,9 +51,10 @@ h3 {
     font-size: 16px;
     box-sizing: border-box;
 }
-
-.form-group textarea {
-    resize: vertical;
+input:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
 }
 
 .endpoint-group {
