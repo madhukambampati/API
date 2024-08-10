@@ -27,7 +27,7 @@ const Header = ({ onSearch }) => {
   const handleLogoutClick = () => {
     const loggedUserId = sessionStorage.getItem('userId');
 
-    fetch('http://localhost:5000/admin/logout', {
+    fetch('http://localhost:5001/admin/logout', {
       method: 'POST',
       headers: {
           'Content-type': 'application/json'

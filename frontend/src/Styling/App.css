@@ -156,7 +156,7 @@ body {
 
 /* Footer */
 .footer {
-  min-height: 7vh;
+  height: 7vh;
   padding: 2vh;
   text-align: center;
   color: #fcfff4; /* Light beige text color */
@@ -170,7 +170,7 @@ body {
   padding: 0;
   position: relative;
   z-index: 1; /* Make sure text is above the animations */
-  font-size: 1.2em; /* Adjust the font size for better visibility */
+  font-size: 1.2rem; /* Adjust the font size for better visibility */
 }
 
 .footer::before, .footer::after {
@@ -256,11 +256,11 @@ body {
 .login-button {
   background-color: #3498db;
   border: none;
-  padding: 10px 15px;
-  border-radius: 20px;
+  padding: 0.6rem 1rem;
+  border-radius: 1.2rem;
   cursor: pointer;
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   outline: none;
   transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
@@ -269,4 +269,29 @@ body {
   background-color: #2980b9;
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(41, 128, 185, 0.5);
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 1100px) {
+  .category-card{
+    width: calc(50% - 40px);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .category-card{
+    width: calc(100% - 40px);
+  }
+  #search-text {
+    width: 40%;
+  }
+  .footer p{
+    font-size: 0.6rem;
+    margin-top:1rem;
+  }
+  .footer{
+    padding: 0;
+    height: 4vh;
+  }
 }

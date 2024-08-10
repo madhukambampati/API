@@ -1,14 +1,9 @@
 const ApiData = require('../models/apiData');
 
-const getAllApiData = async (userId) => {
+const getAllApiData = async () => {
   try {
-    if (!userId || userId === "66abfdc83039a12de90ba7d9") {
-      return await ApiData.find();
-    }
-    
-    // Otherwise, fetch data filtered by loggedUserId
-    let apiData = await ApiData.find({ loggedUserId: userId });
-    return apiData;
+    // Fetch all API data for any logged-in user
+    return await ApiData.find();
   } catch (error) {
     console.error('Error fetching API data:', error);
     throw error;

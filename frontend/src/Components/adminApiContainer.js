@@ -19,7 +19,7 @@ const AdminApiContainer = () => {
         const loggedUserId = sessionStorage.getItem("userId").toString();
         const data = { title, description, endpoints, website ,loggedUserId};
 
-        fetch("http://localhost:5000/admin/login/create_category", {
+        fetch("http://localhost:5001/admin/login/create_category", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(data)

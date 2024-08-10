@@ -95,3 +95,9 @@
   margin-top: 10px;
   font-size: 14px;
 }
+
+@media screen and (max-width: 1100px) {
+  .auth-form-container {
+    width: 45%;
+  }
+}

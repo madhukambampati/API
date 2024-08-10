@@ -26,7 +26,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/data');  
+        const response = await fetch('http://localhost:5001/api/data');  
         const responseData = await response.json();
         setCategories(responseData);
         setFilteredCategories(responseData); // Ensure filteredCategories is also set initially

@@ -20,7 +20,7 @@ export const Register = () => {
             userName: userName,
             password: pass
         };
-        fetch('http://localhost:5000/admin/login/register', {
+        fetch('http://localhost:5001/admin/login/register', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'

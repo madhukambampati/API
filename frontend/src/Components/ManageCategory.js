@@ -12,7 +12,7 @@ const ManageCategories = () => {
     }, []);
 
     const fetchCategories = () => {
-        fetch('http://localhost:5000/api/data')
+        fetch('http://localhost:5001/api/data')
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch((err) => alert('Error: ' + err.message));
@@ -23,7 +23,7 @@ const ManageCategories = () => {
             alert('Please select a category to delete.');
             return;
         }
-        fetch(`http://localhost:5000/admin/login/delete_category/${selectedCategoryId}`, {
+        fetch(`http://localhost:5001/admin/login/delete_category/${selectedCategoryId}`, {
             method: "DELETE",
             headers: {
                 'Content-type': 'application/json'
