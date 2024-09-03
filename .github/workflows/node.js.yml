@@ -22,20 +22,19 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm install -g pm2  # Install PM2 globally
+
+    - name: Restart Back-End Server
+      working-directory: ./backend  # Path to your back-end code
+      run: pm2 restart Backend  # Replace `Backend` with your PM2 process name
+
     # Front-End Steps (if applicable)
     - name: Install Front-End Dependencies
       working-directory: ./frontend  # Path to your front-end code
       run: npm ci
 
-    # Back-End Steps
-    - name: Install Back-End Dependencies
-      working-directory: ./backend  # Path to your back-end code
-      run: npm ci
-
-    - name: Restart Back-End Server
-      working-directory: ./backend
-      run: pm2 restart Backend  # Replace `Backend` with your PM2 process name
-
-
-
-    
+    - name: Notify Deployment Success
+      run: echo "Deployment and restart successful!"
