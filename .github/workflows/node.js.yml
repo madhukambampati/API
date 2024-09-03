@@ -30,16 +30,13 @@ jobs:
 
     - name: Restart Back-End Server
       working-directory: ./backend  # Path to your back-end code
-      run: pm2 restart Backend || pm2 start server.js --name Backend
+      run: pm2 restart Backend
 
     # Front-End Steps
     - name: Install Front-End Dependencies
       working-directory: ./frontend  # Path to your front-end code
       run: npm ci
 
-    - name: Start Front-End Server
-      working-directory: ./frontend  # Path to your front-end code
-      run: nohup npm start > frontend.log 2>&1 &
 
     - name: Notify Deployment Success
       run: echo "Deployment and restart successful!"
