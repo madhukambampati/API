@@ -15,6 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      name: Checkout code
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
@@ -33,10 +34,12 @@ jobs:
 
     # Front-End Steps
     - name: Install Front-End Dependencies
-    
       working-directory: ./frontend  # Path to your front-end code
       run: npm ci
-      run: nohup npm start
+
+    - name: Start Front-End Server
+      working-directory: ./frontend  # Path to your front-end code
+      run: nohup npm start > frontend.log 2>&1 &
 
     - name: Notify Deployment Success
       run: echo "Deployment and restart successful!"
