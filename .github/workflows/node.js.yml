@@ -31,7 +31,7 @@ jobs:
       working-directory: ./backend  # Path to your back-end code
       run: pm2 restart Backend  # Replace `Backend` with your PM2 process name
 
-    # Front-End Steps (if applicable)
+    # Front-End Steps
     - name: Install Front-End Dependencies
       working-directory: ./frontend  # Path to your front-end code
       run: npm ci
