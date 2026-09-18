@@ -5,6 +5,13 @@ const sendBtn = document.getElementById("send-btn");
 
 const history = [];
 
+inputEl.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    formEl.requestSubmit();
+  }
+});
+
 function appendMessage(role, text) {
   const bubble = document.createElement("div");
   bubble.className = `bubble ${role}`;
