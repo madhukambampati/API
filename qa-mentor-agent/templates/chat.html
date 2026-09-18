@@ -6,22 +6,38 @@
 
 <div class="chat-shell">
   <main id="chat" class="chat">
-    <div id="empty-state" class="empty-state">
-      <div class="empty-icon">🧪</div>
-      <h2>What do you want to learn today?</h2>
-      <p>Ask a question, or try one of these:</p>
-      <div class="suggestions">
-        <button type="button" class="suggestion-chip" data-prompt="What's the difference between explicit and implicit waits in Selenium?">
-          <span class="chip-icon">🧭</span><span>Selenium waits explained</span>
+    <div id="empty-state" class="chat-hero">
+      <svg class="mascot-svg" viewBox="0 0 120 132" width="100" height="110" aria-hidden="true">
+        <defs>
+          <linearGradient id="mascotGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--accent)" />
+            <stop offset="100%" stop-color="var(--accent-2)" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M20 8 H100 A18 18 0 0 1 118 26 V76 A18 18 0 0 1 100 94 H55 L38 116 V94 H20 A18 18 0 0 1 2 76 V26 A18 18 0 0 1 20 8 Z"
+          fill="url(#mascotGrad)"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linejoin="round"
+        />
+        <ellipse cx="45" cy="46" rx="7" ry="10" fill="#0f172a" />
+        <ellipse cx="78" cy="46" rx="7" ry="10" fill="#0f172a" />
+      </svg>
+      <h2 id="greeting-text">Hi there!</h2>
+      <p class="chat-hero-tagline">I'm QA Mentor. Ready when you are!</p>
+      <div class="hero-pills">
+        <button type="button" class="hero-pill" data-prompt="What's the difference between explicit and implicit waits in Selenium?">
+          🧭 Selenium waits explained
         </button>
-        <button type="button" class="suggestion-chip" data-prompt="Give me a 6-month roadmap to go from manual tester to SDET.">
-          <span class="chip-icon">🗺️</span><span>Manual → SDET roadmap</span>
+        <button type="button" class="hero-pill" data-prompt="Give me a 6-month roadmap to go from manual tester to SDET.">
+          🗺️ Manual → SDET roadmap
         </button>
-        <button type="button" class="suggestion-chip" data-prompt="Walk me through testing a REST API with Postman, step by step.">
-          <span class="chip-icon">🌐</span><span>API testing basics</span>
+        <button type="button" class="hero-pill" data-prompt="Walk me through testing a REST API with Postman, step by step.">
+          🌐 API testing basics
         </button>
-        <button type="button" class="suggestion-chip" data-prompt="What is AI-QA, and how is testing an LLM feature different from testing normal software?">
-          <span class="chip-icon">🤖</span><span>What is AI-QA?</span>
+        <button type="button" class="hero-pill" data-prompt="What is AI-QA, and how is testing an LLM feature different from testing normal software?">
+          🤖 What is AI-QA?
         </button>
       </div>
     </div>
@@ -35,6 +51,7 @@
       autofocus
       required
     ></textarea>
+    <button type="button" id="mic-btn" class="mic-btn" aria-label="Voice input" style="display: none;">🎤</button>
     <button type="submit" id="send-btn" aria-label="Send message">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
         <path d="M3 11.5L20 4L12.5 21L10.5 13.5L3 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />

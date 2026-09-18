@@ -595,61 +595,57 @@ a {
   gap: 18px;
 }
 
-.empty-state {
+.chat-hero {
   margin: auto;
   text-align: center;
-  max-width: 460px;
-  padding: 20px;
-}
-
-.empty-icon {
-  font-size: 2.4rem;
-  margin-bottom: 8px;
-}
-
-.empty-state h2 {
-  margin: 0 0 6px;
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.empty-state p {
-  margin: 0 0 22px;
-  color: var(--text-dim);
-  font-size: 0.92rem;
-}
-
-.suggestions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.suggestion-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
-  padding: 12px 14px;
-  border-radius: 14px;
+  max-width: 520px;
+  padding: 44px 32px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(34, 211, 238, 0.08));
   border: 1px solid var(--border);
-  background: var(--surface-alt);
+}
+
+.mascot-svg {
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.chat-hero h2 {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.chat-hero-tagline {
+  margin: 0 0 24px;
+  color: var(--text-dim);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hero-pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
   color: var(--text);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 500;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.suggestion-chip:hover {
+.hero-pill:hover {
   transform: translateY(-2px);
   border-color: var(--accent);
-}
-
-.chip-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
 }
 
 .msg-row {
@@ -835,6 +831,34 @@ a {
 .composer button:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+.mic-btn {
+  background: var(--surface-alt) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  justify-content: center;
+  font-size: 1.05rem;
+}
+
+.mic-btn.listening {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+  color: white !important;
+  animation: mic-pulse 1.2s infinite;
+}
+
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
 }
 
 .chat::-webkit-scrollbar {

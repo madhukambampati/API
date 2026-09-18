@@ -6,12 +6,63 @@ const emptyStateEl = document.getElementById("empty-state");
 
 const history = [];
 
-document.querySelectorAll(".suggestion-chip").forEach((chip) => {
+document.querySelectorAll(".hero-pill").forEach((chip) => {
   chip.addEventListener("click", () => {
     inputEl.value = chip.dataset.prompt;
     formEl.requestSubmit();
   });
 });
+
+function setGreeting() {
+  const greetingEl = document.getElementById("greeting-text");
+  if (!greetingEl) return;
+  const hour = new Date().getHours();
+  const timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+  const profile = getProfile();
+  const name = profile.name && profile.name !== "You" ? profile.name : "there";
+  greetingEl.textContent = `Good ${timeOfDay}, ${name}`;
+}
+
+function setupVoiceInput() {
+  const micBtn = document.getElementById("mic-btn");
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!micBtn || !SpeechRecognition) return;
+
+  micBtn.style.display = "flex";
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  let listening = false;
+
+  recognition.addEventListener("result", (event) => {
+    const transcript = event.results[0][0].transcript;
+    inputEl.value = inputEl.value ? `${inputEl.value} ${transcript}` : transcript;
+    inputEl.dispatchEvent(new Event("input"));
+  });
+
+  recognition.addEventListener("end", () => {
+    listening = false;
+    micBtn.classList.remove("listening");
+  });
+
+  recognition.addEventListener("error", () => {
+    listening = false;
+    micBtn.classList.remove("listening");
+    showToast("Couldn't access the microphone.");
+  });
+
+  micBtn.addEventListener("click", () => {
+    if (listening) {
+      recognition.stop();
+      return;
+    }
+    listening = true;
+    micBtn.classList.add("listening");
+    recognition.start();
+  });
+}
 
 inputEl.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
@@ -116,6 +167,9 @@ formEl.addEventListener("submit", async (event) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  setGreeting();
+  setupVoiceInput();
+
   const params = new URLSearchParams(window.location.search);
   const q = params.get("q");
   if (q) {
