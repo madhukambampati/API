@@ -31,14 +31,18 @@ function setupVoiceInput() {
   micBtn.style.display = "flex";
   const recognition = new SpeechRecognition();
   recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.lang = "en-US";
 
   let listening = false;
+  let baseText = "";
 
   recognition.addEventListener("result", (event) => {
-    const transcript = event.results[0][0].transcript;
-    inputEl.value = inputEl.value ? `${inputEl.value} ${transcript}` : transcript;
+    let transcript = "";
+    for (let i = 0; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript;
+    }
+    inputEl.value = baseText ? `${baseText} ${transcript}`.trim() : transcript;
     inputEl.dispatchEvent(new Event("input"));
   });
 
@@ -58,6 +62,7 @@ function setupVoiceInput() {
       recognition.stop();
       return;
     }
+    baseText = inputEl.value.trim();
     listening = true;
     micBtn.classList.add("listening");
     recognition.start();
