@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.app-header {
+  text-align: center;
+  padding: 8px 0 16px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.app-header p {
+  margin: 4px 0 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: #2563eb;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: #1e293b;
+  border-bottom-left-radius: 2px;
+}
+
+.bubble.pending {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #1e293b;
+}
+
+.composer textarea {
+  flex: 1;
+  resize: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.composer button {
+  padding: 0 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.composer button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
