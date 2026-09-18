@@ -12,11 +12,27 @@ inputEl.addEventListener("keydown", (event) => {
   }
 });
 
+inputEl.addEventListener("input", () => {
+  inputEl.style.height = "auto";
+  inputEl.style.height = `${Math.min(inputEl.scrollHeight, 140)}px`;
+});
+
 function appendMessage(role, text) {
+  const isAssistant = role.startsWith("assistant");
+
+  const row = document.createElement("div");
+  row.className = `msg-row ${isAssistant ? "assistant" : "user"}`;
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = isAssistant ? "\u{1F9EA}" : "\u{1F642}";
+
   const bubble = document.createElement("div");
   bubble.className = `bubble ${role}`;
   bubble.textContent = text;
-  chatEl.appendChild(bubble);
+
+  row.append(...(isAssistant ? [avatar, bubble] : [bubble, avatar]));
+  chatEl.appendChild(row);
   chatEl.scrollTop = chatEl.scrollHeight;
   return bubble;
 }
@@ -27,12 +43,15 @@ formEl.addEventListener("submit", async (event) => {
   if (!text) return;
 
   inputEl.value = "";
+  inputEl.style.height = "auto";
   sendBtn.disabled = true;
 
   appendMessage("user", text);
   history.push({ role: "user", content: text });
 
-  const pending = appendMessage("assistant pending", "Thinking...");
+  const pending = appendMessage("assistant pending", "");
+  pending.innerHTML =
+    '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
 
   try {
     const res = await fetch("/api/chat", {
