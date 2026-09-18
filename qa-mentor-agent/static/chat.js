@@ -35,33 +35,52 @@ function appendMessage(role, text) {
   avatar.className = "avatar";
   avatar.textContent = isAssistant ? "\u{1F9EA}" : "\u{1F642}";
 
+  const wrap = document.createElement("div");
+  wrap.className = "bubble-wrap";
+
   const bubble = document.createElement("div");
   bubble.className = `bubble ${role}`;
   bubble.textContent = text;
+  wrap.appendChild(bubble);
 
-  row.append(...(isAssistant ? [avatar, bubble] : [bubble, avatar]));
+  row.append(...(isAssistant ? [avatar, wrap] : [wrap, avatar]));
   chatEl.appendChild(row);
   chatEl.scrollTop = chatEl.scrollHeight;
-  return bubble;
+  return { bubble, wrap };
 }
 
-formEl.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const text = inputEl.value.trim();
+function addBookmarkButton(wrap, question, getAnswer) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "bookmark-btn";
+  btn.textContent = "☆ Bookmark";
+  btn.addEventListener("click", () => {
+    addBookmark(question, getAnswer());
+    btn.textContent = "★ Bookmarked";
+    btn.classList.add("saved");
+    btn.disabled = true;
+    showToast("Saved to Bookmarks");
+  });
+  wrap.appendChild(btn);
+}
+
+async function sendMessage(text) {
   if (!text) return;
 
   inputEl.value = "";
   inputEl.style.height = "auto";
-  sendBtn.disabled = true;
 
   if (emptyStateEl) emptyStateEl.remove();
 
   appendMessage("user", text);
   history.push({ role: "user", content: text });
+  logHistory(text);
 
-  const pending = appendMessage("assistant pending", "");
+  const { bubble: pending, wrap } = appendMessage("assistant pending", "");
   pending.innerHTML =
     '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+
+  sendBtn.disabled = true;
 
   try {
     const res = await fetch("/api/chat", {
@@ -80,11 +99,28 @@ formEl.addEventListener("submit", async (event) => {
     pending.textContent = data.reply;
     pending.classList.remove("pending");
     history.push({ role: "assistant", content: data.reply });
+    addBookmarkButton(wrap, text, () => data.reply);
   } catch (err) {
     pending.textContent = `Error: ${err.message}`;
     pending.classList.remove("pending");
   } finally {
     sendBtn.disabled = false;
     inputEl.focus();
+  }
+}
+
+formEl.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const text = inputEl.value.trim();
+  await sendMessage(text);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q");
+  if (q) {
+    inputEl.value = q;
+    sendMessage(q);
+    window.history.replaceState({}, "", "/chat");
   }
 });

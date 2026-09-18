@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Bookmarks{% endblock %}
+{% block content %}
+<h1 class="page-title">🔖 Bookmarks</h1>
+<p class="page-subtitle">Answers you've saved from Chat.</p>
+
+<div class="list-panel" id="bookmarks-list"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='bookmarks.js') }}"></script>
+{% endblock %}

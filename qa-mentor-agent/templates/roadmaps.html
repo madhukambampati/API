@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Roadmaps{% endblock %}
+{% block content %}
+<h1 class="page-title">🗺️ Roadmaps</h1>
+<p class="page-subtitle">Step-by-step learning paths. Click a stage to expand it.</p>
+
+<section class="roadmap-track" id="qa-foundations">
+  <div class="track-header">
+    <span class="track-icon">🌱</span>
+    <div>
+      <h2>Entry-Level QA Foundations</h2>
+      <p>Start here if you're brand new to software testing</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>1. What is Software Testing?</h3>
+          <span class="stage-duration">1 week</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Why testing matters, cost of defects</li>
+          <li>QA vs QC vs Testing</li>
+          <li>Core testing principles</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>2. SDLC &amp; STLC</h3>
+          <span class="stage-duration">1 week</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Waterfall, Agile, Scrum models</li>
+          <li>Software test lifecycle phases</li>
+          <li>Where testing fits in each model</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>3. Test Case Design</h3>
+          <span class="stage-duration">2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Equivalence partitioning</li>
+          <li>Boundary value analysis</li>
+          <li>Decision tables &amp; use case testing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>4. Types of Testing</h3>
+          <span class="stage-duration">2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Functional: smoke, sanity, regression, integration, UAT</li>
+          <li>Non-functional: performance, security, usability</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>5. Bug Reporting &amp; Tracking</h3>
+          <span class="stage-duration">1 week</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Writing clear, reproducible bug reports</li>
+          <li>Severity vs. priority</li>
+          <li>Tools: Jira, Azure DevOps</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>6. Basic SQL for Testers</h3>
+          <span class="stage-duration">1-2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>SELECT, WHERE, JOIN basics</li>
+          <li>Verifying data changes from the UI in the DB</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>7. Intro to Automation Concepts</h3>
+          <span class="stage-duration">2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Why and when to automate</li>
+          <li>Record &amp; playback vs. scripted automation</li>
+          <li>First look at Selenium</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>8. First QA Job Prep</h3>
+          <span class="stage-duration">Ongoing</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Resume &amp; portfolio basics</li>
+          <li>Common entry-level interview questions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="manual-to-sdet">
+  <div class="track-header">
+    <span class="track-icon">🗺️</span>
+    <div>
+      <h2>Manual Tester → SDET</h2>
+      <p>A 6-month plan to move into automation</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>1. Solidify Manual Testing Fundamentals</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>SDLC/STLC, test case design techniques</li>
+          <li>Bug lifecycle, exploratory testing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>2. Learn a Programming Language</h3>
+          <span class="stage-duration">4-6 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Java or Python fundamentals</li>
+          <li>OOP concepts, collections, exception handling</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>3. Version Control &amp; Dev Tools</h3>
+          <span class="stage-duration">1-2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Git basics: branching, commits, PRs</li>
+          <li>IDE setup (IntelliJ / VS Code)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>4. Web Automation Fundamentals</h3>
+          <span class="stage-duration">4-6 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Selenium WebDriver, locators, waits</li>
+          <li>Page Object Model, TestNG/JUnit or pytest</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>5. API Testing &amp; Automation</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>REST concepts, Postman</li>
+          <li>RestAssured or Python requests, JSON parsing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>6. CI/CD &amp; Reporting</h3>
+          <span class="stage-duration">2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Jenkins or GitHub Actions basics</li>
+          <li>Allure / Extent reports in a pipeline</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>7. Build a Portfolio Project</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Automate a real public site end-to-end</li>
+          <li>Publish on GitHub with a clear README</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>8. Interview Prep &amp; Apply</h3>
+          <span class="stage-duration">Ongoing</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Mock interviews, review testing + coding basics</li>
+          <li>Apply to SDET roles</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="ai-qa-specialist">
+  <div class="track-header">
+    <span class="track-icon">🤖</span>
+    <div>
+      <h2>AI-QA Specialist</h2>
+      <p>For SDETs moving into testing AI/LLM-powered features</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>1. AI/ML Fundamentals for Testers</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>What is ML/an LLM, key terms: prompt, token, embedding, hallucination</li>
+          <li>How models are trained at a high level</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>2. Testing AI-Powered Features</h3>
+          <span class="stage-duration">3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Handling non-determinism in outputs</li>
+          <li>Building golden datasets for regression</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>3. Prompt &amp; Output Evaluation</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Writing eval rubrics and scoring criteria</li>
+          <li>LLM-as-judge patterns</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>4. Bias, Safety &amp; Responsible AI Testing</h3>
+          <span class="stage-duration">2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Testing for bias, toxicity, and safety</li>
+          <li>Basics of red-teaming and guardrail testing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>5. Tooling for AI-QA</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Eval frameworks (e.g. promptfoo, DeepEval)</li>
+          <li>Synthetic test data generation, automating evals in CI</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>6. Performance &amp; Cost Testing for AI Features</h3>
+          <span class="stage-duration">1-2 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Latency/cost tradeoffs of model choices</li>
+          <li>Load testing AI endpoints</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>7. Build an AI-QA Case Study</h3>
+          <span class="stage-duration">2-3 weeks</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Pick an LLM feature and design a full eval suite</li>
+          <li>Document methodology and findings</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <h3>8. Specialize &amp; Apply</h3>
+          <span class="stage-duration">Ongoing</span>
+          <span class="stage-toggle">▾</span>
+        </div>
+        <ul class="stage-skills">
+          <li>Follow AI-QA communities and research</li>
+          <li>Apply for AI-QA / ML-QA roles</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='roadmaps.js') }}"></script>
+{% endblock %}

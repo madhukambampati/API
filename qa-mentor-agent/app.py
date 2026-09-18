@@ -36,8 +36,53 @@ long essays.
 
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+def home():
+    return render_template("home.html", active="home")
+
+
+@app.route("/chat")
+def chat_page():
+    return render_template("chat.html", active="chat")
+
+
+@app.route("/roadmaps")
+def roadmaps():
+    return render_template("roadmaps.html", active="roadmaps")
+
+
+@app.route("/practice")
+def practice():
+    return render_template("practice.html", active="practice")
+
+
+@app.route("/tools")
+def tools_page():
+    return render_template("tools.html", active="tools")
+
+
+@app.route("/progress")
+def progress_page():
+    return render_template("progress.html", active="progress")
+
+
+@app.route("/bookmarks")
+def bookmarks():
+    return render_template("bookmarks.html", active="bookmarks")
+
+
+@app.route("/history")
+def history_page():
+    return render_template("history.html", active="history")
+
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html", active="settings")
+
+
+@app.route("/api/status")
+def api_status():
+    return jsonify({"api_key_configured": client is not None})
 
 
 @app.route("/api/chat", methods=["POST"])

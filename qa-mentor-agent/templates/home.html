@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-blob one"></div>
+  <div class="hero-blob two"></div>
+  <span class="hero-badge">✨ Powered by Claude</span>
+  <h1>QA <span>Mentor</span></h1>
+  <p class="lead">
+    Your AI learning companion for QA, SDET &amp; AI-QA. Get instant answers, learn
+    with real examples, practice hands-on, and accelerate your testing career.
+  </p>
+
+  <form id="quick-ask-form" class="composer" style="max-width: 640px; border-radius: 16px; border: 1px solid var(--border);">
+    <textarea
+      id="quick-ask-input"
+      rows="1"
+      placeholder="Ask anything about testing, automation, or AI-QA..."
+    ></textarea>
+    <button type="submit">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+        <path d="M3 11.5L20 4L12.5 21L10.5 13.5L3 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+      </svg>
+      Ask
+    </button>
+  </form>
+
+  <div class="hero-stats" style="margin-top: 20px;">
+    <div class="hero-stat"><span class="hero-stat-icon">🎓</span><span class="label">Learn Faster</span></div>
+    <div class="hero-stat"><span class="hero-stat-icon">🎯</span><span class="label">Practice Smarter</span></div>
+    <div class="hero-stat"><span class="hero-stat-icon">📈</span><span class="label">Build Skills</span></div>
+    <div class="hero-stat"><span class="hero-stat-icon">🏆</span><span class="label">Achieve More</span></div>
+  </div>
+</section>
+
+<div class="section-heading">
+  <div>
+    <h2>🔥 Popular Topics</h2>
+    <p>Start a conversation or explore a topic</p>
+  </div>
+  <a href="{{ url_for('roadmaps') }}">View roadmaps →</a>
+</div>
+
+<div class="topic-grid" id="topic-grid">
+  <a class="topic-card" data-title="selenium waits explicit implicit"
+     href="{{ url_for('chat_page') }}?q={{ 'What is the difference between explicit and implicit waits in Selenium?' | urlencode }}"
+     onclick="logTopicView('selenium-waits')">
+    <span class="topic-icon" style="background:rgba(34,197,94,.14);">✅</span>
+    <div><h3>Selenium waits</h3><p>Explicit, implicit, fluent waits with examples</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="api testing basics rest postman"
+     href="{{ url_for('chat_page') }}?q={{ 'Walk me through testing a REST API with Postman, step by step.' | urlencode }}"
+     onclick="logTopicView('api-testing')">
+    <span class="topic-icon" style="background:rgba(59,130,246,.14);">🌐</span>
+    <div><h3>API testing basics</h3><p>REST API testing, tools, assertions, automation</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="playwright testing end to end"
+     href="{{ url_for('chat_page') }}?q={{ 'Give me an introduction to end-to-end testing with Playwright.' | urlencode }}"
+     onclick="logTopicView('playwright')">
+    <span class="topic-icon" style="background:rgba(168,85,247,.14);">🎭</span>
+    <div><h3>Playwright testing</h3><p>End-to-end testing with Playwright</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="manual sdet roadmap career"
+     href="{{ url_for('roadmaps') }}#manual-to-sdet"
+     onclick="logTopicView('manual-sdet')">
+    <span class="topic-icon" style="background:rgba(236,72,153,.14);">🗺️</span>
+    <div><h3>Manual → SDET roadmap</h3><p>Step-by-step career guide</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="ai qa llm testing"
+     href="{{ url_for('chat_page') }}?q={{ 'What is AI-QA, and how is testing an LLM feature different from testing normal software?' | urlencode }}"
+     onclick="logTopicView('ai-qa')">
+    <span class="topic-icon" style="background:rgba(99,102,241,.14);">🤖</span>
+    <div><h3>AI-QA</h3><p>How AI is transforming testing</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="test design techniques boundary equivalence"
+     href="{{ url_for('chat_page') }}?q={{ 'Explain equivalence partitioning and boundary value analysis with examples.' | urlencode }}"
+     onclick="logTopicView('test-design')">
+    <span class="topic-icon" style="background:rgba(245,158,11,.14);">📄</span>
+    <div><h3>Test design techniques</h3><p>Equivalence partitioning, boundary values &amp; more</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="interview preparation questions"
+     href="{{ url_for('chat_page') }}?q={{ 'Give me common QA interview questions with strong sample answers.' | urlencode }}"
+     onclick="logTopicView('interview-prep')">
+    <span class="topic-icon" style="background:rgba(34,197,94,.14);">🧑‍💼</span>
+    <div><h3>Interview preparation</h3><p>Common questions with sample answers</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+
+  <a class="topic-card" data-title="bug investigation reporting"
+     href="{{ url_for('chat_page') }}?q={{ 'How do I analyze, reproduce, and report a bug effectively?' | urlencode }}"
+     onclick="logTopicView('bug-investigation')">
+    <span class="topic-icon" style="background:rgba(239,68,68,.14);">🐛</span>
+    <div><h3>Bug investigation</h3><p>Analyze, reproduce, and report effectively</p></div>
+    <span class="topic-arrow">→</span>
+  </a>
+</div>
+
+<div class="section-heading">
+  <div>
+    <h2>Quick questions</h2>
+    <p>Tap one to ask instantly</p>
+  </div>
+</div>
+<div class="quick-chips">
+  <button type="button" class="quick-chip" data-q="How does Selenium wait work?">How does Selenium wait work? →</button>
+  <button type="button" class="quick-chip" data-q="Explain API testing with examples">Explain API testing with examples →</button>
+  <button type="button" class="quick-chip" data-q="Create a test plan for an e-commerce app">Create a test plan for an e-commerce app →</button>
+  <button type="button" class="quick-chip" data-q="What is AI-QA?">What is AI-QA? →</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='home.js') }}"></script>
+{% endblock %}

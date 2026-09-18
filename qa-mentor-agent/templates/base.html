@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}QA Mentor{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("qa-mentor-theme");
+        if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">🧪</span>
+        <div>
+          <div class="brand-name">QA Mentor</div>
+          <div class="brand-tag">LEARN · PRACTICE · GROW</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active == 'home' }}">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="{{ url_for('chat_page') }}" class="nav-item {{ 'active' if active == 'chat' }}">
+          <span class="nav-icon">💬</span> Chat
+        </a>
+        <a href="{{ url_for('roadmaps') }}" class="nav-item {{ 'active' if active == 'roadmaps' }}">
+          <span class="nav-icon">🗺️</span> Roadmaps
+        </a>
+        <a href="{{ url_for('practice') }}" class="nav-item {{ 'active' if active == 'practice' }}">
+          <span class="nav-icon">🎯</span> Practice
+        </a>
+        <a href="{{ url_for('tools_page') }}" class="nav-item {{ 'active' if active == 'tools' }}">
+          <span class="nav-icon">🔧</span> Tools
+        </a>
+        <a href="{{ url_for('progress_page') }}" class="nav-item {{ 'active' if active == 'progress' }}">
+          <span class="nav-icon">📊</span> Progress
+        </a>
+        <div class="nav-divider"></div>
+        <a href="{{ url_for('bookmarks') }}" class="nav-item {{ 'active' if active == 'bookmarks' }}">
+          <span class="nav-icon">🔖</span> Bookmarks
+        </a>
+        <a href="{{ url_for('history_page') }}" class="nav-item {{ 'active' if active == 'history' }}">
+          <span class="nav-icon">🕒</span> History
+        </a>
+        <a href="{{ url_for('settings') }}" class="nav-item {{ 'active' if active == 'settings' }}">
+          <span class="nav-icon">⚙️</span> Settings
+        </a>
+      </nav>
+
+      <div class="pro-card">
+        <div class="pro-card-title"><span>👑</span> Upgrade to Pro</div>
+        <p>Unlock advanced tools, personalized roadmaps and more.</p>
+        <button type="button" class="pro-btn" id="upgrade-btn">Upgrade Now →</button>
+      </div>
+
+      <blockquote class="quote">
+        "Good testers don't just find bugs, they build better software."
+      </blockquote>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="search-box">
+          <span>🔍</span>
+          <input
+            id="topbar-search"
+            type="text"
+            placeholder="Search topics, ask anything..."
+            autocomplete="off"
+          />
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+          <button type="button" class="icon-btn has-dot" id="notif-btn" aria-label="Notifications">🔔</button>
+          <div class="profile" id="profile-menu-trigger">
+            <div class="profile-avatar" id="profile-avatar">🙂</div>
+            <div class="profile-info">
+              <div class="profile-name" id="profile-name">You</div>
+              <div class="profile-plan">Free Plan</div>
+            </div>
+            <span class="chevron">▾</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="{{ url_for('static', filename='common.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

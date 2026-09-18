@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Settings{% endblock %}
+{% block content %}
+<h1 class="page-title">⚙️ Settings</h1>
+<p class="page-subtitle">Local profile and preferences, stored only in this browser.</p>
+
+<div class="settings-grid">
+  <div class="settings-panel">
+    <h3>Profile</h3>
+    <div class="field-group">
+      <label for="profile-name-input">Display name</label>
+      <input type="text" id="profile-name-input" placeholder="You" />
+    </div>
+    <div class="field-group">
+      <label>Avatar</label>
+      <div class="avatar-picker" id="avatar-picker">
+        <button type="button" class="avatar-option" data-avatar="🙂">🙂</button>
+        <button type="button" class="avatar-option" data-avatar="🧑‍💻">🧑‍💻</button>
+        <button type="button" class="avatar-option" data-avatar="👩‍💻">👩‍💻</button>
+        <button type="button" class="avatar-option" data-avatar="🧑‍🔬">🧑‍🔬</button>
+        <button type="button" class="avatar-option" data-avatar="🤓">🤓</button>
+        <button type="button" class="avatar-option" data-avatar="🦾">🦾</button>
+      </div>
+    </div>
+    <button type="button" class="tool-btn" id="save-profile-btn">Save profile</button>
+  </div>
+
+  <div class="settings-panel">
+    <h3>Appearance</h3>
+    <div class="theme-options" id="theme-options">
+      <div class="theme-option" data-theme="dark">🌙 Dark</div>
+      <div class="theme-option" data-theme="light">☀️ Light</div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <h3>Claude API status</h3>
+    <p id="api-status-text">Checking...</p>
+    <p class="settings-note">
+      The API key is configured server-side via the <code>ANTHROPIC_API_KEY</code>
+      environment variable — it isn't stored or edited here for security.
+    </p>
+  </div>
+
+  <div class="settings-panel">
+    <h3>👑 Upgrade to Pro</h3>
+    <p class="tool-desc">Unlock advanced tools, personalized roadmaps and more.</p>
+    <button type="button" class="tool-btn" id="settings-upgrade-btn">Upgrade Now →</button>
+    <p class="settings-note">Demo placeholder — no real billing is wired up in this POC.</p>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='settings.js') }}"></script>
+{% endblock %}

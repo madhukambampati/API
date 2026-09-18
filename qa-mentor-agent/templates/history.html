@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — History{% endblock %}
+{% block content %}
+<div class="section-heading">
+  <div>
+    <h1 class="page-title" style="margin-bottom: 4px;">🕒 History</h1>
+    <p class="page-subtitle" style="margin-bottom: 0;">Questions you've asked in Chat.</p>
+  </div>
+  <button type="button" class="mini-btn danger" id="clear-history-btn">Clear all</button>
+</div>
+
+<div class="list-panel" id="history-list"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='history.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Practice{% endblock %}
+{% block content %}
+<h1 class="page-title">🎯 Practice</h1>
+<p class="page-subtitle">14 questions across manual testing, automation, API testing &amp; AI-QA. Pick an answer to see if you're right.</p>
+
+<div class="quiz-progress">
+  <span id="quiz-progress-text">0 of 0 answered</span>
+  <span class="quiz-score-pill" id="quiz-score-pill">Score: 0/0</span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="tool-row" style="margin-top: 10px;">
+  <button type="button" class="tool-btn secondary" id="reset-practice-btn">Reset practice stats</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='practice.js') }}"></script>
+{% endblock %}

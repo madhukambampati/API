@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Progress{% endblock %}
+{% block content %}
+<h1 class="page-title">📊 Progress</h1>
+<p class="page-subtitle">Everything below is tracked locally in your browser (no account needed).</p>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-icon">💬</div>
+    <div class="stat-value" id="stat-chat-count">0</div>
+    <div class="stat-label">Questions asked in Chat</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🎯</div>
+    <div class="stat-value" id="stat-practice-count">0</div>
+    <div class="stat-label">Practice questions answered</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🗺️</div>
+    <div class="stat-value" id="stat-topics-count">0</div>
+    <div class="stat-label">Topics explored</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🔖</div>
+    <div class="stat-value" id="stat-bookmarks-count">0</div>
+    <div class="stat-label">Bookmarked answers</div>
+  </div>
+</div>
+
+<div class="stat-card" style="margin-bottom: 24px;">
+  <div class="stat-label" style="margin-bottom: 8px;">Practice accuracy</div>
+  <div class="stat-value" id="stat-accuracy">0%</div>
+  <div class="bar-track"><div class="bar-fill" id="accuracy-bar" style="width: 0%;"></div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='progress.js') }}"></script>
+{% endblock %}

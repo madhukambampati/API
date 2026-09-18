@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Tools{% endblock %}
+{% block content %}
+<h1 class="page-title">🔧 Tools</h1>
+<p class="page-subtitle">Small utilities for everyday QA/SDET work — everything runs locally in your browser.</p>
+
+<div class="tool-grid">
+  <div class="tool-panel">
+    <h3>🧑‍💻 Test Data Generator</h3>
+    <p class="tool-desc">Generate a random fake user profile for test data.</p>
+    <div id="fake-data-output"></div>
+    <div class="tool-row">
+      <button type="button" class="tool-btn" id="generate-data-btn">🎲 Generate</button>
+    </div>
+  </div>
+
+  <div class="tool-panel">
+    <h3>🧩 Regex Tester</h3>
+    <p class="tool-desc">Test a regular expression against a sample string.</p>
+    <input type="text" id="regex-pattern" placeholder="Pattern, e.g. ^[\\w.]+@[\\w.]+\\.\\w+$" />
+    <div class="tool-row" style="margin-top: 8px;">
+      <textarea id="regex-input" rows="3" placeholder="Test string(s), one per line"></textarea>
+    </div>
+    <div class="tool-row">
+      <button type="button" class="tool-btn" id="regex-test-btn">Test</button>
+    </div>
+    <div class="tool-output" id="regex-output" style="display:none;"></div>
+  </div>
+
+  <div class="tool-panel">
+    <h3>{ } JSON Formatter</h3>
+    <p class="tool-desc">Paste JSON to validate and pretty-print it.</p>
+    <textarea id="json-input" rows="6" placeholder='{"status": "ok", "items": [1, 2, 3]}'></textarea>
+    <div class="tool-row">
+      <button type="button" class="tool-btn" id="json-format-btn">Format</button>
+      <button type="button" class="tool-btn secondary" id="json-minify-btn">Minify</button>
+    </div>
+    <div class="tool-output" id="json-output" style="display:none;"></div>
+  </div>
+
+  <div class="tool-panel">
+    <h3>📖 Selector Cheat Sheet</h3>
+    <p class="tool-desc">Common CSS &amp; XPath selectors for UI automation.</p>
+    <table class="cheatsheet-table">
+      <thead>
+        <tr><th>Goal</th><th>CSS</th><th>XPath</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>By ID</td><td><code>#login-btn</code></td><td><code>//*[@id='login-btn']</code></td></tr>
+        <tr><td>By class</td><td><code>.btn-primary</code></td><td><code>//*[contains(@class,'btn-primary')]</code></td></tr>
+        <tr><td>By attribute</td><td><code>[data-testid='submit']</code></td><td><code>//*[@data-testid='submit']</code></td></tr>
+        <tr><td>By text</td><td>n/a</td><td><code>//button[text()='Submit']</code></td></tr>
+        <tr><td>Contains text</td><td>n/a</td><td><code>//button[contains(text(),'Sub')]</code></td></tr>
+        <tr><td>Nth child</td><td><code>li:nth-child(2)</code></td><td><code>//li[2]</code></td></tr>
+        <tr><td>Direct child</td><td><code>ul &gt; li</code></td><td><code>//ul/li</code></td></tr>
+        <tr><td>Descendant</td><td><code>div span</code></td><td><code>//div//span</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tools.js') }}"></script>
+{% endblock %}

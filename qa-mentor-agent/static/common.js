@@ -1,0 +1,155 @@
+const PROFILE_KEY = "qa-mentor-profile";
+const THEME_KEY = "qa-mentor-theme";
+const HISTORY_KEY = "qa-mentor-history";
+const BOOKMARKS_KEY = "qa-mentor-bookmarks";
+const PRACTICE_KEY = "qa-mentor-practice-stats";
+const TOPICS_KEY = "qa-mentor-topics-viewed";
+
+function safeGet(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeSet(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    /* storage unavailable, ignore */
+  }
+}
+
+function getProfile() {
+  return safeGet(PROFILE_KEY, { name: "You", avatar: "🙂" });
+}
+
+function setProfile(profile) {
+  safeSet(PROFILE_KEY, profile);
+  applyProfile();
+}
+
+function applyProfile() {
+  const profile = getProfile();
+  const nameEl = document.getElementById("profile-name");
+  const avatarEl = document.getElementById("profile-avatar");
+  if (nameEl) nameEl.textContent = profile.name || "You";
+  if (avatarEl) avatarEl.textContent = profile.avatar || "🙂";
+}
+
+function logTopicView(topicId) {
+  const seen = safeGet(TOPICS_KEY, []);
+  if (!seen.includes(topicId)) {
+    seen.push(topicId);
+    safeSet(TOPICS_KEY, seen);
+  }
+}
+
+function logHistory(question) {
+  const history = safeGet(HISTORY_KEY, []);
+  history.unshift({ question, ts: Date.now() });
+  safeSet(HISTORY_KEY, history.slice(0, 50));
+}
+
+function addBookmark(question, answer) {
+  const bookmarks = safeGet(BOOKMARKS_KEY, []);
+  bookmarks.unshift({ question, answer, ts: Date.now() });
+  safeSet(BOOKMARKS_KEY, bookmarks);
+}
+
+function recordPracticeAnswer(correct) {
+  const stats = safeGet(PRACTICE_KEY, { attempted: 0, correct: 0 });
+  stats.attempted += 1;
+  if (correct) stats.correct += 1;
+  safeSet(PRACTICE_KEY, stats);
+}
+
+function formatRelativeTime(ts) {
+  const diffMs = Date.now() - ts;
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+function applyTheme() {
+  const theme = localStorage.getItem(THEME_KEY);
+  const toggleBtn = document.getElementById("theme-toggle");
+  if (theme === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+    if (toggleBtn) toggleBtn.textContent = "🌙";
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    if (toggleBtn) toggleBtn.textContent = "☀️";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyProfile();
+  applyTheme();
+
+  const themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      try {
+        localStorage.setItem(THEME_KEY, isLight ? "dark" : "light");
+      } catch (e) {}
+      applyTheme();
+    });
+  }
+
+  const notifBtn = document.getElementById("notif-btn");
+  if (notifBtn) {
+    notifBtn.addEventListener("click", () => {
+      notifBtn.classList.remove("has-dot");
+      showToast("Tip: bookmark a chat reply ⭐ to revisit it later on the Bookmarks page.");
+    });
+  }
+
+  const profileTrigger = document.getElementById("profile-menu-trigger");
+  if (profileTrigger) {
+    profileTrigger.addEventListener("click", () => {
+      window.location.href = "/settings";
+    });
+  }
+
+  const upgradeBtn = document.getElementById("upgrade-btn");
+  if (upgradeBtn) {
+    upgradeBtn.addEventListener("click", () => {
+      showToast("Pro plan is a demo placeholder — no real billing is wired up in this POC.");
+    });
+  }
+
+  const searchBox = document.getElementById("topbar-search");
+  if (searchBox) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("q")) searchBox.value = params.get("q");
+
+    searchBox.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      const value = searchBox.value.trim();
+      if (window.filterTopics) {
+        event.preventDefault();
+        window.filterTopics(value);
+      } else if (value) {
+        window.location.href = `/?q=${encodeURIComponent(value)}`;
+      }
+    });
+  }
+});
