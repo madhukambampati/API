@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QA Mentor — AI Learning Agent</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>🧪 QA Mentor</h1>
+      <p>Your AI learning companion for QA, SDET &amp; AI-QA</p>
+    </header>
+
+    <main id="chat" class="chat"></main>
+
+    <form id="chat-form" class="composer">
+      <textarea
+        id="message-input"
+        placeholder="Ask about test design, Selenium, Playwright, API testing, AI-QA..."
+        rows="2"
+        required
+      ></textarea>
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

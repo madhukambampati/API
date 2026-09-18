@@ -1,1 +1,6 @@
 node_modules
+
+# qa-mentor-agent (Python POC)
+qa-mentor-agent/venv/
+qa-mentor-agent/__pycache__/
+qa-mentor-agent/.env
