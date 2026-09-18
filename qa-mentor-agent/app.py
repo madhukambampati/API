@@ -8,7 +8,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+client = anthropic.Anthropic(api_key=API_KEY) if API_KEY else None
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5")
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "1024"))
 
@@ -47,6 +48,9 @@ def chat():
     if not isinstance(messages, list) or not messages:
         return jsonify({"error": "messages must be a non-empty list"}), 400
 
+    if client is None:
+        return jsonify({"error": "ANTHROPIC_API_KEY is not configured on the server"}), 500
+
     try:
         response = client.messages.create(
             model=MODEL,
@@ -54,7 +58,7 @@ def chat():
             system=SYSTEM_PROMPT,
             messages=messages,
         )
-    except anthropic.APIStatusError as exc:
+    except anthropic.APIError as exc:
         return jsonify({"error": str(exc)}), 502
 
     reply_text = "".join(
