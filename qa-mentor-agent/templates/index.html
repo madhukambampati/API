@@ -7,19 +7,65 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
   <div class="app">
     <header class="app-header">
+      <span class="badge">POC · Powered by Claude</span>
       <h1>🧪 QA Mentor</h1>
       <p>Your AI learning companion for QA, SDET &amp; AI-QA</p>
     </header>
 
-    <main id="chat" class="chat"></main>
+    <main id="chat" class="chat">
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">👋</div>
+        <h2>Hi, I'm QA Mentor</h2>
+        <p>
+          Ask me anything about testing, or pick a topic to get started:
+        </p>
+        <div class="suggestions">
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-prompt="What's the difference between explicit and implicit waits in Selenium?"
+          >
+            <span class="chip-icon">🧭</span>
+            <span>Selenium waits explained</span>
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-prompt="Give me a 6-month roadmap to go from manual tester to SDET."
+          >
+            <span class="chip-icon">🗺️</span>
+            <span>Manual → SDET roadmap</span>
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-prompt="Walk me through testing a REST API with Postman, step by step."
+          >
+            <span class="chip-icon">🌐</span>
+            <span>API testing basics</span>
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip"
+            data-prompt="What is AI-QA, and how is testing an LLM feature different from testing normal software?"
+          >
+            <span class="chip-icon">🤖</span>
+            <span>What is AI-QA?</span>
+          </button>
+        </div>
+      </div>
+    </main>
 
     <form id="chat-form" class="composer">
       <textarea

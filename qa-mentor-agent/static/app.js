@@ -2,8 +2,16 @@ const chatEl = document.getElementById("chat");
 const formEl = document.getElementById("chat-form");
 const inputEl = document.getElementById("message-input");
 const sendBtn = document.getElementById("send-btn");
+const emptyStateEl = document.getElementById("empty-state");
 
 const history = [];
+
+document.querySelectorAll(".suggestion-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    inputEl.value = chip.dataset.prompt;
+    formEl.requestSubmit();
+  });
+});
 
 inputEl.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
@@ -45,6 +53,8 @@ formEl.addEventListener("submit", async (event) => {
   inputEl.value = "";
   inputEl.style.height = "auto";
   sendBtn.disabled = true;
+
+  if (emptyStateEl) emptyStateEl.remove();
 
   appendMessage("user", text);
   history.push({ role: "user", content: text });
