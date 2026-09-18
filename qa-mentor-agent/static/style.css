@@ -834,21 +834,58 @@ a {
 }
 
 .mic-btn {
+  position: relative;
   background: var(--surface-alt) !important;
-  color: var(--text) !important;
+  color: var(--text-dim) !important;
   border: 1px solid var(--border) !important;
   width: 44px;
   height: 44px;
   padding: 0 !important;
   border-radius: 50% !important;
   justify-content: center;
-  font-size: 1.05rem;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.mic-btn:hover {
+  color: var(--text) !important;
+  border-color: var(--accent) !important;
 }
 
 .mic-btn.listening {
   background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
   color: white !important;
+  border-color: transparent !important;
   animation: mic-pulse 1.2s infinite;
+}
+
+.mic-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.mic-btn:hover::after {
+  opacity: 1;
+}
+
+.mic-btn.listening::after {
+  opacity: 0;
 }
 
 @keyframes mic-pulse {

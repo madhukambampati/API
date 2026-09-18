@@ -30,7 +30,7 @@ function setupVoiceInput() {
 
   micBtn.style.display = "flex";
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = "en-US";
 
@@ -57,16 +57,30 @@ function setupVoiceInput() {
     showToast("Couldn't access the microphone.");
   });
 
-  micBtn.addEventListener("click", () => {
-    if (listening) {
-      recognition.stop();
-      return;
-    }
+  function startListening() {
+    if (listening) return;
     baseText = inputEl.value.trim();
     listening = true;
     micBtn.classList.add("listening");
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (err) {
+      /* already started */
+    }
+  }
+
+  function stopListening() {
+    if (!listening) return;
+    recognition.stop();
+  }
+
+  micBtn.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    startListening();
   });
+  micBtn.addEventListener("pointerup", stopListening);
+  micBtn.addEventListener("pointerleave", stopListening);
+  micBtn.addEventListener("pointercancel", stopListening);
 }
 
 inputEl.addEventListener("keydown", (event) => {
