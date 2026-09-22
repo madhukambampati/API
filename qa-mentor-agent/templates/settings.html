@@ -48,6 +48,14 @@
     <button type="button" class="tool-btn" id="settings-upgrade-btn">Upgrade Now →</button>
     <p class="settings-note">Demo placeholder — no real billing is wired up in this POC.</p>
   </div>
+
+  {% if login_enabled %}
+  <div class="settings-panel">
+    <h3>🔒 Session</h3>
+    <p class="tool-desc">This deployment is password-protected.</p>
+    <a href="{{ url_for('logout') }}" class="tool-btn secondary">Log out</a>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
 {% block scripts %}

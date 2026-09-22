@@ -79,3 +79,39 @@ Environment variables (set in `.env`):
 | `CLAUDE_MODEL`      | `claude-sonnet-5`   | Model to use.                             |
 | `MAX_TOKENS`        | `1024`              | Max tokens per reply.                     |
 | `PORT`              | `5000`              | Port the Flask app listens on.            |
+| `SITE_PASSWORD`     | unset               | If set, gates the whole app behind a password login (see below). |
+| `SECRET_KEY`        | random per process  | Signs the login session cookie. **Set this explicitly for any real deployment** (especially serverless) — if it changes between requests, everyone gets logged out. |
+
+## Deploying to Vercel
+
+This app can run on Vercel via `vercel.json` (already included), which points
+Vercel's Python runtime at `app.py`.
+
+⚠️ **Before you deploy publicly:** anyone with the URL can use the Chat, Coding
+Challenges, and ATS Checker features, and every one of those calls spends your
+Anthropic API quota. Set `SITE_PASSWORD` (and a stable `SECRET_KEY`) as Vercel
+environment variables so the app is gated behind a login page — otherwise it's
+open to the entire internet.
+
+Steps:
+
+1. Push this repo to GitHub (already done if you're reading this from there).
+2. In the [Vercel dashboard](https://vercel.com/new), import the repo and set
+   the project root to `qa-mentor-agent/`.
+3. Add environment variables in the Vercel project settings:
+   - `ANTHROPIC_API_KEY` — your Claude API key
+   - `SITE_PASSWORD` — a password to gate the app (strongly recommended)
+   - `SECRET_KEY` — any long random string (generate one with
+     `python -c "import secrets; print(secrets.token_hex(32))"`)
+4. Deploy. Vercel will build `app.py` as a serverless Python function and
+   route all traffic to it.
+
+Notes specific to serverless:
+
+- The Tech News 24-hour cache lives in memory, so it resets on cold starts —
+  this just means GitHub gets queried a bit more often, not a functional
+  problem. The 8 repo fetches run in parallel to stay well under Vercel's
+  function timeout.
+- There's no database — all personal data (history, bookmarks, progress,
+  profile, theme) stays in each visitor's own browser via localStorage, so
+  there's nothing server-side to persist across deployments.

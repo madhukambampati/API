@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDET Mentor — Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="settings-panel" style="max-width: 380px; width: 100%;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 2rem;">⚙️</span>
+        <h1 style="margin: 8px 0 0; font-size: 1.3rem;">SDET Mentor</h1>
+        <p class="settings-note" style="margin-top: 4px;">Enter the access password to continue.</p>
+      </div>
+      <form method="POST">
+        <div class="field-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autofocus required />
+        </div>
+        {% if error %}
+          <p class="settings-note" style="color: var(--danger); margin-bottom: 10px;">{{ error }}</p>
+        {% endif %}
+        <button type="submit" class="tool-btn" style="width: 100%;">Sign in</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

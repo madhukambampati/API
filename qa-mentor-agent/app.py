@@ -1,17 +1,22 @@
 import json
 import os
 import re
+import secrets
 import time
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 import anthropic
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+
+SITE_PASSWORD = os.environ.get("SITE_PASSWORD")
 
 TECH_NEWS_REPOS = [
     ("Selenium", "SeleniumHQ/selenium", "🧪"),
@@ -63,13 +68,17 @@ def get_tech_news(force=False):
     if not force and is_fresh:
         return _tech_news_cache
 
-    items = []
-    for display_name, repo, icon in TECH_NEWS_REPOS:
+    def _fetch_one(entry):
+        display_name, repo, icon = entry
         try:
             release = _fetch_latest_release(repo)
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError):
-            continue
-        items.append({"name": display_name, "icon": icon, "repo": repo, **release})
+            return None
+        return {"name": display_name, "icon": icon, "repo": repo, **release}
+
+    with ThreadPoolExecutor(max_workers=len(TECH_NEWS_REPOS)) as pool:
+        results = pool.map(_fetch_one, TECH_NEWS_REPOS)
+    items = [item for item in results if item]
 
     if items:
         items.sort(key=lambda item: item.get("published_at") or "", reverse=True)
@@ -103,6 +112,39 @@ concept, but don't force it.
 long essays.
 - Be encouraging and patient — this is a learning tool, not an exam.
 """
+
+
+@app.before_request
+def require_login():
+    if not SITE_PASSWORD:
+        return None
+    if request.path.startswith("/static/") or request.path == "/login":
+        return None
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
+    return None
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        if request.form.get("password") == SITE_PASSWORD:
+            session["authenticated"] = True
+            return redirect(url_for("home"))
+        error = "Incorrect password."
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("authenticated", None)
+    return redirect(url_for("login"))
+
+
+@app.context_processor
+def inject_auth_flags():
+    return {"login_enabled": bool(SITE_PASSWORD)}
 
 
 @app.route("/")
