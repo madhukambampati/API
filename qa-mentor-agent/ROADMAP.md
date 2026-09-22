@@ -107,6 +107,37 @@ beyond localStorage.
 - [x] Sweep `templates/`, `app.py`, `README.md` for "SDET Mentor" /
       "QA Mentor" and replace.
 
+### Epic 0.4 — Branding-hierarchy fixes (added after user review)
+A real review of the first rebrand pass found it was a surface-level
+rename that didn't actually explain the TechOrbit → SDET Mentor
+relationship, and left some premature commercial-sounding UI in place.
+Fixed:
+- [x] Homepage hero now leads with a TechOrbit badge carrying the full
+      tagline, then an explicit "You're in SDET Mentor — TechOrbit's
+      first complete academy" note, linking to the Career Explorer.
+- [x] Sidebar brand block now shows the `TechOrbit └ SDET Mentor — QA &
+      Quality Engineering Academy` hierarchy directly, not just the
+      parent name.
+- [x] Added a minimal `/careers` Career Explorer index: the one real
+      role (SDET) plus 5 explicitly-labeled "Planned" / non-clickable
+      placeholder cards (Developer, DevOps/SRE, Data & AI, Product/BA,
+      Cloud/Platform) — makes the "every role" promise honestly show
+      its current state instead of just being sidebar copy with nothing
+      behind it. Still intentionally not in main nav; a fully-populated
+      version is Epic 1.1.
+- [x] Relabeled the sidebar "Upgrade to Pro" card and Settings "Pro"
+      panel to "Accounts & Sync — coming soon," and changed the topbar's
+      "Free Plan" label to "Local profile" — removes commercial-plan
+      language for a feature that isn't built (ties to Epic 0.1).
+
+Still open from this review, deliberately deferred (real content work,
+not a copy fix — see Epic 1.1 and the Resources/Glossary backlog):
+- Roadmaps and Resources/Glossary content is still QA-only. The
+  Career Explorer's "Planned" cards are honest about this now, but
+  actually building Developer/DevOps/Data/Product tracks and
+  role-neutral resources is Phase 1+ content authoring, not something
+  to rush here.
+
 ---
 
 ## Phase 1 — Strong foundation (content-first, fits mostly on Phase 0)

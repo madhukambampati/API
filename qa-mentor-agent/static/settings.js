@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("settings-upgrade-btn").addEventListener("click", () => {
-    showToast("Pro plan is a demo placeholder — no real billing is wired up in this POC.");
+    showToast("Accounts & cross-device sync are on the roadmap, not built yet — nothing to buy here.");
   });
 
   fetch("/api/status")

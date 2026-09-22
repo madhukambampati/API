@@ -99,6 +99,13 @@ a {
   font-weight: 700;
 }
 
+.brand-academy {
+  font-size: 0.62rem;
+  color: var(--text-faint);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
 .nav {
   display: flex;
   flex-direction: column;

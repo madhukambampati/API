@@ -261,6 +261,28 @@ def _load_content_json(subdir, slug):
         return json.load(f)
 
 
+PLANNED_ROLES = [
+    {"title": "Software Developer", "icon": "💻"},
+    {"title": "DevOps / SRE Engineer", "icon": "🚀"},
+    {"title": "Data & AI Engineer", "icon": "🧠"},
+    {"title": "Product / Business Analyst", "icon": "📋"},
+    {"title": "Cloud / Platform Engineer", "icon": "☁️"},
+]
+
+
+@app.route("/careers")
+def careers_index():
+    roles = []
+    if os.path.isdir(os.path.join(DATA_DIR, "roles")):
+        for filename in sorted(os.listdir(os.path.join(DATA_DIR, "roles"))):
+            if filename.endswith(".json"):
+                with open(os.path.join(DATA_DIR, "roles", filename), encoding="utf-8") as f:
+                    roles.append(json.load(f))
+    return render_template(
+        "careers_index.html", roles=roles, planned_roles=PLANNED_ROLES, active="career"
+    )
+
+
 @app.route("/careers/<slug>")
 def role_detail(slug):
     role = _load_content_json("roles", slug)

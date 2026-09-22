@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}TechOrbit — Career Explorer{% endblock %}
+{% block content %}
+<h1 class="page-title">🧭 Career Explorer</h1>
+<p class="page-subtitle">
+  Browse tech roles, see what each one actually involves, and find your path.
+  This is early: one fully-built role today, more on the way.
+</p>
+
+<div class="section-heading"><div><h2>Available now</h2></div></div>
+<div class="resource-grid" style="margin-bottom: 32px;">
+  {% for role in roles %}
+  <a class="resource-card" href="{{ url_for('role_detail', slug=role.slug) }}">
+    <span class="resource-type">{{ role.status }}</span>
+    <h3>{{ role.title }}</h3>
+    <p>{{ role.definition }}</p>
+  </a>
+  {% endfor %}
+</div>
+
+<div class="section-heading"><div><h2>Coming soon</h2><p>Full role pages are planned for Phase 1 — not yet built, not yet clickable.</p></div></div>
+<div class="resource-grid">
+  {% for planned in planned_roles %}
+  <div class="resource-card static" style="opacity: 0.55;" aria-disabled="true">
+    <span class="resource-type">Planned</span>
+    <h3>{{ planned.icon }} {{ planned.title }}</h3>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
