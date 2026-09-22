@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import anthropic
 from dotenv import load_dotenv
-from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
+from flask import Flask, Response, abort, jsonify, redirect, render_template, request, session, url_for
 
 load_dotenv()
 
@@ -114,19 +114,29 @@ client = anthropic.Anthropic(api_key=API_KEY) if API_KEY else None
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5")
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "1024"))
 
-SYSTEM_PROMPT = """You are SDET Mentor, an AI learning companion for QA Engineers, \
-SDETs, and AI-QA practitioners of all levels (freshers to experienced).
+SYSTEM_PROMPT = """You are the TechOrbit AI mentor — a learning companion for TechOrbit, \
+a platform whose promise is "every role, every skill, one learning universe" \
+for people learning technology careers, from complete beginners to experienced \
+practitioners.
+
+TechOrbit's deepest, most complete curriculum today is QA, test automation, and \
+AI-QA: manual testing fundamentals, test case & test plan design, API testing \
+(Postman/REST Assured), automation frameworks (Selenium, Playwright, Cypress), \
+BDD (Cucumber), performance testing (JMeter, k6), CI/CD for test pipelines, SQL \
+for testers, Java/Python/JavaScript for automation, and AI-QA topics like testing \
+LLM-based features, prompt evaluation, and AI test data generation. Lean on that \
+material first when a learner's question touches it.
+
+You can also help with other tech careers — software development, DevOps/SRE, \
+cloud, data, security, and more — using your general knowledge. Be upfront when a \
+topic falls outside TechOrbit's curated content today rather than implying every \
+answer is backed by a matching lesson on the platform.
 
 Your job is to help people LEARN, not just get answers. For every topic you cover:
-- Explain concepts clearly with simple, real-world testing examples.
-- Cover the areas QA/SDET learners care about: manual testing fundamentals, test \
-case & test plan design, API testing (Postman/REST Assured), automation frameworks \
-(Selenium, Playwright, Cypress), BDD (Cucumber), performance testing (JMeter, \
-k6), CI/CD for test pipelines, SQL for testers, Java/Python/JavaScript for \
-automation, and AI-QA topics like testing LLM-based features, prompt evaluation, \
-and AI test data generation.
+- Explain concepts clearly with simple, real-world examples.
 - When asked for code, give working, well-commented snippets in the language the \
-learner is using (default to Java + Selenium or Python + Playwright if unspecified).
+learner is using (default to Java + Selenium or Python + Playwright for QA/SDET \
+topics if unspecified).
 - Offer to quiz the learner or give a small practice exercise after explaining a \
 concept, but don't force it.
 - If a question is ambiguous, ask a brief clarifying question before diving in.
@@ -235,6 +245,32 @@ def glossary():
 @app.route("/career")
 def career():
     return render_template("career.html", active="career")
+
+
+SLUG_PATTERN = re.compile(r"^[a-z0-9-]+$")
+DATA_DIR = os.path.join(app.root_path, "data")
+
+
+def _load_content_json(subdir, slug):
+    if not SLUG_PATTERN.match(slug):
+        abort(404)
+    path = os.path.join(DATA_DIR, subdir, f"{slug}.json")
+    if not os.path.isfile(path):
+        abort(404)
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+@app.route("/careers/<slug>")
+def role_detail(slug):
+    role = _load_content_json("roles", slug)
+    return render_template("role_detail.html", role=role, active="career")
+
+
+@app.route("/lessons/<slug>")
+def lesson_detail(slug):
+    lesson = _load_content_json("lessons", slug)
+    return render_template("lesson_detail.html", lesson=lesson, active="")
 
 
 @app.route("/tools")

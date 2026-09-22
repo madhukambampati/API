@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://techorbit.example/schema/lesson.schema.json",
+  "title": "Lesson",
+  "description": "Foundational lesson/topic content (blueprint section 7). Documentation for the shape of files in data/lessons/*.json — not enforced at runtime yet. Treat it as the contract new lesson files must follow.",
+  "type": "object",
+  "required": ["slug", "title", "category", "beginner_explanation", "governance"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "URL-safe identifier, used at /lessons/<slug>." },
+    "title": { "type": "string" },
+    "category": { "type": "string", "description": "e.g. 'foundational', 'language', 'devops' — used for future catalogue filtering." },
+    "beginner_explanation": { "type": "string" },
+    "visual_explanation": {
+      "type": "string",
+      "description": "Text description of the visual/diagram for this topic today; a real diagram or embed can replace this once the content-authoring tooling exists."
+    },
+    "examples": { "type": "array", "items": { "type": "string" } },
+    "common_mistakes": { "type": "array", "items": { "type": "string" } },
+    "interactive_exercise": {
+      "type": "string",
+      "description": "Placeholder text until Phase 2 playgrounds exist; describes what the exercise will be."
+    },
+    "quiz": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": { "type": "string" },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "answer_index": { "type": "integer" },
+          "explanation": { "type": "string" }
+        }
+      }
+    },
+    "practical_lab": {
+      "type": "string",
+      "description": "Placeholder text until Phase 2 playgrounds exist."
+    },
+    "mini_project": { "type": "string" },
+    "interview_questions": { "type": "array", "items": { "type": "string" } },
+    "reference_sheet": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "term": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["author", "version", "last_reviewed"],
+      "properties": {
+        "author": { "type": "string" },
+        "reviewer": { "type": ["string", "null"] },
+        "version": { "type": "string" },
+        "last_reviewed": { "type": "string", "format": "date" },
+        "next_review": { "type": ["string", "null"], "format": "date" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

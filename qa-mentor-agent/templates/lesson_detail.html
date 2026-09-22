@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}TechOrbit — {{ lesson.title }}{% endblock %}
+{% block content %}
+<div class="section-heading">
+  <div>
+    <h1 class="page-title">{{ lesson.title }}</h1>
+    <p class="page-subtitle">{{ lesson.category | capitalize }} lesson</p>
+  </div>
+</div>
+
+<p class="settings-note" style="margin-top: -10px;">
+  Schema-driven lesson page — an early Phase 0 proof of concept for the
+  Foundational Learning content model. Content v{{ lesson.governance.version }},
+  last reviewed {{ lesson.governance.last_reviewed }}.
+</p>
+
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>🔰 Beginner explanation</h3>
+  <p>{{ lesson.beginner_explanation }}</p>
+</div>
+
+{% if lesson.visual_explanation %}
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>👁️ Visual explanation</h3>
+  <p>{{ lesson.visual_explanation }}</p>
+</div>
+{% endif %}
+
+{% if lesson.examples %}
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>💡 Examples</h3>
+  <div class="tool-output" style="white-space: pre-wrap;">{% for ex in lesson.examples %}{{ ex }}
+{% endfor %}</div>
+</div>
+{% endif %}
+
+{% if lesson.common_mistakes %}
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>🚫 Common mistakes</h3>
+  <ul class="stage-skills">{% for item in lesson.common_mistakes %}<li>{{ item }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<div class="settings-grid">
+  {% if lesson.interactive_exercise %}
+  <div class="settings-panel"><h3>🕹️ Interactive exercise</h3><p>{{ lesson.interactive_exercise }}</p></div>
+  {% endif %}
+  {% if lesson.practical_lab %}
+  <div class="settings-panel"><h3>🧪 Practical lab</h3><p>{{ lesson.practical_lab }}</p></div>
+  {% endif %}
+</div>
+
+{% if lesson.quiz %}
+<div class="section-heading" style="margin-top: 20px;"><div><h2>❓ Quiz</h2></div></div>
+{% for q in lesson.quiz %}
+<div class="settings-panel" style="margin-bottom: 16px;">
+  <p style="font-weight: 600; margin-top: 0;">{{ loop.index }}. {{ q.question }}</p>
+  <ul class="stage-skills">
+    {% for opt in q.options %}
+    <li{% if loop.index0 == q.answer_index %} style="color: var(--accent); font-weight: 600;"{% endif %}>{{ opt }}{% if loop.index0 == q.answer_index %} ✓{% endif %}</li>
+    {% endfor %}
+  </ul>
+  <p class="settings-note">{{ q.explanation }}</p>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if lesson.mini_project %}
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>🏗️ Mini project</h3>
+  <p>{{ lesson.mini_project }}</p>
+</div>
+{% endif %}
+
+{% if lesson.interview_questions %}
+<div class="settings-panel" style="margin-bottom: 24px;">
+  <h3>🎤 Interview questions</h3>
+  <ul class="stage-skills">{% for q in lesson.interview_questions %}<li>{{ q }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+{% if lesson.reference_sheet %}
+<div class="section-heading"><div><h2>📖 Reference sheet</h2></div></div>
+<div class="table-scroll">
+  <table class="cheatsheet-table">
+    <thead><tr><th>Term</th><th>Note</th></tr></thead>
+    <tbody>
+      {% for row in lesson.reference_sheet %}<tr><td>{{ row.term }}</td><td>{{ row.note }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

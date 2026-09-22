@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://techorbit.example/schema/role.schema.json",
+  "title": "Role",
+  "description": "Career Explorer role page content (blueprint section 6). This is documentation for the shape of files in data/roles/*.json — it is not enforced at runtime yet (no jsonschema dependency has been added). Treat it as the contract new role files must follow.",
+  "type": "object",
+  "required": [
+    "slug",
+    "title",
+    "status",
+    "definition",
+    "daily_responsibilities",
+    "required_technical_skills",
+    "governance"
+  ],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "URL-safe identifier, used at /careers/<slug>." },
+    "title": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["Established", "Growing", "Emerging", "Experimental"],
+      "description": "Per blueprint section 2: every role must be marked with a maturity label."
+    },
+    "definition": { "type": "string", "description": "Simple, one-paragraph role definition." },
+    "daily_responsibilities": { "type": "array", "items": { "type": "string" } },
+    "required_technical_skills": { "type": "array", "items": { "type": "string" } },
+    "required_nontechnical_skills": { "type": "array", "items": { "type": "string" } },
+    "expectations": {
+      "type": "object",
+      "description": "What beginner/intermediate/advanced looks like in this role.",
+      "properties": {
+        "beginner": { "type": "string" },
+        "intermediate": { "type": "string" },
+        "advanced": { "type": "string" }
+      }
+    },
+    "common_tools": { "type": "array", "items": { "type": "string" } },
+    "recommended_languages": { "type": "array", "items": { "type": "string" } },
+    "roadmap": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "link": { "type": "string", "description": "Path to a full roadmap page/anchor within the app, if one exists." },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "duration": { "type": "string" },
+              "topics": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "labs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hands-on lab descriptions. Until Phase 2 playground infrastructure exists, these are text placeholders, not runnable environments."
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": { "type": "string", "enum": ["guided", "beginner", "intermediate", "advanced-capstone"] },
+          "title": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "interview_topics": { "type": "array", "items": { "type": "string" } },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "issuer": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "market_info": {
+      "type": "object",
+      "description": "Salary/demand info. Must not be fabricated — leave 'status' as 'not_yet_sourced' until a verifiable, dated source is attached.",
+      "properties": {
+        "status": { "type": "string", "enum": ["not_yet_sourced", "sourced"] },
+        "summary": { "type": "string" },
+        "location": { "type": "string" },
+        "as_of_date": { "type": "string", "format": "date" },
+        "source_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "related_roles": { "type": "array", "items": { "type": "string" } },
+    "transition_paths": { "type": "array", "items": { "type": "string" } },
+    "advantages": { "type": "array", "items": { "type": "string" } },
+    "challenges": { "type": "array", "items": { "type": "string" } },
+    "example_progression": { "type": "array", "items": { "type": "string" } },
+    "portfolio_expectations": { "type": "array", "items": { "type": "string" } },
+    "fit_assessment": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "\"Is this role right for me?\" reflection questions."
+    },
+    "ai_impact": { "type": "string" },
+    "future_outlook": { "type": "string" },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "description": "Blueprint section 33 content-governance metadata, required on every role.",
+      "required": ["author", "version", "last_reviewed"],
+      "properties": {
+        "author": { "type": "string" },
+        "reviewer": { "type": ["string", "null"] },
+        "version": { "type": "string" },
+        "last_reviewed": { "type": "string", "format": "date" },
+        "next_review": { "type": ["string", "null"], "format": "date" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

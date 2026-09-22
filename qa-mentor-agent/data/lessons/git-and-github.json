@@ -1,0 +1,70 @@
+{
+  "slug": "git-and-github",
+  "title": "Git & GitHub",
+  "category": "foundational",
+  "beginner_explanation": "Git tracks changes to your files over time so you can save checkpoints (commits), go back to any earlier checkpoint, and work on different versions of your project (branches) without losing anything. GitHub is a website that hosts Git projects online so you can back them up, share them, and collaborate with others.",
+  "visual_explanation": "Picture your project's history as a timeline of snapshots. Each commit is a labeled snapshot. A branch is a separate timeline that splits off from the main one so you can experiment safely, then merge it back in once it's ready.",
+  "examples": [
+    "git init — start tracking a new folder as a Git repository",
+    "git add . && git commit -m \"Add login page\" — save a snapshot of your current changes",
+    "git checkout -b feature/login — create and switch to a new branch",
+    "git push origin feature/login — upload your branch to GitHub",
+    "git pull — download the latest changes from GitHub into your local copy"
+  ],
+  "common_mistakes": [
+    "Committing directly to main instead of working in a feature branch",
+    "Writing vague commit messages like \"fix stuff\" instead of describing what changed and why",
+    "Forgetting to pull before starting new work, leading to avoidable merge conflicts",
+    "Committing secrets or API keys by accident because they weren't excluded via .gitignore"
+  ],
+  "interactive_exercise": "Coming in Phase 2: a guided in-browser terminal exercise where you initialize a repo, make a commit, create a branch, and open a pull request against a sample project.",
+  "quiz": [
+    {
+      "question": "What does 'git commit' do?",
+      "options": [
+        "Uploads your code to GitHub",
+        "Saves a labeled snapshot of your staged changes to the local repository's history",
+        "Deletes uncommitted changes",
+        "Creates a new branch"
+      ],
+      "answer_index": 1,
+      "explanation": "A commit is a local snapshot. You still need 'git push' to send it to GitHub."
+    },
+    {
+      "question": "Why use a feature branch instead of committing straight to main?",
+      "options": [
+        "It's required by Git and cannot be disabled",
+        "It makes your commits smaller automatically",
+        "It isolates in-progress work so main stays stable and deployable",
+        "It's faster to push"
+      ],
+      "answer_index": 2,
+      "explanation": "Feature branches let you experiment and get work reviewed before it affects the main codebase."
+    }
+  ],
+  "practical_lab": "Coming in Phase 2: a real sandboxed Git environment. Until then, practice locally: create a folder, run 'git init', make a few commits, create a branch, and push it to a GitHub repo you create.",
+  "mini_project": "Create a small GitHub repository for any personal script or notes file. Make at least 3 commits with clear messages, create one feature branch, and open a pull request merging it into main.",
+  "interview_questions": [
+    "What's the difference between 'git merge' and 'git rebase'?",
+    "How would you undo the last commit without losing your changes?",
+    "What's a merge conflict, and how do you resolve one?",
+    "What's the difference between a fork and a branch?"
+  ],
+  "reference_sheet": [
+    { "term": "Repository (repo)", "note": "A project folder tracked by Git." },
+    { "term": "Commit", "note": "A saved snapshot of changes, with a message describing them." },
+    { "term": "Branch", "note": "An independent line of development off the main history." },
+    { "term": "Pull request (PR)", "note": "A request to merge one branch's changes into another, usually reviewed first." },
+    { "term": "Merge conflict", "note": "Occurs when Git can't automatically combine changes to the same lines and needs a human decision." },
+    { "term": "Clone", "note": "Download a full copy of a remote repository, including its history." },
+    { "term": "Fork", "note": "Your own copy of someone else's repository on GitHub, used to propose changes without direct write access." }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": ["General Git/GitHub documentation and common usage — no external citation needed for these fundamentals."]
+  }
+}

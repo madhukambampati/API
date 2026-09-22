@@ -1,0 +1,115 @@
+{
+  "slug": "sdet",
+  "title": "SDET (Software Development Engineer in Test)",
+  "status": "Established",
+  "definition": "An SDET writes code to test software rather than testing it purely by hand — building and maintaining automated test suites, frameworks, and CI/CD quality gates alongside the development team.",
+  "daily_responsibilities": [
+    "Design and maintain automated UI, API, and integration test suites",
+    "Review pull requests for testability and add missing test coverage",
+    "Investigate and triage test failures in CI, distinguishing real bugs from flaky tests",
+    "Build and improve the test automation framework itself (page objects, fixtures, reporting)",
+    "Pair with developers on hard-to-test features and edge cases"
+  ],
+  "required_technical_skills": [
+    "A programming language (Java, Python, or JavaScript/TypeScript)",
+    "A UI automation tool (Selenium, Playwright, or Cypress)",
+    "API testing (Postman, REST Assured, or an HTTP client library)",
+    "Git and version control workflows",
+    "Basic SQL for data verification",
+    "CI/CD fundamentals (running tests in a pipeline)"
+  ],
+  "required_nontechnical_skills": [
+    "Clear written bug reports and documentation",
+    "Comfort collaborating directly with developers, not just filing tickets",
+    "Risk-based thinking — knowing what's worth testing deeply vs. lightly"
+  ],
+  "expectations": {
+    "beginner": "Can write and maintain existing automated tests, understands the framework's structure, needs guidance on new test design.",
+    "intermediate": "Designs new test suites independently, debugs flaky tests, contributes to framework improvements.",
+    "advanced": "Owns framework architecture decisions, mentors other testers, drives quality strategy across a team or product area."
+  },
+  "common_tools": [
+    "Selenium", "Playwright", "Cypress", "Postman", "REST Assured",
+    "JMeter", "k6", "Jira", "GitHub Actions", "Jenkins", "Allure/Extent reports"
+  ],
+  "recommended_languages": ["Java", "Python", "JavaScript/TypeScript"],
+  "roadmap": {
+    "summary": "This app's existing 'Manual Tester → SDET' track is a full 6-month plan covering manual fundamentals, a programming language, Git, Selenium/Playwright automation, API testing, CI/CD, a portfolio project, and interview prep.",
+    "link": "/roadmaps#manual-to-sdet",
+    "stages": [
+      { "name": "Solidify manual testing fundamentals", "duration": "2-3 weeks", "topics": ["SDLC/STLC, test case design techniques", "Bug lifecycle, exploratory testing"] },
+      { "name": "Learn a programming language", "duration": "4-6 weeks", "topics": ["Java or Python fundamentals", "OOP, collections, exception handling"] },
+      { "name": "Web automation fundamentals", "duration": "4-6 weeks", "topics": ["Selenium WebDriver, locators, waits", "Page Object Model, TestNG/JUnit or pytest"] },
+      { "name": "API testing & automation", "duration": "2-3 weeks", "topics": ["REST concepts, Postman", "REST Assured or Python requests"] },
+      { "name": "CI/CD & reporting", "duration": "2 weeks", "topics": ["Jenkins or GitHub Actions basics", "Allure/Extent reports in a pipeline"] }
+    ]
+  },
+  "labs": [
+    "Coming in Phase 2: browser-based coding, API, and Linux playgrounds with real sandboxed execution.",
+    "For now, practice via the Practice page's SDET-tagged quiz questions and AI-graded coding challenges."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Automate a public demo site end-to-end", "description": "Use Playwright or Selenium with the Page Object Model against a free public demo site." },
+    { "level": "independent", "title": "Build a REST API test suite in CI", "description": "Postman or REST Assured against a free public API, wired into GitHub Actions." },
+    { "level": "intermediate", "title": "Write an LLM evaluation harness", "description": "A golden dataset + scoring script for a sample prompt — a first step into AI-QA." }
+  ],
+  "interview_topics": [
+    "Manual testing: test case design, bug reporting, SDLC/STLC fundamentals",
+    "Automation: Selenium/Playwright, framework design, API automation, coding questions",
+    "AI-QA: testing LLM features, evaluation strategies, prompt/output quality"
+  ],
+  "certifications": [
+    { "name": "ISTQB Foundation Level (CTFL)", "issuer": "ISTQB", "url": "https://www.istqb.org/certifications/certified-tester-foundation-level" },
+    { "name": "ISTQB Advanced Level", "issuer": "ISTQB", "url": "https://www.istqb.org/certifications/advanced-level" },
+    { "name": "ICAgile Certified Professional — Agile Testing", "issuer": "ICAgile", "url": "https://www.icagile.com/certifications/agile-testing" },
+    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
+    { "name": "Postman API Fundamentals", "issuer": "Postman Academy", "url": "https://academy.postman.com/" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["Manual QA Engineer", "Automation Engineer", "Test Architect", "Performance Engineer", "AI Quality Engineer"],
+  "transition_paths": ["Manual QA → Automation Engineer → SDET", "SDET → Test Architect", "SDET → AI Quality Engineer"],
+  "advantages": [
+    "Strong demand — most product teams now expect some automated test coverage",
+    "Sits close to both engineering and product, giving broad visibility into how software actually gets built",
+    "Skills transfer well toward developer, DevOps, or AI-QA roles later"
+  ],
+  "challenges": [
+    "Flaky tests and maintenance burden can dominate the job if framework hygiene is neglected",
+    "Requires staying current on both testing practice and the languages/tools your team uses",
+    "Can be perceived as 'a developer who only writes tests,' which undersells the risk-analysis skill involved"
+  ],
+  "example_progression": ["Junior QA Engineer", "QA Engineer / Manual Tester", "SDET", "Senior SDET", "Test Architect or Automation Lead"],
+  "portfolio_expectations": [
+    "A public repo automating a real site end-to-end with the Page Object Model",
+    "A REST API test suite wired into a CI pipeline",
+    "A clear README on every repo: what it tests, how to run it, and a screenshot of a passing run"
+  ],
+  "fit_assessment": [
+    "Do you enjoy finding the exact input that breaks something, then writing code to make sure it never breaks that way again?",
+    "Are you comfortable reading and writing code daily, even if you're not designing new features?",
+    "Do you like working closely with developers rather than testing in isolation at the end of a cycle?"
+  ],
+  "ai_impact": "AI tools are speeding up test-case generation and flaky-test triage, but someone still has to judge whether an AI-suggested test is actually meaningful — that judgment is becoming a bigger part of the job, not a smaller one. This is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "Testing AI-powered features (the AI-QA specialization) is a fast-growing extension of this role rather than a separate job market — most of the underlying skills carry over directly. This is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "Selenium official docs", "url": "https://www.selenium.dev/documentation/" },
+    { "title": "Playwright official docs", "url": "https://playwright.dev/docs/intro" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Adapted from this app's existing Roadmaps 'Manual Tester → SDET' track and Career page certification/portfolio content."
+    ]
+  }
+}

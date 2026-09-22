@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}TechOrbit — {{ role.title }}{% endblock %}
+{% block content %}
+<div class="section-heading">
+  <div>
+    <h1 class="page-title">{{ role.title }}</h1>
+    <p class="page-subtitle">{{ role.definition }}</p>
+  </div>
+  <span class="quiz-score-pill">{{ role.status }}</span>
+</div>
+
+<p class="settings-note" style="margin-top: -10px;">
+  Schema-driven role page — an early Phase 0 proof of concept for the Career
+  Explorer. This is the only role built this way so far; more roles and a
+  searchable index arrive in Phase 1. Content v{{ role.governance.version }},
+  last reviewed {{ role.governance.last_reviewed }}.
+</p>
+
+<div class="settings-grid">
+  <div class="settings-panel">
+    <h3>🧭 Daily responsibilities</h3>
+    <ul class="stage-skills">
+      {% for item in role.daily_responsibilities %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <div class="settings-panel">
+    <h3>🛠️ Required skills</h3>
+    <p style="margin: 0 0 6px; font-size: 0.82rem; color: var(--text-dim);">Technical</p>
+    <ul class="stage-skills">
+      {% for item in role.required_technical_skills %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% if role.required_nontechnical_skills %}
+    <p style="margin: 12px 0 6px; font-size: 0.82rem; color: var(--text-dim);">Non-technical</p>
+    <ul class="stage-skills">
+      {% for item in role.required_nontechnical_skills %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+
+{% if role.expectations %}
+<div class="section-heading"><div><h2>📈 Beginner → advanced expectations</h2></div></div>
+<div class="settings-grid" style="margin-bottom: 28px;">
+  <div class="settings-panel"><h3>Beginner</h3><p>{{ role.expectations.beginner }}</p></div>
+  <div class="settings-panel"><h3>Intermediate</h3><p>{{ role.expectations.intermediate }}</p></div>
+  <div class="settings-panel"><h3>Advanced</h3><p>{{ role.expectations.advanced }}</p></div>
+</div>
+{% endif %}
+
+{% if role.common_tools or role.recommended_languages %}
+<div class="section-heading"><div><h2>🧰 Tools &amp; languages</h2></div></div>
+<div class="filter-row" style="margin-bottom: 28px;">
+  {% for lang in role.recommended_languages %}<span class="filter-chip active">{{ lang }}</span>{% endfor %}
+  {% for tool in role.common_tools %}<span class="filter-chip">{{ tool }}</span>{% endfor %}
+</div>
+{% endif %}
+
+{% if role.roadmap %}
+<div class="section-heading">
+  <div><h2>🗺️ Roadmap</h2><p>{{ role.roadmap.summary }}</p></div>
+  {% if role.roadmap.link %}<a href="{{ role.roadmap.link }}" class="tool-btn">See the full roadmap →</a>{% endif %}
+</div>
+{% if role.roadmap.stages %}
+<div class="timeline" style="margin-bottom: 28px;">
+  {% for stage in role.roadmap.stages %}
+  <div class="stage"><div class="stage-card">
+    <div class="stage-card-head"><h3>{{ stage.name }}</h3><span class="stage-duration">{{ stage.duration }}</span></div>
+    <ul class="stage-skills">{% for topic in stage.topics %}<li>{{ topic }}</li>{% endfor %}</ul>
+  </div></div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}
+
+{% if role.labs %}
+<div class="section-heading"><div><h2>🧪 Hands-on labs</h2></div></div>
+<ul class="stage-skills" style="margin-bottom: 28px;">
+  {% for item in role.labs %}<li>{{ item }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+{% if role.projects %}
+<div class="section-heading"><div><h2>🏗️ Projects</h2></div></div>
+<div class="resource-grid" style="margin-bottom: 28px;">
+  {% for project in role.projects %}
+  <div class="resource-card static">
+    <span class="resource-type">{{ project.level }}</span>
+    <h3>{{ project.title }}</h3>
+    <p>{{ project.description }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="settings-grid">
+  {% if role.interview_topics %}
+  <div class="settings-panel">
+    <h3>🎤 Interview topics</h3>
+    <ul class="stage-skills">{% for item in role.interview_topics %}<li>{{ item }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+
+  {% if role.fit_assessment %}
+  <div class="settings-panel">
+    <h3>🤔 Is this role right for me?</h3>
+    <ul class="stage-skills">{% for item in role.fit_assessment %}<li>{{ item }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if role.certifications %}
+<div class="section-heading"><div><h2>🎓 Certifications</h2></div></div>
+<div class="resource-grid" style="margin-bottom: 28px;">
+  {% for cert in role.certifications %}
+  <a class="resource-card" href="{{ cert.url }}" target="_blank" rel="noopener">
+    <span class="resource-type">{{ cert.issuer }}</span>
+    <h3>{{ cert.name }}</h3>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if role.market_info %}
+<div class="section-heading"><div><h2>💰 Salary &amp; market</h2></div></div>
+<p class="settings-note" style="margin-bottom: 28px;">
+  {% if role.market_info.status == "sourced" %}
+    {{ role.market_info.summary }} ({{ role.market_info.location }}, as of {{ role.market_info.as_of_date }}.
+    <a href="{{ role.market_info.source_url }}" target="_blank" rel="noopener">Source</a>)
+  {% else %}
+    {{ role.market_info.summary }}
+  {% endif %}
+</p>
+{% endif %}
+
+<div class="settings-grid">
+  {% if role.related_roles %}
+  <div class="settings-panel">
+    <h3>🔗 Related roles</h3>
+    <div class="filter-row">{% for r in role.related_roles %}<span class="filter-chip">{{ r }}</span>{% endfor %}</div>
+  </div>
+  {% endif %}
+  {% if role.transition_paths %}
+  <div class="settings-panel">
+    <h3>🚪 Transition paths</h3>
+    <ul class="stage-skills">{% for path in role.transition_paths %}<li>{{ path }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</div>
+
+<div class="settings-grid" style="margin-top: 20px;">
+  {% if role.advantages %}
+  <div class="settings-panel">
+    <h3>✅ Advantages</h3>
+    <ul class="stage-skills">{% for item in role.advantages %}<li>{{ item }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% if role.challenges %}
+  <div class="settings-panel">
+    <h3>⚠️ Challenges</h3>
+    <ul class="stage-skills">{% for item in role.challenges %}<li>{{ item }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if role.example_progression %}
+<div class="section-heading" style="margin-top: 20px;"><div><h2>📊 Example career progression</h2></div></div>
+<div class="filter-row" style="margin-bottom: 28px;">
+  {% for step in role.example_progression %}<span class="filter-chip">{{ step }}</span>{% endfor %}
+</div>
+{% endif %}
+
+{% if role.portfolio_expectations %}
+<div class="section-heading"><div><h2>🗂️ Portfolio expectations</h2></div></div>
+<ul class="stage-skills" style="margin-bottom: 28px;">
+  {% for item in role.portfolio_expectations %}<li>{{ item }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+{% if role.ai_impact or role.future_outlook %}
+<div class="settings-grid">
+  {% if role.ai_impact %}<div class="settings-panel"><h3>🤖 Effect of AI on this role</h3><p>{{ role.ai_impact }}</p></div>{% endif %}
+  {% if role.future_outlook %}<div class="settings-panel"><h3>🔮 Future outlook</h3><p>{{ role.future_outlook }}</p></div>{% endif %}
+</div>
+{% endif %}
+
+{% if role.resources %}
+<div class="section-heading" style="margin-top: 20px;"><div><h2>📚 Resources</h2></div></div>
+<div class="resource-grid" style="margin-bottom: 12px;">
+  {% for res in role.resources %}
+  <a class="resource-card" href="{{ res.url }}" {% if res.url.startswith('http') %}target="_blank" rel="noopener"{% endif %}>
+    <h3>{{ res.title }}</h3>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

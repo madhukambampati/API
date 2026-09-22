@@ -1,8 +1,12 @@
 {% extends "base.html" %}
-{% block title %}SDET Mentor — Career{% endblock %}
+{% block title %}TechOrbit — Career{% endblock %}
 {% block content %}
 <h1 class="page-title">💼 Career &amp; Certifications</h1>
 <p class="page-subtitle">Certifications worth having, resume &amp; portfolio checklists, and AI-driven mock interviews.</p>
+<p class="settings-note">
+  Early preview: <a href="{{ url_for('role_detail', slug='sdet') }}">a schema-driven SDET role page</a> —
+  the first proof of TechOrbit's upcoming Career Explorer (more roles coming in Phase 1).
+</p>
 
 <div class="section-heading">
   <div>

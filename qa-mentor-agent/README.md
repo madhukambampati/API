@@ -1,8 +1,12 @@
-# SDET Mentor — AI Learning Agent (POC)
+# TechOrbit — AI Learning Platform (POC)
 
-A learning app for QA Engineers, SDETs, and AI-QA practitioners: an AI chat mentor
-backed by Claude, plus real curated roadmaps, a practice quiz bank, everyday QA
-utilities, and local progress tracking — no account required.
+_Every role. Every skill. One learning universe._
+
+TechOrbit's deepest content today is for QA Engineers, SDETs, and AI-QA
+practitioners: an AI chat mentor backed by Claude, plus real curated roadmaps, a
+practice quiz bank, everyday QA utilities, and local progress tracking — no
+account required. The platform's ambition is broader (see `ROADMAP.md`); QA/SDET
+is the first fully-built path.
 
 This is a proof of concept: a local multi-page Flask app, with all personal data
 (history, bookmarks, progress, profile, theme) kept in your browser's localStorage.

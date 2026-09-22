@@ -59,8 +59,13 @@ before starting Phase 0:
    Kubernetes-based ephemeral pods) and should be scoped as its own spike
    before Phase 2 starts, not assumed to "just work."
 4. **Rebrand:** the blueprint requires a parent brand broader than
-   "SDET Mentor" (§29). Name/visual identity is a product decision for the
-   user to make — tracked as a ticket, not decided here.
+   "SDET Mentor" (§29). **Decided:** the platform is now **TechOrbit** —
+   "Every role. Every skill. One learning universe."
+
+5. **Database deferred:** Epic 0.1 (accounts + database) is intentionally
+   **not** being started yet. Epics 0.2 and 0.3 don't need it and proceed
+   first; onboarding/personalization stays localStorage-only (single
+   device, same as today) until Epic 0.1 is picked up.
 
 ---
 
@@ -83,18 +88,23 @@ beyond localStorage.
       requirement — do this from day one, not bolted on later).
 
 ### Epic 0.2 — Content model foundation
-- [ ] Define a structured schema for "Role" content (fields listed in
-      blueprint §6) as JSON or DB rows, not ad-hoc HTML per page.
-- [ ] Define a structured schema for "Lesson"/"Topic" content (§7 fields:
-      beginner explanation, examples, common mistakes, quiz, lab, mini
-      project, interview questions, reference sheet).
-- [ ] Build one generic template that renders any Role/Lesson from that
-      schema, replacing today's pattern of one bespoke template per page.
+- [x] Define a structured schema for "Role" content (fields listed in
+      blueprint §6) as JSON — `data/schema/role.schema.json`, no database
+      needed. One proof instance: `data/roles/sdet.json`.
+- [x] Define a structured schema for "Lesson"/"Topic" content (§7 fields) —
+      `data/schema/lesson.schema.json`. One proof instance:
+      `data/lessons/git-and-github.json`.
+- [x] Build one generic template that renders any Role/Lesson from that
+      schema — `templates/role_detail.html` at `/careers/<slug>` and
+      `templates/lesson_detail.html` at `/lessons/<slug>`. Linked as
+      low-key "early preview" links from Career and Roadmaps for now;
+      **not** in main nav yet — a real `/careers` index + 3-5 fully
+      populated roles is still Phase 1 Epic 1.1, not done here.
 
 ### Epic 0.3 — Rebrand
-- [ ] Decide parent brand name + visual identity (logo, palette, icon
-      system) — product decision, not engineering.
-- [ ] Sweep `templates/`, `static/`, `README.md` for "SDET Mentor" /
+- [x] Decide parent brand name + visual identity — **TechOrbit**, tagline
+      "Every role. Every skill. One learning universe.", brand icon 🪐.
+- [x] Sweep `templates/`, `app.py`, `README.md` for "SDET Mentor" /
       "QA Mentor" and replace.
 
 ---
