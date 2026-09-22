@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Playwright",
+    "category": "Adopt",
+    "what_it_is": "A modern browser automation framework for end-to-end testing, with built-in auto-waiting and multi-browser support.",
+    "why_it_matters": "Faster and more reliable than older Selenium-based setups for most new UI test suites.",
+    "who_should_learn": "QA/SDET learners starting UI automation today.",
+    "related_roles": ["sdet"]
+  },
+  {
+    "name": "Git",
+    "category": "Adopt",
+    "what_it_is": "Distributed version control — the standard way software teams track and collaborate on code changes.",
+    "why_it_matters": "Foundational for every technical role; there's no serious alternative in mainstream use.",
+    "who_should_learn": "Everyone, regardless of role.",
+    "related_roles": ["sdet", "developer", "devops"]
+  },
+  {
+    "name": "Docker",
+    "category": "Adopt",
+    "what_it_is": "A tool for packaging an application and its dependencies into a portable container.",
+    "why_it_matters": "The standard building block for modern deployment, CI pipelines, and local dev environments.",
+    "who_should_learn": "Developers and DevOps engineers; increasingly useful for SDETs setting up test environments too.",
+    "related_roles": ["developer", "devops", "sdet"]
+  },
+  {
+    "name": "TypeScript",
+    "category": "Adopt",
+    "what_it_is": "A typed superset of JavaScript that compiles to plain JavaScript.",
+    "why_it_matters": "Default choice for most new JavaScript projects — catches a large class of bugs before runtime.",
+    "who_should_learn": "Frontend, full-stack, and Node.js developers.",
+    "related_roles": ["developer"]
+  },
+  {
+    "name": "Kubernetes",
+    "category": "Trial",
+    "what_it_is": "A container orchestration platform for deploying, scaling, and managing containerized applications.",
+    "why_it_matters": "Industry-standard for larger-scale deployments, but genuinely more complexity than many small teams need.",
+    "who_should_learn": "DevOps engineers; developers at companies already running it in production.",
+    "related_roles": ["devops"]
+  },
+  {
+    "name": "AI coding assistants",
+    "category": "Trial",
+    "what_it_is": "Tools like Claude Code or GitHub Copilot that generate and edit code from natural-language prompts inside your workflow.",
+    "why_it_matters": "Genuinely speeds up boilerplate and first drafts, but still requires the developer to review, test, and own the result.",
+    "who_should_learn": "All technical roles — the skill of directing and reviewing AI-generated code is becoming as important as writing it by hand.",
+    "related_roles": ["developer", "sdet", "devops"]
+  },
+  {
+    "name": "LLM evaluation frameworks",
+    "category": "Assess",
+    "what_it_is": "Tools (e.g. promptfoo, DeepEval) for systematically testing prompt/model outputs against golden datasets.",
+    "why_it_matters": "Purpose-built for AI-QA work, but the tooling and best practices are still young and changing quickly.",
+    "who_should_learn": "SDETs moving into AI-QA.",
+    "related_roles": ["sdet"]
+  },
+  {
+    "name": "GraphQL",
+    "category": "Assess",
+    "what_it_is": "A query language for APIs that lets clients request exactly the data they need.",
+    "why_it_matters": "Solid fit for some frontend-heavy apps with complex data needs, but REST remains the safer default for most APIs.",
+    "who_should_learn": "Backend/full-stack developers evaluating API design for a specific project's needs.",
+    "related_roles": ["developer"]
+  },
+  {
+    "name": "Agentic / multi-agent AI systems",
+    "category": "Watch",
+    "what_it_is": "AI systems where one or more models plan, use tools, and act with some autonomy toward a goal, rather than answering a single prompt.",
+    "why_it_matters": "Fast-moving area with real production use emerging, but patterns for reliability, evaluation, and safety are still being worked out.",
+    "who_should_learn": "AI-QA specialists and developers building AI-powered features, as awareness rather than deep expertise yet.",
+    "related_roles": ["sdet", "developer"]
+  },
+  {
+    "name": "WebAssembly (Wasm)",
+    "category": "Watch",
+    "what_it_is": "A binary instruction format that lets code written in languages like C++/Rust run in the browser near-natively.",
+    "why_it_matters": "Enables high-performance web use cases, but still a niche choice outside specific performance-sensitive applications.",
+    "who_should_learn": "Developers working on performance-critical web applications.",
+    "related_roles": ["developer"]
+  },
+  {
+    "name": "jQuery for new projects",
+    "category": "Declining",
+    "what_it_is": "A JavaScript library for DOM manipulation and AJAX that was dominant in the 2010s.",
+    "why_it_matters": "Modern frameworks (React, Vue) and native browser APIs cover its use cases better for new projects — mostly relevant now for maintaining legacy codebases.",
+    "who_should_learn": "Only developers maintaining existing jQuery codebases.",
+    "related_roles": ["developer"]
+  },
+  {
+    "name": "AI-native test evaluation harnesses",
+    "category": "Emerging",
+    "what_it_is": "Purpose-built pipelines for continuously evaluating AI-powered product features, not just one-off model benchmarks.",
+    "why_it_matters": "As more products ship AI features, this is likely to become a standard part of QA rather than a specialty — still forming as a discipline.",
+    "who_should_learn": "QA/SDET learners who want to be early in a role AI-QA is turning into a real specialization.",
+    "related_roles": ["sdet"]
+  }
+]

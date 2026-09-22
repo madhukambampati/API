@@ -1,0 +1,118 @@
+{
+  "slug": "devops",
+  "title": "DevOps Engineer",
+  "status": "Established",
+  "definition": "A DevOps engineer builds and operates the systems that let teams ship software quickly and reliably — CI/CD pipelines, infrastructure as code, containers, and the monitoring that tells you when something's wrong.",
+  "daily_responsibilities": [
+    "Build and maintain CI/CD pipelines so code gets tested and deployed safely",
+    "Write and review infrastructure-as-code (Terraform, CloudFormation, etc.)",
+    "Manage containerized workloads and their orchestration (Docker, Kubernetes)",
+    "Set up and tune monitoring, logging, and alerting for production systems",
+    "Respond to incidents, investigate root causes, and improve systems to prevent repeats",
+    "Work with developers to make applications easier to deploy, configure, and observe"
+  ],
+  "required_technical_skills": [
+    "Linux fundamentals and shell scripting (Bash)",
+    "A scripting/programming language for automation (Python or Go)",
+    "Containers (Docker) and orchestration (Kubernetes)",
+    "Infrastructure as code (Terraform, or a cloud-native equivalent)",
+    "CI/CD tooling (GitHub Actions, Jenkins, or GitLab CI)",
+    "A cloud provider's core services (AWS, Azure, or GCP)",
+    "Monitoring/observability basics (metrics, logs, traces)"
+  ],
+  "required_nontechnical_skills": [
+    "Staying calm and methodical during production incidents",
+    "Writing clear runbooks and postmortems that others can actually follow",
+    "Balancing reliability work against feature-delivery pressure"
+  ],
+  "expectations": {
+    "beginner": "Can follow existing pipelines and infrastructure code, makes small well-scoped changes with review, learns the on-call rotation.",
+    "intermediate": "Designs and builds new pipelines/infrastructure independently, participates in on-call, writes solid postmortems.",
+    "advanced": "Owns reliability and infrastructure strategy for a team or org, mentors others, drives incident response process and tooling."
+  },
+  "common_tools": [
+    "Docker", "Kubernetes", "Terraform", "GitHub Actions", "Jenkins", "Prometheus", "Grafana", "AWS/Azure/GCP console"
+  ],
+  "recommended_languages": ["Python", "Go", "Bash"],
+  "roadmap": {
+    "summary": "A learning path from Linux and scripting fundamentals through containers, CI/CD, infrastructure as code, and production monitoring. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
+    "link": null,
+    "stages": [
+      { "name": "Linux & scripting fundamentals", "duration": "3-4 weeks", "topics": ["Filesystem, processes, permissions", "Bash scripting for automation"] },
+      { "name": "Git & CI/CD fundamentals", "duration": "2 weeks", "topics": ["Branching workflows", "Build a pipeline that tests and deploys on every push"] },
+      { "name": "Containers", "duration": "3-4 weeks", "topics": ["Docker images and containers", "Docker Compose for multi-service apps"] },
+      { "name": "Kubernetes", "duration": "4-6 weeks", "topics": ["Pods, deployments, services", "ConfigMaps/secrets, basic troubleshooting"] },
+      { "name": "Infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform basics: providers, resources, state", "Provision real cloud resources from code"] },
+      { "name": "Monitoring & incident response", "duration": "2-3 weeks", "topics": ["Metrics/logs/traces basics", "Writing a runbook and a postmortem"] }
+    ]
+  },
+  "labs": [
+    "Coming soon: a Linux terminal playground, Docker/Kubernetes simulations, and a CI/CD pipeline builder.",
+    "For now, practice locally: install Docker, run a multi-container app with Compose, and write a Terraform config that provisions a real (free-tier) cloud resource."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Containerize and deploy a small app", "description": "Dockerize an existing app, then deploy it with a CI/CD pipeline that runs tests before every deploy." },
+    { "level": "independent", "title": "Provision infrastructure with Terraform", "description": "Write Terraform to stand up a small real environment (e.g. a web server + database) on a free-tier cloud account, checked into version control." },
+    { "level": "advanced-capstone", "title": "Deploy a monitored Kubernetes app", "description": "Run an app on Kubernetes with Prometheus/Grafana monitoring and a documented runbook for what to do if it goes down." }
+  ],
+  "interview_topics": [
+    "CI/CD pipeline design and troubleshooting",
+    "Kubernetes concepts (pods, deployments, services, networking basics)",
+    "Infrastructure as code and why it matters (drift, reproducibility, review)",
+    "Incident response: how would you debug a production outage?"
+  ],
+  "certifications": [
+    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
+    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" },
+    { "name": "HashiCorp Certified: Terraform Associate", "issuer": "HashiCorp", "url": "https://developer.hashicorp.com/certifications/infrastructure-automation" },
+    { "name": "AWS Certified DevOps Engineer — Professional", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["Site Reliability Engineer", "Platform Engineer", "Cloud Engineer", "Full-Stack Developer", "Security Engineer"],
+  "transition_paths": ["Linux Administrator → DevOps Engineer", "DevOps Engineer → SRE", "Full-Stack Developer → DevOps Engineer"],
+  "advantages": [
+    "High demand — nearly every company running software at scale needs this skill set",
+    "Sits at the intersection of development and operations, giving broad system-level visibility",
+    "Strong foundation for later specializing into SRE, platform engineering, or cloud architecture"
+  ],
+  "challenges": [
+    "On-call and incident response can be stressful and unpredictable",
+    "Breadth of required knowledge (networking, security, multiple clouds, containers) is genuinely large",
+    "Easy to end up as the team's default troubleshooter for anything infrastructure-shaped, which can crowd out deeper project work"
+  ],
+  "example_progression": ["Junior DevOps Engineer", "DevOps Engineer", "Senior DevOps Engineer", "Platform Engineer or SRE Lead", "Principal Engineer / Head of Infrastructure"],
+  "portfolio_expectations": [
+    "A public repo with real Terraform/IaC code that provisions something, not just a tutorial copy",
+    "A documented CI/CD pipeline (e.g. a GitHub Actions workflow) with a clear README explaining what it does",
+    "Evidence of monitoring/observability work — a dashboard screenshot or a written incident postmortem for a practice scenario",
+    "Clear documentation of what you built, why you made specific technical choices, and what you'd do differently"
+  ],
+  "fit_assessment": [
+    "Do you enjoy being the person who makes systems more reliable and repeatable, even when it's invisible when done well?",
+    "Are you comfortable being paged for a production issue and working through it methodically under pressure?",
+    "Do you like automating repetitive work rather than doing it by hand each time?"
+  ],
+  "ai_impact": "AI tools are speeding up writing boilerplate IaC and CI/CD config, and helping triage alerts, but judgment about what's actually safe to automate and what needs a human in the loop is becoming more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "As more of the DevOps toolchain becomes managed/platform-provided, the role is shifting toward platform engineering — building the internal tools other engineers use — rather than disappearing; this is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "Kubernetes official docs", "url": "https://kubernetes.io/docs/home/" },
+    { "title": "Terraform official docs", "url": "https://developer.hashicorp.com/terraform/docs" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Written from general, well-established DevOps practice; certification names/URLs verified via web search on 2026-09-22."
+    ]
+  }
+}

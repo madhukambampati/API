@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}TechOrbit — Get started{% endblock %}
+{% block content %}
+<h1 class="page-title">🎯 Tell us about your goals</h1>
+<p class="page-subtitle">
+  A few quick questions so Home can point you at the right role and roadmap.
+  Stored only in this browser — you can change your answers any time from Settings.
+</p>
+
+<div class="settings-panel" style="max-width: 560px;">
+  <form id="onboarding-form">
+    <div class="field-group">
+      <label for="onboarding-role">Target role</label>
+      <select id="onboarding-role">
+        <option value="">Not sure yet</option>
+        {% for role in roles %}
+        <option value="{{ role.slug }}">{{ role.title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label for="onboarding-experience">Experience level</label>
+      <select id="onboarding-experience">
+        <option value="beginner">Beginner — new to this</option>
+        <option value="intermediate">Intermediate — some hands-on experience</option>
+        <option value="advanced">Advanced — experienced, leveling up</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label for="onboarding-hours">Time available per week</label>
+      <select id="onboarding-hours">
+        <option value="1-3">1-3 hours</option>
+        <option value="4-7">4-7 hours</option>
+        <option value="8+">8+ hours</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label for="onboarding-goal">Primary goal</label>
+      <select id="onboarding-goal">
+        <option value="fundamentals">Learn the fundamentals</option>
+        <option value="certification">Prepare for a certification</option>
+        <option value="interview">Prepare for interviews</option>
+        <option value="career-change">Switch careers into tech</option>
+      </select>
+    </div>
+
+    <button type="submit" class="tool-btn">Save &amp; go to Home →</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='onboarding.js') }}"></script>
+{% endblock %}

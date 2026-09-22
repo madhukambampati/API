@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}TechOrbit — Technology Radar{% endblock %}
+{% block content %}
+<h1 class="page-title">🛰️ Technology Radar</h1>
+<p class="page-subtitle">
+  How TechOrbit classifies technologies relevant to its current content: Adopt, Trial,
+  Assess, Watch, Declining, or Emerging.
+</p>
+<p class="settings-note" style="margin-top: -10px;">
+  These classifications are TechOrbit's own editorial judgment, not a cited industry
+  ranking — treat them as a starting point for your own research, not a verdict.
+</p>
+
+{% for category in categories %}
+{% if grouped[category] %}
+<div class="section-heading"><div><h2>{{ category }}</h2></div></div>
+<div class="resource-grid" style="margin-bottom: 28px;">
+  {% for item in grouped[category] %}
+  <div class="resource-card static">
+    <span class="resource-type">{{ item.category }}</span>
+    <h3>{{ item.name }}</h3>
+    <p>{{ item.what_it_is }}</p>
+    <p style="margin-top: 8px;"><strong>Why it matters:</strong> {{ item.why_it_matters }}</p>
+    <p style="margin-top: 6px;"><strong>Who should learn it:</strong> {{ item.who_should_learn }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

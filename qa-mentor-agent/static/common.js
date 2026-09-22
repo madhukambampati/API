@@ -6,6 +6,7 @@ const PRACTICE_KEY = "qa-mentor-practice-stats";
 const TOPICS_KEY = "qa-mentor-topics-viewed";
 const CODING_KEY = "qa-mentor-coding-attempted";
 const STREAK_KEY = "qa-mentor-streak";
+const ONBOARDING_KEY = "qa-mentor-onboarding";
 
 function safeGet(key, fallback) {
   try {
@@ -39,6 +40,14 @@ function applyProfile() {
   const avatarEl = document.getElementById("profile-avatar");
   if (nameEl) nameEl.textContent = profile.name || "You";
   if (avatarEl) avatarEl.textContent = profile.avatar || "🙂";
+}
+
+function getOnboarding() {
+  return safeGet(ONBOARDING_KEY, null);
+}
+
+function setOnboarding(data) {
+  safeSet(ONBOARDING_KEY, { ...data, completedAt: Date.now() });
 }
 
 function logTopicView(topicId) {

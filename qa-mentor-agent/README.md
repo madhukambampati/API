@@ -13,23 +13,37 @@ This is a proof of concept: a local multi-page Flask app, with all personal data
 
 ## Pages
 
-- **Home** — hero, daily challenge with a streak counter, popular topics grid, quick-ask box
-- **Chat** — the AI mentor, backed by the Claude API, with voice input
+- **Home** — hero, personalized "Recommended for you" card (once onboarded),
+  daily challenge with a streak counter, popular topics grid, quick-ask box
+- **Explore Careers** — the Career Explorer at `/careers`: 3 fully-built roles
+  (SDET, Full-Stack Developer, DevOps Engineer) with responsibilities, skills,
+  roadmap, projects, interview topics, verified certifications, transition
+  paths, and more, plus honestly-labeled "Planned" placeholders for roles not
+  built yet
+- **Onboarding** — `/onboarding`: a 4-question flow (target role, experience,
+  weekly time, goal) that personalizes the Home page; answers stored in
+  localStorage, editable any time from Settings
+- **Chat** — the AI mentor, backed by the Claude API, with voice input and a
+  mentor-mode selector (QA/SDET, Developer, DevOps, Career Coach)
 - **Roadmaps** — 8 curated learning tracks (QA Foundations, Manual → SDET, AI-QA Specialist,
   Performance Testing, Security Testing, Mobile Testing, Framework Architect, DevOps for QA)
 - **Tech News** — a live release feed (Selenium, Playwright, Cypress, k6, Anthropic/OpenAI SDKs,
   LangChain, ...) fetched server-side from GitHub and cached for 24 hours
+- **Tech Radar** — `/radar`: Adopt/Trial/Assess/Watch/Declining/Emerging
+  classification of technologies relevant to this platform's content, clearly
+  labeled as editorial judgment, not a cited industry ranking
 - **Resources** — curated links to real docs/courses/communities, plus a Visual Guides section
   (4 animated diagrams built into the app + 5 hand-picked real tutorial videos)
 - **Glossary** — a searchable ~85-term QA/SDET/AI-QA dictionary, plus Git/HTTP/CLI/tool-comparison references
-- **Career** — certification guide, resume & portfolio checklists, and 3 AI mock-interview modes
+- **Career Tools** — certification guide, resume & portfolio checklists, and 3 AI mock-interview modes
+  (the older QA-specific page, at `/career` — distinct from the Career Explorer above)
 - **Practice** — a 39-question quiz bank plus 10 hands-on coding challenges reviewed by the AI mentor
   (reachable from Home and Roadmaps; not in the main sidebar)
 - **Tools** — test data generator, regex tester, JSON formatter, selector cheat sheet
 - **Progress** — stats read from your local activity (chat, practice, coding, streak, bookmarks)
 - **Bookmarks** — chat answers you've starred
 - **History** — questions you've asked, with "ask again"
-- **Settings** — local profile, dark/light theme, API key status check
+- **Settings** — local profile, dark/light theme, API key status check, edit your learning plan
 
 ## Prerequisites
 

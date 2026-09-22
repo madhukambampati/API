@@ -4,6 +4,15 @@
 <h1 class="page-title">💬 Chat</h1>
 <p class="page-subtitle">Ask anything about QA, SDET, or AI-QA.</p>
 
+<div class="mentor-mode-row">
+  <label for="mentor-mode-select" class="mentor-mode-label">Mentor mode</label>
+  <select id="mentor-mode-select">
+    {% for key, mode in mentor_modes.items() %}
+    <option value="{{ key }}" {{ "selected" if key == default_mentor_mode }}>{{ mode.label }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 <div class="chat-shell">
   <main id="chat" class="chat" aria-live="polite">
     <div id="empty-state" class="chat-hero">

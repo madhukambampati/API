@@ -1495,6 +1495,30 @@ a {
   cursor: pointer;
 }
 
+.mentor-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.mentor-mode-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+#mentor-mode-select {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
 #quiz-prev-btn:disabled,
 #quiz-next-btn:disabled {
   opacity: 0.4;

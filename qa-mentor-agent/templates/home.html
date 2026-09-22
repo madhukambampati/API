@@ -39,6 +39,33 @@
   </div>
 </section>
 
+<div class="daily-card" id="onboarding-prompt-card" style="display: none;">
+  <div class="daily-card-head">
+    <div>
+      <span class="quiz-tag">🎯 Personalize</span>
+      <h2>Tell us about your goals</h2>
+    </div>
+  </div>
+  <p>Answer 4 quick questions so we can point you at the right role and roadmap.</p>
+  <div class="tool-row" style="margin-top: 14px;">
+    <a href="{{ url_for('onboarding') }}" class="tool-btn">Get started →</a>
+  </div>
+</div>
+
+<div class="daily-card" id="recommended-card" style="display: none;">
+  <div class="daily-card-head">
+    <div>
+      <span class="quiz-tag">🎯 Recommended for you</span>
+      <h2 id="recommended-title"></h2>
+    </div>
+  </div>
+  <p id="recommended-body"></p>
+  <div class="tool-row" style="margin-top: 14px;">
+    <a href="#" id="recommended-link" class="tool-btn">Continue →</a>
+    <a href="{{ url_for('onboarding') }}" class="tool-btn secondary">Edit your plan</a>
+  </div>
+</div>
+
 <div class="daily-card" id="daily-card">
   <div class="daily-card-head">
     <div>
@@ -53,6 +80,13 @@
     <a href="{{ url_for('practice') }}" class="tool-btn secondary">🎯 Full Quiz &amp; Coding Challenges →</a>
   </div>
 </div>
+
+<script>
+  window.ROLE_TITLES = {
+    {% for role in roles %}"{{ role.slug }}": {{ role.title | tojson }}{{ "," if not loop.last }}
+    {% endfor %}
+  };
+</script>
 
 <div class="section-heading">
   <div>

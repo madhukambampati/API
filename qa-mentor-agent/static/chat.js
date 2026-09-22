@@ -3,8 +3,20 @@ const formEl = document.getElementById("chat-form");
 const inputEl = document.getElementById("message-input");
 const sendBtn = document.getElementById("send-btn");
 const emptyStateEl = document.getElementById("empty-state");
+const modeSelect = document.getElementById("mentor-mode-select");
 
 const history = [];
+
+const MENTOR_MODE_KEY = "qa-mentor-chat-mode";
+if (modeSelect) {
+  const savedMode = safeGet(MENTOR_MODE_KEY, null);
+  if (savedMode && [...modeSelect.options].some((o) => o.value === savedMode)) {
+    modeSelect.value = savedMode;
+  }
+  modeSelect.addEventListener("change", () => {
+    safeSet(MENTOR_MODE_KEY, modeSelect.value);
+  });
+}
 
 document.querySelectorAll(".hero-pill").forEach((chip) => {
   chip.addEventListener("click", () => {
@@ -156,7 +168,7 @@ async function sendMessage(text) {
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: history }),
+      body: JSON.stringify({ messages: history, mode: modeSelect ? modeSelect.value : undefined }),
     });
     const data = await res.json();
 

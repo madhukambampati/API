@@ -145,6 +145,45 @@ long essays.
 - Be encouraging and patient — this is a learning tool, not an exam.
 """
 
+MENTOR_MODES = {
+    "sdet": {
+        "label": "🧪 QA / SDET Mentor",
+        "focus": (
+            "Mode: QA / SDET Mentor. Focus on manual testing, test design, API "
+            "testing, Selenium/Playwright/Cypress automation, CI/CD for test "
+            "pipelines, and AI-QA evaluation. Default code examples to Java + "
+            "Selenium or Python + Playwright unless the learner says otherwise."
+        ),
+    },
+    "developer": {
+        "label": "💻 Developer Mentor",
+        "focus": (
+            "Mode: Developer Mentor. Focus on software development: frontend, "
+            "backend, and full-stack engineering, APIs, databases, system design "
+            "fundamentals, and code review practices. Default code examples to "
+            "JavaScript/TypeScript or Python unless the learner says otherwise."
+        ),
+    },
+    "devops": {
+        "label": "🚀 DevOps Mentor",
+        "focus": (
+            "Mode: DevOps Mentor. Focus on CI/CD, containers, Kubernetes, "
+            "infrastructure as code, monitoring/observability, and incident "
+            "response. Default examples to Bash, Terraform, or GitHub Actions "
+            "unless the learner says otherwise."
+        ),
+    },
+    "career": {
+        "label": "🎯 Career Coach",
+        "focus": (
+            "Mode: Career Coach. Focus on role selection, resumes, interview "
+            "prep, and career transitions rather than deep technical "
+            "explanations, unless the learner explicitly asks for technical depth."
+        ),
+    },
+}
+DEFAULT_MENTOR_MODE = "sdet"
+
 
 PUBLIC_PATHS = {"/login", "/robots.txt", "/favicon.ico"}
 
@@ -202,12 +241,24 @@ def inject_auth_flags():
 
 @app.route("/")
 def home():
-    return render_template("home.html", active="home")
+    return render_template("home.html", active="home", roles=_load_all_roles())
+
+
+@app.route("/onboarding")
+def onboarding():
+    return render_template(
+        "onboarding.html", active="", academy_scoped=False, roles=_load_all_roles()
+    )
 
 
 @app.route("/chat")
 def chat_page():
-    return render_template("chat.html", active="chat")
+    return render_template(
+        "chat.html",
+        active="chat",
+        mentor_modes=MENTOR_MODES,
+        default_mentor_mode=DEFAULT_MENTOR_MODE,
+    )
 
 
 @app.route("/roadmaps")
@@ -223,6 +274,20 @@ def practice():
 @app.route("/tech-news")
 def tech_news():
     return render_template("tech_news.html", active="tech-news")
+
+
+RADAR_CATEGORIES = ["Adopt", "Trial", "Assess", "Watch", "Declining", "Emerging"]
+
+
+@app.route("/radar")
+def tech_radar():
+    items_path = os.path.join(app.root_path, "data", "radar", "items.json")
+    with open(items_path, encoding="utf-8") as f:
+        items = json.load(f)
+    grouped = {cat: [i for i in items if i["category"] == cat] for cat in RADAR_CATEGORIES}
+    return render_template(
+        "tech_radar.html", grouped=grouped, categories=RADAR_CATEGORIES, active="radar", academy_scoped=False
+    )
 
 
 @app.route("/api/tech-news")
@@ -261,8 +326,19 @@ def _load_content_json(subdir, slug):
         return json.load(f)
 
 
+def _load_all_roles():
+    roles = []
+    roles_dir = os.path.join(DATA_DIR, "roles")
+    if os.path.isdir(roles_dir):
+        for filename in sorted(os.listdir(roles_dir)):
+            if filename.endswith(".json"):
+                with open(os.path.join(roles_dir, filename), encoding="utf-8") as f:
+                    roles.append(json.load(f))
+    return roles
+
+
 PLANNED_ROLES = [
-    {"title": "DevOps / SRE Engineer", "icon": "🚀"},
+    {"title": "Site Reliability Engineer", "icon": "🛰️"},
     {"title": "Data & AI Engineer", "icon": "🧠"},
     {"title": "Product / Business Analyst", "icon": "📋"},
     {"title": "Cloud / Platform Engineer", "icon": "☁️"},
@@ -271,15 +347,9 @@ PLANNED_ROLES = [
 
 @app.route("/careers")
 def careers_index():
-    roles = []
-    if os.path.isdir(os.path.join(DATA_DIR, "roles")):
-        for filename in sorted(os.listdir(os.path.join(DATA_DIR, "roles"))):
-            if filename.endswith(".json"):
-                with open(os.path.join(DATA_DIR, "roles", filename), encoding="utf-8") as f:
-                    roles.append(json.load(f))
     return render_template(
         "careers_index.html",
-        roles=roles,
+        roles=_load_all_roles(),
         planned_roles=PLANNED_ROLES,
         active="careers-explorer",
         academy_scoped=False,
@@ -354,11 +424,15 @@ def chat():
     if client is None:
         return jsonify({"error": "Chat isn't configured yet. Contact the site administrator."}), 500
 
+    mode = data.get("mode")
+    mode_config = MENTOR_MODES.get(mode, MENTOR_MODES[DEFAULT_MENTOR_MODE])
+    system_prompt = SYSTEM_PROMPT + "\n\n" + mode_config["focus"]
+
     try:
         response = client.messages.create(
             model=MODEL,
             max_tokens=MAX_TOKENS,
-            system=SYSTEM_PROMPT,
+            system=system_prompt,
             messages=messages,
         )
     except anthropic.APIError as exc:

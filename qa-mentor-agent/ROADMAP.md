@@ -162,42 +162,68 @@ outlook, sources.
       justify it (fine with 2-6 roles as plain cards for now).
 - [x] Build `/careers/<role-slug>` generic template against the Epic 0.2
       schema — shipped in Phase 0 Epic 0.2.
-- [ ] Write full content for the 3 roles above:
+- [x] Write full content for the 3 roles above:
   - [x] QA Engineer → SDET (`data/roles/sdet.json`)
   - [x] Full-Stack Developer (`data/roles/developer.json`) — roadmap
         stages are self-contained in the JSON, not linked to the
         Roadmaps page, since that page is scoped to the SDET Mentor
         academy, not general TechOrbit (see Epic 0.4 hierarchy note).
-  - [ ] DevOps Engineer — not started.
+  - [x] DevOps Engineer (`data/roles/devops.json`) — same pattern,
+        certs verified via web search (CKA, Terraform Associate, AWS
+        DevOps Engineer Professional, AWS Cloud Practitioner).
 - [x] Add 2-3 transition-path examples from §6 — SDET's transition paths
       plus Developer's "QA/SDET → Developer" and "Backend Developer →
-      AI Engineer" (both named in the blueprint's own examples).
+      AI Engineer", plus DevOps's "Linux Administrator → DevOps
+      Engineer" and "DevOps Engineer → SRE" (all named in the
+      blueprint's own examples).
 
-### Epic 1.2 — Onboarding + personalized dashboard (§4)
-- [ ] Onboarding flow capturing: current role, target role, experience
-      level, weekly time, learning goal, certification interest.
-      (Requires Epic 0.1 accounts to persist past one session.)
-- [ ] Personalized dashboard: recommended roadmap, daily lesson, daily
-      challenge (already exists), suggested next action.
-- [ ] "Edit my plan" — users can change answers any time.
+**Epic 1.1 complete** — all 3 recommended first roles shipped.
+
+### Epic 1.2 — Onboarding + personalized dashboard (§4) — scoped down, no DB
+- [x] Onboarding flow at `/onboarding` capturing: target role (from the
+      real roles above, or "not sure yet"), experience level, weekly
+      time, and primary goal. Stored in localStorage (`ONBOARDING_KEY`),
+      not a database — consistent with the Epic 0.1 deferral.
+      Deliberately dropped from the blueprint's full §4 list for this
+      first pass: current role/education, preferred languages, preferred
+      learning style, target completion date, interview timeline,
+      accessibility needs, preferred language, geographic market — each
+      would need corresponding personalization logic to be worth asking,
+      which isn't built yet.
+- [x] "Recommended for you" card on Home: shows the target role with a
+      goal-specific tip and a direct link into its Career Explorer page,
+      or a link to browse all roles if "not sure yet." Not the full
+      blueprint dashboard (no skill-gap analysis, no suggested labs/
+      projects beyond what the role page itself already lists — those
+      need more infrastructure/content than a first pass justifies).
+- [x] "Edit my plan" — linked from Settings, re-visiting `/onboarding`
+      pre-fills previous answers.
 
 ### Epic 1.3 — AI mentor modes (no new infra — prompt/routing only)
-- [ ] Add a mentor-mode selector to Chat: Developer, QA/SDET, DevOps,
-      Career Coach to start (subset of blueprint §23's 15 modes).
-- [ ] Each mode = a distinct system prompt + optional role context passed
-      into the existing `/api/chat` call. No architecture change needed.
-- [ ] Add "last verified" disclaimers to AI answers about tools/versions
-      (cheap trust signal, no infra needed).
+- [x] Mentor-mode selector on Chat: QA/SDET, Developer, DevOps, Career
+      Coach (the 4 modes recommended here; the blueprint's other 11 are
+      not built). Selection persists in localStorage.
+- [x] Each mode appends a focus fragment to the existing `SYSTEM_PROMPT`
+      and is passed to `/api/chat` via a `mode` field; invalid/missing
+      mode falls back to QA/SDET without erroring.
+- [ ] "Last verified" disclaimers on AI answers about tools/versions —
+      not done; would need per-answer metadata the chat endpoint doesn't
+      currently track.
 
 ### Epic 1.4 — Search (§24, scoped down)
-- [ ] Client-side search across existing static content first (roles,
-      lessons, glossary, resources) — no search infra needed yet.
-- [ ] Typo tolerance + synonym list for common QA/dev acronyms.
+- [x] Client-side search improved on Home's topic grid: typo tolerance
+      (Levenshtein distance) and a bidirectional synonym/acronym map
+      (e2e, api, ci, cd, sdet, oop, llm, ai, qa, ui, ux, sql, rest, jwt,
+      bva, ep) — works whichever direction the user types.
+- [ ] Search across roles/lessons/glossary/resources (only the Home
+      topic grid was improved, not a unified cross-content search) —
+      not done.
 - [ ] Defer: full knowledge-graph search, chat-history search (needs
       Phase 0 accounts + DB).
 
-**Phase 1 exit criteria:** 3 complete role paths live, accounts + basic
-personalization working, mentor modes shipped, rebrand done.
+**Phase 1 status: content/prompt/search work done to the scoped level
+above. Epic 0.1 (accounts + database) remains deliberately deferred —
+see "What's blocked on infrastructure" below.**
 
 ---
 
@@ -241,12 +267,13 @@ on 2.1's pattern)
 - [ ] Add scenario/troubleshooting question types beyond multiple-choice.
 
 ### Epic 2.5 — Certification navigator (§21, scoped)
-- [ ] Start with 3-5 certifications tied to the 3 shipped roles (e.g.
-      ISTQB, one cloud cert, one Kubernetes/Docker cert).
-- [ ] Every entry requires: official source link, last-verified date,
-      prerequisites, cost with date context, free study roadmap. No
-      auto-scraping — manual curation with a review-date field so stale
-      entries surface automatically.
+- [~] Partially satisfied inline: each of the 3 shipped roles already
+      lists 4-5 certifications with verified official links and a
+      `governance.last_reviewed` date (e.g. SDET → ISTQB/AWS/Postman,
+      DevOps → CKA/Terraform Associate/AWS DevOps Professional). Not
+      done: a dedicated `/certifications` navigator page with prep
+      time, cost, renewal requirements, and free study roadmaps per
+      cert — still a real gap versus §21's full field list.
 
 ---
 
@@ -276,13 +303,21 @@ on 2.1's pattern)
 
 ## Phase 5 — Emerging tech & community
 
-- [ ] Technology Radar (§27) — Adopt/Trial/Assess/Watch/Declining
-      classification, content-only, no infra.
+- [x] Technology Radar (§27) at `/radar` — 12 technologies across
+      Adopt/Trial/Assess/Watch/Declining/Emerging, grounded in what
+      this platform's 3 shipped roles actually cover (Playwright,
+      Docker, Kubernetes, TypeScript, AI coding assistants, LLM eval
+      frameworks, agentic AI, etc.), not a full sweep of the blueprint's
+      20+ domains. Each entry is explicitly labeled as TechOrbit's own
+      editorial judgment, not a cited industry ranking. Done out of
+      phase order since it's content-only with no infra dependency.
 - [ ] Emerging-tech content tracks (quantum, robotics, edge AI) clearly
-      labeled proven vs. speculative (§17).
+      labeled proven vs. speculative (§17) — not done; the radar above
+      touches AI/agentic trends but doesn't cover quantum/robotics/edge.
 - [ ] Community features **only after** moderation tooling exists
       (§26 explicit requirement) — do not ship forums first and add
-      moderation later.
+      moderation later. Not started; needs a moderation-tooling
+      decision first, see below.
 
 ---
 
@@ -330,6 +365,42 @@ compute) from everything built so far, and should be scoped and estimated
 on its own before committing to a timeline for Phase 2.
 
 ---
+
+## What's blocked on infrastructure (can't be completed without it)
+
+Asked to "complete all the phases," this is the honest boundary: everything
+above this line that's checked off was achievable inside the current
+architecture (Flask + localStorage, one Anthropic API key, no database,
+no sandboxed compute). Everything below needs a real infrastructure or
+account decision that only the project owner can make — provisioning a
+service, creating credentials, accepting a cost/risk tradeoff. None of it
+was faked or stubbed to look done; it's left explicitly unstarted.
+
+- **Epic 0.1 (accounts + database):** needs a managed Postgres provider
+  (Vercel Postgres, Supabase, Neon, etc.) — an account and connection
+  string someone has to create. Blocks: true cross-device sync, the
+  blueprint's full onboarding field list, portfolio pages, structured
+  assessment history, and anything else that needs to outlive a single
+  browser's localStorage.
+- **Phase 2 playgrounds (all of them — coding, SQL, API, Linux,
+  Kubernetes, etc.):** need real isolated, resource-limited compute.
+  A Vercel serverless function cannot safely run arbitrary user code.
+  This needs a dedicated infrastructure spike (a hosted code-execution
+  API, or a self-managed container service) and a decision on cost
+  limits and abuse handling before any playground ships — not a normal
+  content ticket.
+- **Phase 4 real cloud specialization labs:** hands-on AWS/Azure/GCP
+  exercises need actual cloud accounts with cost controls — a bigger,
+  separate risk than the Phase 2 spike above.
+- **Phase 5 community/forums:** blueprint §26 explicitly requires
+  moderation tooling to exist *before* community features ship. No
+  moderation system exists, so no community features were built either,
+  by design — not an oversight.
+
+None of these were skipped by choice to save time; they're skipped
+because completing them here would mean either fabricating
+infrastructure that isn't real, or making account/cost decisions that
+aren't this session's to make.
 
 ## What's explicitly out of scope until re-visited
 
