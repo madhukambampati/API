@@ -342,12 +342,38 @@ def _load_all_roles():
 
 PLANNED_ROLES = []
 
+_DURATION_RE = re.compile(r"(\d+)(?:\s*-\s*(\d+))?\s*week")
+
+
+def _estimate_roadmap_weeks(role):
+    low = high = 0
+    for stage in role.get("roadmap", {}).get("stages", []):
+        match = _DURATION_RE.search(stage.get("duration", ""))
+        if not match:
+            continue
+        lo = int(match.group(1))
+        hi = int(match.group(2)) if match.group(2) else lo
+        low += lo
+        high += hi
+    if not high:
+        return None
+    return f"~{low}-{high} weeks" if low != high else f"~{low} weeks"
+
 
 @app.route("/careers")
 def careers_index():
+    roles = _load_all_roles()
+    role_meta = {
+        role["slug"]: {
+            "duration": _estimate_roadmap_weeks(role),
+            "has_dedicated_roadmap": bool(role.get("roadmap", {}).get("link")),
+        }
+        for role in roles
+    }
     return render_template(
         "careers_index.html",
-        roles=_load_all_roles(),
+        roles=roles,
+        role_meta=role_meta,
         planned_roles=PLANNED_ROLES,
         active="careers-explorer",
         academy_label="Career Explorer — browsing all TechOrbit roles",

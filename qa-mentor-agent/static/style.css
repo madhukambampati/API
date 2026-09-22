@@ -1647,6 +1647,42 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
   color: var(--text-dim);
 }
 
+.role-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.role-badge.content-status {
+  background: var(--surface-alt);
+  color: var(--text-faint);
+  border-color: var(--border);
+}
+
+.role-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.role-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}
+
+.role-card-meta .icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 /* ---------- Glossary ---------- */
 
 #glossary-search {

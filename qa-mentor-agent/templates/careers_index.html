@@ -1,19 +1,35 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}TechOrbit — Career Explorer{% endblock %}
 {% block content %}
 <h1 class="page-title">🧭 Career Explorer</h1>
 <p class="page-subtitle">
   Browse tech roles, see what each one actually involves, and find your path.
-  {{ roles|length }} role profile{{ "s" if roles|length != 1 }} available today (early access) — more are on the way.
+  {{ roles|length }} role profile{{ "s" if roles|length != 1 }} available today.
 </p>
 
 <div class="section-heading"><div><h2>Available now</h2></div></div>
 <div class="resource-grid" style="margin-bottom: 32px;">
   {% for role in roles %}
-  <a class="resource-card" href="{{ url_for('role_detail', slug=role.slug) }}">
-    <span class="resource-type">{{ role.status }}</span>
+  <a class="resource-card role-accent-{{ role.slug }}" href="{{ url_for('role_detail', slug=role.slug) }}">
+    <div class="role-accent-bar"></div>
+    <div class="role-card-badges">
+      <span class="role-badge">Role maturity: {{ role.status }} career</span>
+      <span class="role-badge content-status">Content status: Early draft</span>
+    </div>
     <h3>{{ role.title }}</h3>
     <p>{{ role.definition }}</p>
+    <ul class="chip-row" style="margin: 10px 0;">
+      {% for skill in role.required_technical_skills[:3] %}
+      <li>{{ skill.split('(')[0].strip() }}</li>
+      {% endfor %}
+    </ul>
+    <div class="role-card-meta">
+      {% set meta = role_meta[role.slug] %}
+      {% if meta.duration %}<span>{{ icon("clock") }} {{ meta.duration }} to core skills</span>{% endif %}
+      <span>{{ icon("map") }} {{ "Full roadmap on Roadmaps page" if meta.has_dedicated_roadmap else "Roadmap outline on this page" }}</span>
+    </div>
+    {{ icon("arrow-right", "resource-card-arrow") }}
   </a>
   {% endfor %}
 </div>

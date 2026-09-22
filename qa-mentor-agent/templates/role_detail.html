@@ -2,19 +2,24 @@
 {% from "_icons.html" import icon %}
 {% block title %}TechOrbit — {{ role.title }}{% endblock %}
 {% block content %}
+<div class="role-accent-{{ role.slug }} role-page">
+<div class="role-accent-bar" style="margin: -28px -28px 20px;"></div>
 <div class="section-heading">
   <div>
     <h1 class="page-title">{{ role.title }}</h1>
     <p class="page-subtitle">{{ role.definition }}</p>
   </div>
-  <span class="quiz-score-pill" title="How established this profession is in the job market">{{ role.status }} role</span>
+  <div class="role-card-badges" style="flex-shrink: 0;">
+    <span class="role-badge">Role maturity: {{ role.status }} career</span>
+    <span class="role-badge content-status">Content status: Early draft</span>
+  </div>
 </div>
 
 <p class="settings-note" style="margin-top: -10px;">
-  📝 Page content: Early access — some sections may still be thin while we build
-  out the Career Explorer. This describes how complete <em>this page</em> is, not
-  how established the role itself is. Content v{{ role.governance.version }}, last
-  reviewed {{ role.governance.last_reviewed }}.
+  These two badges describe different things: role maturity is how established
+  this <em>profession</em> is in the job market; content status is how complete
+  <em>this page</em> is while we keep building out the Career Explorer. Content
+  v{{ role.governance.version }}, last reviewed {{ role.governance.last_reviewed }}.
 </p>
 
 <div class="settings-grid">
@@ -215,4 +220,5 @@
   {% endfor %}
 </div>
 {% endif %}
+</div>
 {% endblock %}
