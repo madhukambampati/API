@@ -1271,6 +1271,16 @@ a {
   display: none;
 }
 
+.resource-card.planned {
+  background: var(--surface-alt);
+  border: 1px dashed var(--border);
+  cursor: default;
+}
+
+.resource-card.planned h3 {
+  color: var(--text-dim);
+}
+
 .resource-type {
   display: inline-block;
   font-size: 0.66rem;

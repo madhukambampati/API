@@ -10,26 +10,30 @@
 </div>
 
 <p class="settings-note" style="margin-top: -10px;">
-  Schema-driven role page — an early Phase 0 proof of concept for the Career
-  Explorer. This is the only role built this way so far; more roles and a
-  searchable index arrive in Phase 1. Content v{{ role.governance.version }},
-  last reviewed {{ role.governance.last_reviewed }}.
+  🚧 Early draft — some sections may still be thin while we build out the
+  Career Explorer. Content v{{ role.governance.version }}, last reviewed
+  {{ role.governance.last_reviewed }}.
 </p>
 
 <div class="settings-grid">
+  {% if role.daily_responsibilities %}
   <div class="settings-panel">
     <h3>🧭 Daily responsibilities</h3>
     <ul class="stage-skills">
       {% for item in role.daily_responsibilities %}<li>{{ item }}</li>{% endfor %}
     </ul>
   </div>
+  {% endif %}
 
+  {% if role.required_technical_skills or role.required_nontechnical_skills %}
   <div class="settings-panel">
     <h3>🛠️ Required skills</h3>
+    {% if role.required_technical_skills %}
     <p style="margin: 0 0 6px; font-size: 0.82rem; color: var(--text-dim);">Technical</p>
     <ul class="stage-skills">
       {% for item in role.required_technical_skills %}<li>{{ item }}</li>{% endfor %}
     </ul>
+    {% endif %}
     {% if role.required_nontechnical_skills %}
     <p style="margin: 12px 0 6px; font-size: 0.82rem; color: var(--text-dim);">Non-technical</p>
     <ul class="stage-skills">
@@ -37,6 +41,7 @@
     </ul>
     {% endif %}
   </div>
+  {% endif %}
 </div>
 
 {% if role.expectations %}
@@ -59,7 +64,11 @@
 {% if role.roadmap %}
 <div class="section-heading">
   <div><h2>🗺️ Roadmap</h2><p>{{ role.roadmap.summary }}</p></div>
-  {% if role.roadmap.link %}<a href="{{ role.roadmap.link }}" class="tool-btn">See the full roadmap →</a>{% endif %}
+  {% if role.roadmap.link %}
+  <a href="{{ role.roadmap.link }}" class="tool-btn">See the full roadmap →</a>
+  {% else %}
+  <span class="quiz-score-pill">Interactive roadmap coming soon</span>
+  {% endif %}
 </div>
 {% if role.roadmap.stages %}
 <div class="timeline" style="margin-bottom: 28px;">
@@ -123,14 +132,17 @@
 
 {% if role.market_info %}
 <div class="section-heading"><div><h2>💰 Salary &amp; market</h2></div></div>
+{% if role.market_info.status == "sourced" %}
 <p class="settings-note" style="margin-bottom: 28px;">
-  {% if role.market_info.status == "sourced" %}
-    {{ role.market_info.summary }} ({{ role.market_info.location }}, as of {{ role.market_info.as_of_date }}.
-    <a href="{{ role.market_info.source_url }}" target="_blank" rel="noopener">Source</a>)
-  {% else %}
-    {{ role.market_info.summary }}
-  {% endif %}
+  {{ role.market_info.summary }} ({{ role.market_info.location }}, as of {{ role.market_info.as_of_date }}.
+  <a href="{{ role.market_info.source_url }}" target="_blank" rel="noopener">Source</a>)
 </p>
+{% else %}
+<div class="settings-panel" style="margin-bottom: 28px;">
+  <p style="margin: 0 0 6px; color: var(--text-dim);">📊 Verified salary data coming later.</p>
+  <p class="settings-note" style="margin-bottom: 0;">We don't publish salary estimates without a specific, dated, citable source.</p>
+</div>
+{% endif %}
 {% endif %}
 
 <div class="settings-grid">

@@ -278,20 +278,28 @@ def careers_index():
                 with open(os.path.join(DATA_DIR, "roles", filename), encoding="utf-8") as f:
                     roles.append(json.load(f))
     return render_template(
-        "careers_index.html", roles=roles, planned_roles=PLANNED_ROLES, active="career"
+        "careers_index.html",
+        roles=roles,
+        planned_roles=PLANNED_ROLES,
+        active="careers-explorer",
+        academy_scoped=False,
     )
 
 
 @app.route("/careers/<slug>")
 def role_detail(slug):
     role = _load_content_json("roles", slug)
-    return render_template("role_detail.html", role=role, active="career")
+    return render_template(
+        "role_detail.html", role=role, active="careers-explorer", academy_scoped=False
+    )
 
 
 @app.route("/lessons/<slug>")
 def lesson_detail(slug):
     lesson = _load_content_json("lessons", slug)
-    return render_template("lesson_detail.html", lesson=lesson, active="")
+    return render_template(
+        "lesson_detail.html", lesson=lesson, active="", academy_scoped=False
+    )
 
 
 @app.route("/tools")

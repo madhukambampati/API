@@ -32,13 +32,20 @@
         <div>
           <div class="brand-name">TechOrbit</div>
           <div class="brand-tag">Every role. Every skill. One learning universe.</div>
+          {% if academy_scoped | default(true) %}
           <div class="brand-academy">└ SDET Mentor — QA &amp; Quality Engineering Academy</div>
+          {% else %}
+          <div class="brand-academy">└ Career Explorer — browsing all TechOrbit roles</div>
+          {% endif %}
         </div>
       </div>
 
       <nav class="nav">
         <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active == 'home' }}">
           <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="{{ url_for('careers_index') }}" class="nav-item {{ 'active' if active == 'careers-explorer' }}">
+          <span class="nav-icon">🧭</span> Explore Careers
         </a>
         <a href="{{ url_for('chat_page') }}" class="nav-item {{ 'active' if active == 'chat' }}">
           <span class="nav-icon">💬</span> Chat
@@ -56,7 +63,7 @@
           <span class="nav-icon">📖</span> Glossary
         </a>
         <a href="{{ url_for('career') }}" class="nav-item {{ 'active' if active == 'career' }}">
-          <span class="nav-icon">💼</span> Career
+          <span class="nav-icon">💼</span> Career Tools
         </a>
         <a href="{{ url_for('tools_page') }}" class="nav-item {{ 'active' if active == 'tools' }}">
           <span class="nav-icon">🔧</span> Tools

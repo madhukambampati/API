@@ -4,7 +4,7 @@
 <h1 class="page-title">🧭 Career Explorer</h1>
 <p class="page-subtitle">
   Browse tech roles, see what each one actually involves, and find your path.
-  This is early: one fully-built role today, more on the way.
+  {{ roles|length }} role{{ "s are" if roles|length != 1 else " is" }} fully built today — more are on the way.
 </p>
 
 <div class="section-heading"><div><h2>Available now</h2></div></div>
@@ -18,10 +18,10 @@
   {% endfor %}
 </div>
 
-<div class="section-heading"><div><h2>Coming soon</h2><p>Full role pages are planned for Phase 1 — not yet built, not yet clickable.</p></div></div>
+<div class="section-heading"><div><h2>Coming soon</h2><p>These roles aren't built yet — not clickable.</p></div></div>
 <div class="resource-grid">
   {% for planned in planned_roles %}
-  <div class="resource-card static" style="opacity: 0.55;" aria-disabled="true">
+  <div class="resource-card planned" aria-disabled="true">
     <span class="resource-type">Planned</span>
     <h3>{{ planned.icon }} {{ planned.title }}</h3>
   </div>

@@ -33,7 +33,7 @@
   ],
   "recommended_languages": ["JavaScript/TypeScript", "Python", "Java"],
   "roadmap": {
-    "summary": "A self-contained learning path from programming fundamentals to a deployed full-stack application. Not yet linked to an in-app Roadmaps track — the existing Roadmaps page is currently scoped to the SDET Mentor academy; a dedicated Developer roadmap track is a future addition, tracked separately in ROADMAP.md.",
+    "summary": "A learning path from programming fundamentals to a deployed full-stack application. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
       { "name": "Programming fundamentals", "duration": "4-6 weeks", "topics": ["Variables, control flow, functions", "Data structures: arrays, objects/maps, basic algorithms"] },
@@ -45,7 +45,7 @@
     ]
   },
   "labs": [
-    "Coming in Phase 2: a browser-based coding playground and a web (HTML/CSS/JS) playground with live preview.",
+    "Coming soon: a browser-based coding playground and a web (HTML/CSS/JS) playground with live preview.",
     "For now, practice by building the projects below locally and pushing them to GitHub."
   ],
   "projects": [
