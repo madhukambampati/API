@@ -2,7 +2,7 @@
 {% block title %}TechOrbit — Chat{% endblock %}
 {% block content %}
 <h1 class="page-title">💬 Chat</h1>
-<p class="page-subtitle">Ask anything about QA, SDET, or AI-QA.</p>
+<p class="page-subtitle" id="chat-subtitle">Ask anything about QA, SDET, or AI-QA.</p>
 
 <div class="mentor-mode-row">
   <label for="mentor-mode-select" class="mentor-mode-label">Mentor mode</label>
@@ -35,20 +35,7 @@
       </svg>
       <h2 id="greeting-text">Hi there!</h2>
       <p class="chat-hero-tagline">I'm your TechOrbit AI mentor. Ready when you are!</p>
-      <div class="hero-pills">
-        <button type="button" class="hero-pill" data-prompt="What's the difference between explicit and implicit waits in Selenium?">
-          🧭 Selenium waits explained
-        </button>
-        <button type="button" class="hero-pill" data-prompt="Give me a 6-month roadmap to go from manual tester to SDET.">
-          🗺️ Manual → SDET roadmap
-        </button>
-        <button type="button" class="hero-pill" data-prompt="Walk me through testing a REST API with Postman, step by step.">
-          🌐 API testing basics
-        </button>
-        <button type="button" class="hero-pill" data-prompt="What is AI-QA, and how is testing an LLM feature different from testing normal software?">
-          🤖 What is AI-QA?
-        </button>
-      </div>
+      <div class="hero-pills" id="hero-pills"></div>
     </div>
   </main>
 

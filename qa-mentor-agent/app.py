@@ -259,7 +259,10 @@ def home():
 @app.route("/onboarding")
 def onboarding():
     return render_template(
-        "onboarding.html", active="", academy_scoped=False, roles=_load_all_roles()
+        "onboarding.html",
+        active="",
+        academy_label="Getting Started — personalize your plan",
+        roles=_load_all_roles(),
     )
 
 
@@ -270,6 +273,7 @@ def chat_page():
         active="chat",
         mentor_modes=MENTOR_MODES,
         default_mentor_mode=DEFAULT_MENTOR_MODE,
+        academy_label="AI Mentor Chat — cross-role assistant",
     )
 
 
@@ -301,7 +305,7 @@ def tech_radar():
         categories=RADAR_CATEGORIES,
         role_titles=role_titles,
         active="radar",
-        academy_scoped=False,
+        academy_label="Technology Radar — cross-role trends",
     )
 
 
@@ -341,7 +345,7 @@ def careers_index():
         roles=_load_all_roles(),
         planned_roles=PLANNED_ROLES,
         active="careers-explorer",
-        academy_scoped=False,
+        academy_label="Career Explorer — browsing all TechOrbit roles",
     )
 
 
@@ -351,7 +355,10 @@ def role_detail(slug):
     if role is None:
         abort(404)
     return render_template(
-        "role_detail.html", role=role, active="careers-explorer", academy_scoped=False
+        "role_detail.html",
+        role=role,
+        active="careers-explorer",
+        academy_label="Career Explorer — browsing all TechOrbit roles",
     )
 
 
@@ -361,7 +368,10 @@ def lesson_detail(slug):
     if lesson is None:
         abort(404)
     return render_template(
-        "lesson_detail.html", lesson=lesson, active="", academy_scoped=False
+        "lesson_detail.html",
+        lesson=lesson,
+        active="",
+        academy_label="Career Explorer — browsing all TechOrbit roles",
     )
 
 
@@ -393,6 +403,59 @@ def settings():
 @app.route("/api/status")
 def api_status():
     return jsonify({"api_key_configured": client is not None})
+
+
+def _slugify(text):
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+app.jinja_env.filters["slugify"] = _slugify
+
+
+@app.route("/api/search")
+def api_search():
+    q = (request.args.get("q") or "").strip().lower()
+    if not q:
+        return jsonify({"results": []})
+
+    results = []
+
+    for slug, role in ROLES.items():
+        haystack = " ".join(
+            [
+                role.get("title", ""),
+                role.get("definition", ""),
+                " ".join(role.get("common_tools", [])),
+                " ".join(role.get("recommended_languages", [])),
+            ]
+        ).lower()
+        if q in haystack:
+            results.append(
+                {
+                    "type": "Role",
+                    "icon": "🧭",
+                    "title": role["title"],
+                    "snippet": role.get("definition", ""),
+                    "url": url_for("role_detail", slug=slug),
+                }
+            )
+
+    for item in RADAR_ITEMS:
+        haystack = " ".join(
+            [item.get("name", ""), item.get("what_it_is", ""), item.get("why_it_matters", "")]
+        ).lower()
+        if q in haystack:
+            results.append(
+                {
+                    "type": "Tech Radar",
+                    "icon": "🛰️",
+                    "title": item["name"],
+                    "snippet": item.get("what_it_is", ""),
+                    "url": url_for("tech_radar") + "#radar-" + _slugify(item["name"]),
+                }
+            )
+
+    return jsonify({"results": results[:20]})
 
 
 VALID_CHAT_ROLES = {"user", "assistant"}

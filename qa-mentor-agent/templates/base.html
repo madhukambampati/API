@@ -32,11 +32,7 @@
         <div>
           <div class="brand-name">TechOrbit</div>
           <div class="brand-tag">Every role. Every skill. One learning universe.</div>
-          {% if academy_scoped | default(true) %}
-          <div class="brand-academy">└ SDET Mentor — QA &amp; Quality Engineering Academy</div>
-          {% else %}
-          <div class="brand-academy">└ Career Explorer — browsing all TechOrbit roles</div>
-          {% endif %}
+          <div class="brand-academy">└ {{ academy_label | default("SDET Mentor — QA & Quality Engineering Academy") }}</div>
         </div>
       </div>
 

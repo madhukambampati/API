@@ -58,23 +58,57 @@ function wordMatches(haystack, word) {
   return [...candidates].some((c) => fuzzyIncludes(haystack, c));
 }
 
+let searchRequestId = 0;
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function updateSearchEmptyState() {
+  const emptyHint = document.getElementById("topic-empty-hint");
+  const grid = document.getElementById("topic-grid");
+  if (!emptyHint || !grid) return;
+  const visibleCount = grid.querySelectorAll(".topic-card:not(.hidden)").length;
+  emptyHint.style.display = visibleCount === 0 ? "block" : "none";
+  grid.style.display = visibleCount === 0 ? "none" : "grid";
+}
+
 window.filterTopics = function (query) {
   const q = query.trim().toLowerCase();
   const words = q.split(/\s+/).filter(Boolean);
-  let visibleCount = 0;
-  document.querySelectorAll("#topic-grid .topic-card").forEach((card) => {
+  document.querySelectorAll("#topic-grid .topic-card:not([data-dynamic])").forEach((card) => {
     const haystack = card.dataset.title || "";
     const match = !q || haystack.includes(q) || words.every((w) => wordMatches(haystack, w));
     card.classList.toggle("hidden", !match);
-    if (match) visibleCount += 1;
   });
 
-  const emptyHint = document.getElementById("topic-empty-hint");
-  const grid = document.getElementById("topic-grid");
-  if (emptyHint && grid) {
-    emptyHint.style.display = visibleCount === 0 ? "block" : "none";
-    grid.style.display = visibleCount === 0 ? "none" : "grid";
+  document.querySelectorAll("#topic-grid .topic-card[data-dynamic]").forEach((el) => el.remove());
+
+  if (!q) {
+    updateSearchEmptyState();
+    return;
   }
+
+  const requestId = ++searchRequestId;
+  fetch(`/api/search?q=${encodeURIComponent(q)}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (requestId !== searchRequestId) return; // a newer search superseded this one
+      const grid = document.getElementById("topic-grid");
+      if (!grid) return;
+      (data.results || []).forEach((r) => {
+        const card = document.createElement("a");
+        card.className = "topic-card";
+        card.dataset.dynamic = "true";
+        card.href = r.url;
+        card.innerHTML = `<span class="topic-icon">${escapeHtml(r.icon)}</span><div><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.snippet)}</p></div><span class="topic-arrow">→</span>`;
+        grid.appendChild(card);
+      });
+      updateSearchEmptyState();
+    })
+    .catch(() => updateSearchEmptyState());
+
+  updateSearchEmptyState();
 };
 
 function goToChat(question) {

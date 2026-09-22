@@ -7,23 +7,85 @@ const modeSelect = document.getElementById("mentor-mode-select");
 
 const history = [];
 
+const MODE_CONTENT = {
+  sdet: {
+    subtitle: "Ask anything about QA, SDET, or AI-QA.",
+    placeholder: "Ask about test design, Selenium, Playwright, API testing, AI-QA...",
+    prompts: [
+      { icon: "🧭", label: "Selenium waits explained", prompt: "What's the difference between explicit and implicit waits in Selenium?" },
+      { icon: "🗺️", label: "Manual → SDET roadmap", prompt: "Give me a 6-month roadmap to go from manual tester to SDET." },
+      { icon: "🌐", label: "API testing basics", prompt: "Walk me through testing a REST API with Postman, step by step." },
+      { icon: "🤖", label: "What is AI-QA?", prompt: "What is AI-QA, and how is testing an LLM feature different from testing normal software?" },
+    ],
+  },
+  developer: {
+    subtitle: "Ask anything about frontend, backend, or full-stack development.",
+    placeholder: "Ask about APIs, databases, frameworks, debugging...",
+    prompts: [
+      { icon: "🧩", label: "Dependency injection explained", prompt: "Explain dependency injection with a simple example." },
+      { icon: "🔧", label: "Build a REST API", prompt: "Walk me through building a REST API with authentication, step by step." },
+      { icon: "🖥️", label: "Frontend vs. backend", prompt: "What's the difference between frontend and backend development?" },
+      { icon: "🐞", label: "Debug this code", prompt: "How do I approach debugging a piece of code that's behaving unexpectedly?" },
+    ],
+  },
+  devops: {
+    subtitle: "Ask anything about CI/CD, containers, infrastructure, or incident response.",
+    placeholder: "Ask about Docker, Kubernetes, Terraform, CI/CD pipelines...",
+    prompts: [
+      { icon: "🐳", label: "Docker vs. Kubernetes", prompt: "What's the difference between Docker and Kubernetes, and when do I need each?" },
+      { icon: "🔄", label: "Build a CI/CD pipeline", prompt: "Walk me through building a CI/CD pipeline that tests and deploys on every push." },
+      { icon: "📊", label: "What are SLOs?", prompt: "Explain SLIs, SLOs, and error budgets with a simple example." },
+      { icon: "🚨", label: "Debug a production incident", prompt: "How would I approach debugging a service with rising latency in production?" },
+    ],
+  },
+  career: {
+    subtitle: "Ask anything about career growth, resumes, interviews, or role transitions.",
+    placeholder: "Ask about resumes, interview prep, career transitions...",
+    prompts: [
+      { icon: "📄", label: "Improve my resume", prompt: "What makes a strong tech resume stand out?" },
+      { icon: "🎯", label: "Prep for an interview", prompt: "Give me common interview questions for a QA/SDET role with strong sample answers." },
+      { icon: "🔀", label: "Switch career tracks", prompt: "How do I transition from manual QA into a developer role?" },
+      { icon: "💬", label: "Negotiate an offer", prompt: "What's a good approach to negotiating a job offer?" },
+    ],
+  },
+};
+
+function applyModeContent(mode) {
+  const content = MODE_CONTENT[mode] || MODE_CONTENT.sdet;
+
+  const subtitleEl = document.getElementById("chat-subtitle");
+  if (subtitleEl) subtitleEl.textContent = content.subtitle;
+
+  if (inputEl) inputEl.placeholder = content.placeholder;
+
+  const pillsEl = document.getElementById("hero-pills");
+  if (pillsEl) {
+    pillsEl.innerHTML = content.prompts
+      .map((p) => `<button type="button" class="hero-pill" data-prompt="${p.prompt.replace(/"/g, "&quot;")}">${p.icon} ${p.label}</button>`)
+      .join("");
+    pillsEl.querySelectorAll(".hero-pill").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        inputEl.value = chip.dataset.prompt;
+        formEl.requestSubmit();
+      });
+    });
+  }
+}
+
 const MENTOR_MODE_KEY = "qa-mentor-chat-mode";
 if (modeSelect) {
   const savedMode = safeGet(MENTOR_MODE_KEY, null);
   if (savedMode && [...modeSelect.options].some((o) => o.value === savedMode)) {
     modeSelect.value = savedMode;
   }
+  applyModeContent(modeSelect.value);
   modeSelect.addEventListener("change", () => {
     safeSet(MENTOR_MODE_KEY, modeSelect.value);
+    applyModeContent(modeSelect.value);
   });
+} else {
+  applyModeContent("sdet");
 }
-
-document.querySelectorAll(".hero-pill").forEach((chip) => {
-  chip.addEventListener("click", () => {
-    inputEl.value = chip.dataset.prompt;
-    formEl.requestSubmit();
-  });
-});
 
 function setGreeting() {
   const greetingEl = document.getElementById("greeting-text");

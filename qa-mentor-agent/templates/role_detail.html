@@ -6,13 +6,14 @@
     <h1 class="page-title">{{ role.title }}</h1>
     <p class="page-subtitle">{{ role.definition }}</p>
   </div>
-  <span class="quiz-score-pill">{{ role.status }}</span>
+  <span class="quiz-score-pill" title="How established this profession is in the job market">{{ role.status }} role</span>
 </div>
 
 <p class="settings-note" style="margin-top: -10px;">
-  🚧 Early draft — some sections may still be thin while we build out the
-  Career Explorer. Content v{{ role.governance.version }}, last reviewed
-  {{ role.governance.last_reviewed }}.
+  📝 Page content: Early access — some sections may still be thin while we build
+  out the Career Explorer. This describes how complete <em>this page</em> is, not
+  how established the role itself is. Content v{{ role.governance.version }}, last
+  reviewed {{ role.governance.last_reviewed }}.
 </p>
 
 <div class="settings-grid">

@@ -16,7 +16,7 @@
 <div class="section-heading"><div><h2>{{ category }}</h2></div></div>
 <div class="resource-grid" style="margin-bottom: 28px;">
   {% for item in grouped[category] %}
-  <div class="resource-card static">
+  <div class="resource-card static" id="radar-{{ item.name | slugify }}">
     <span class="resource-type">{{ item.category }}</span>
     <h3>{{ item.name }}</h3>
     <p>{{ item.what_it_is }}</p>

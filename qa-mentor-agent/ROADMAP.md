@@ -167,6 +167,49 @@ not a copy fix — see Epic 1.1 and the Resources/Glossary backlog):
       the Git Cheat Sheet tab links to the full `/lessons/git-and-github`
       lesson.
 
+### Epic 0.6 — TO-001 through TO-007 (user-filed bug tickets from live-site review)
+- [x] **TO-002 (High):** Home's topbar search only matched the 8
+      hardcoded topic cards, so e.g. "docker" found nothing despite a
+      real Technology Radar entry existing. Added `/api/search`,
+      searching `ROLES` and `RADAR_ITEMS` server-side; `home.js` now
+      fetches it alongside the existing local card filter and appends
+      matches as real dynamic result cards with working links. Radar
+      cards got stable `id="radar-<slugified-name>"` anchors (a shared
+      `slugify` Jinja filter backs both the template and the API) so
+      search results deep-link to the right entry.
+- [x] **TO-004 (High) + TO-003 + TO-005:** Chat's suggested prompts,
+      subtitle, and input placeholder were hardcoded to QA copy
+      regardless of the selected mentor mode. Moved all of it into a
+      `MODE_CONTENT` map in `chat.js` (one entry per mode: sdet,
+      developer, devops, career) and re-render on mode change and on
+      page load (respecting a restored localStorage mode). Verified by
+      actually clicking a Developer-mode suggested prompt and confirming
+      the correct message was sent, not just that the DOM text changed.
+- [x] **TO-001:** Homepage claimed "Developer, DevOps/SRE, Data & AI,
+      and Product academies are next," which was already false — those
+      roles have had full Career Explorer profiles (and Developer/DevOps
+      have their own Chat mentor mode) since earlier this session.
+      Rewritten to describe what's actually true: SDET Mentor is the
+      most *complete* academy (dedicated roadmaps/practice/resources),
+      all 7 roles already have full Career Explorer profiles, and
+      dedicated roadmaps/practice for the rest is what's actually next.
+- [x] **TO-006:** The role-status badge ("Established") and the
+      content-draft note ("Early draft") sat next to each other and
+      read as contradictory - unclear whether "Established" described
+      the profession or the page. Badge now reads "Established role"
+      with a tooltip, and the note explicitly says "Page content: Early
+      access" with a one-line explanation that it's a different axis
+      from the role-maturity badge.
+- [x] **TO-007:** The sidebar's academy line was a hardcoded boolean
+      (`academy_scoped`) that only ever showed "SDET Mentor academy" or
+      the Career Explorer line, including on the Chat page regardless of
+      which mentor mode was selected. Replaced with a per-route
+      `academy_label` string: Chat now shows "AI Mentor Chat - cross-role
+      assistant" (chosen over dynamically following the mode, since Chat
+      is cross-role in nature regardless of which mode happens to be
+      selected right now); Radar and Onboarding got their own accurate
+      labels too instead of inheriting the generic Career Explorer one.
+
 ---
 
 ## Phase 1 — Strong foundation (content-first, fits mostly on Phase 0)
