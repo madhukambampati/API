@@ -1,8 +1,13 @@
 {% extends "base.html" %}
-{% block title %}QA Mentor — Roadmaps{% endblock %}
+{% block title %}SDET Mentor — Roadmaps{% endblock %}
 {% block content %}
-<h1 class="page-title">🗺️ Roadmaps</h1>
-<p class="page-subtitle">Step-by-step learning paths. Click a stage to expand it.</p>
+<div class="section-heading">
+  <div>
+    <h1 class="page-title" style="margin-bottom: 4px;">🗺️ Roadmaps</h1>
+    <p class="page-subtitle" style="margin-bottom: 0;">Step-by-step learning paths. Click a stage to expand it.</p>
+  </div>
+  <a href="{{ url_for('practice') }}" class="tool-btn">🎯 Test what you've learned →</a>
+</div>
 
 <div class="filter-row">
   <a href="#qa-foundations" class="filter-chip">🌱 QA Foundations</a>

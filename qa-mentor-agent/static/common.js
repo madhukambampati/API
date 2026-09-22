@@ -176,6 +176,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("q")) searchBox.value = params.get("q");
 
+    if (window.filterTopics) {
+      searchBox.addEventListener("input", () => {
+        window.filterTopics(searchBox.value.trim());
+      });
+    }
+
     searchBox.addEventListener("keydown", (event) => {
       if (event.key !== "Enter") return;
       const value = searchBox.value.trim();

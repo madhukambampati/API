@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}SDET Mentor — Tech News{% endblock %}
+{% block content %}
+<div class="section-heading">
+  <div>
+    <h1 class="page-title" style="margin-bottom: 4px;">📰 Tech News</h1>
+    <p class="page-subtitle" style="margin-bottom: 0;">
+      Live release feed for the tools SDETs and AI-QA engineers actually use. Refreshes automatically every 24 hours.
+    </p>
+  </div>
+  <button type="button" class="tool-btn secondary" id="refresh-news-btn">🔄 Refresh</button>
+</div>
+
+<p class="settings-note" id="news-updated-text" style="margin-bottom: 20px;"></p>
+
+<div id="news-grid" class="resource-grid"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tech-news.js') }}"></script>
+{% endblock %}

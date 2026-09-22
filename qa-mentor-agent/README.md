@@ -1,4 +1,4 @@
-# QA Mentor — AI Learning Agent (POC)
+# SDET Mentor — AI Learning Agent (POC)
 
 A learning app for QA Engineers, SDETs, and AI-QA practitioners: an AI chat mentor
 backed by Claude, plus real curated roadmaps, a practice quiz bank, everyday QA
@@ -13,10 +13,14 @@ This is a proof of concept: a local multi-page Flask app, with all personal data
 - **Chat** — the AI mentor, backed by the Claude API, with voice input
 - **Roadmaps** — 8 curated learning tracks (QA Foundations, Manual → SDET, AI-QA Specialist,
   Performance Testing, Security Testing, Mobile Testing, Framework Architect, DevOps for QA)
-- **Practice** — a 39-question quiz bank plus 10 hands-on coding challenges reviewed by the AI mentor
-- **Resources** — curated links to real, well-known docs/courses/communities, filterable by topic
+- **Tech News** — a live release feed (Selenium, Playwright, Cypress, k6, Anthropic/OpenAI SDKs,
+  LangChain, ...) fetched server-side from GitHub and cached for 24 hours
+- **Resources** — curated links to real docs/courses/communities, plus a Visual Guides section
+  (4 animated diagrams built into the app + 5 hand-picked real tutorial videos)
 - **Glossary** — a searchable ~85-term QA/SDET/AI-QA dictionary, plus Git/HTTP/CLI/tool-comparison references
 - **Career** — certification guide, resume & portfolio checklists, and 3 AI mock-interview modes
+- **Practice** — a 39-question quiz bank plus 10 hands-on coding challenges reviewed by the AI mentor
+  (reachable from Home and Roadmaps; not in the main sidebar)
 - **Tools** — test data generator, regex tester, JSON formatter, selector cheat sheet
 - **Progress** — stats read from your local activity (chat, practice, coding, streak, bookmarks)
 - **Bookmarks** — chat answers you've starred

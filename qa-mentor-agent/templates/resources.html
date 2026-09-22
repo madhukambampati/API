@@ -1,8 +1,109 @@
 {% extends "base.html" %}
-{% block title %}QA Mentor — Resources{% endblock %}
+{% block title %}SDET Mentor — Resources{% endblock %}
 {% block content %}
 <h1 class="page-title">📚 Resources</h1>
 <p class="page-subtitle">Hand-picked, free, well-known resources — official docs, courses, and communities — organized by topic.</p>
+
+<div class="section-heading">
+  <div>
+    <h2>🎬 Visual Guides</h2>
+    <p>Animated diagrams built into this app, plus hand-picked real tutorial videos</p>
+  </div>
+</div>
+
+<div class="visual-grid">
+  <div class="visual-card">
+    <div class="diagram diagram-api">
+      <div class="diagram-node client">Client</div>
+      <div class="diagram-track">
+        <div class="diagram-packet"></div>
+      </div>
+      <div class="diagram-node server">Server</div>
+    </div>
+    <h3>API Request/Response Cycle</h3>
+    <p>A client sends a request; the server processes it and sends back a response — the foundation of everything you test in API testing.</p>
+  </div>
+
+  <div class="visual-card">
+    <div class="diagram diagram-locator">
+      <div class="dom-node dom-html">&lt;html&gt;
+        <div class="dom-node dom-body">&lt;body&gt;
+          <div class="dom-node dom-div">&lt;div&gt;
+            <div class="dom-node dom-target" id="locator-target">&lt;button id="submit"&gt;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h3>Selenium Locator Strategy</h3>
+    <p id="locator-caption">Watch how a locator zeroes in on one element in the DOM tree.</p>
+  </div>
+
+  <div class="visual-card">
+    <div class="diagram diagram-cicd">
+      <div class="pipeline-stage" data-stage="0">📝<span>Commit</span></div>
+      <div class="pipeline-stage" data-stage="1">🔨<span>Build</span></div>
+      <div class="pipeline-stage" data-stage="2">✅<span>Test</span></div>
+      <div class="pipeline-stage" data-stage="3">🚀<span>Deploy</span></div>
+    </div>
+    <h3>CI/CD Pipeline Flow</h3>
+    <p>Every commit flows through build, test, and deploy — automated tests are the gate that decides if it ships.</p>
+  </div>
+
+  <div class="visual-card">
+    <div class="diagram diagram-pyramid">
+      <div class="pyramid-layer layer-e2e">E2E</div>
+      <div class="pyramid-layer layer-integration">Integration</div>
+      <div class="pyramid-layer layer-unit">Unit</div>
+    </div>
+    <h3>The Test Pyramid</h3>
+    <p>Many fast unit tests, fewer integration tests, and the fewest slow end-to-end tests at the top.</p>
+  </div>
+</div>
+
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/T3q6QcCQZQg" title="Software Testing Tutorial For Beginners" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <h3>Software Testing Tutorial for Beginners</h3>
+    <a href="https://www.youtube.com/watch?v=T3q6QcCQZQg" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+  </div>
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/Jdkrj2lDAEY" title="Selenium Tutorial For Beginners" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <h3>Selenium WebDriver Tutorial</h3>
+    <a href="https://www.youtube.com/watch?v=Jdkrj2lDAEY" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+  </div>
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/E2KvA5sgKDI" title="Playwright Tutorial for Beginners" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <h3>Playwright Tutorial for Beginners</h3>
+    <a href="https://www.youtube.com/watch?v=E2KvA5sgKDI" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+  </div>
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/Y5a3UAXvo5k" title="Postman API Testing Tutorial for Beginners" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <h3>API Testing with Postman</h3>
+    <a href="https://www.youtube.com/watch?v=Y5a3UAXvo5k" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+  </div>
+  <div class="video-card">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/29EH2nryuAQ" title="promptfoo Tutorial - How to Test AI" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <h3>How to Test AI with promptfoo</h3>
+    <a href="https://www.youtube.com/watch?v=29EH2nryuAQ" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+  </div>
+</div>
+
+<div class="section-heading">
+  <div>
+    <h2>🔗 Links by Topic</h2>
+    <p>Filter to find docs, courses, and communities for a specific area</p>
+  </div>
+</div>
 
 <div class="filter-row" id="resource-filters">
   <button type="button" class="filter-chip active" data-filter="all">All</button>
@@ -192,4 +293,5 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='resources.js') }}"></script>
+<script src="{{ url_for('static', filename='visual-guides.js') }}"></script>
 {% endblock %}

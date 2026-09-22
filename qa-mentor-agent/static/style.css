@@ -939,6 +939,272 @@ a {
   border-radius: 3px;
 }
 
+/* ---------- Visual Guides ---------- */
+
+.visual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.visual-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.visual-card h3 {
+  margin: 4px 0 6px;
+  font-size: 0.94rem;
+}
+
+.visual-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.diagram {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 12px;
+  background: var(--bg-soft);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* API cycle */
+.diagram-api {
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.diagram-node {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.diagram-track {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  position: relative;
+  margin: 0 12px;
+}
+
+.diagram-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: packet-move 3s ease-in-out infinite;
+}
+
+@keyframes packet-move {
+  0% {
+    left: 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  45% {
+    left: calc(100% - 12px);
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  55% {
+    left: calc(100% - 12px);
+    background: var(--accent-2);
+    box-shadow: 0 0 8px var(--accent-2);
+  }
+  100% {
+    left: 0;
+    background: var(--accent-2);
+    box-shadow: 0 0 8px var(--accent-2);
+  }
+}
+
+/* Selenium locator */
+.diagram-locator {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12px 14px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-align: left;
+}
+
+.dom-node {
+  padding-left: 12px;
+  border-left: 1px dashed var(--border);
+  margin-top: 4px;
+}
+
+.dom-target {
+  color: var(--text);
+  background: rgba(99, 102, 241, 0.18);
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+  margin-top: 4px;
+  animation: locator-pulse 2s infinite;
+}
+
+@keyframes locator-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0);
+  }
+}
+
+/* CI/CD pipeline */
+.diagram-cicd {
+  justify-content: space-between;
+  padding: 0 14px;
+}
+
+.pipeline-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.2rem;
+  opacity: 0.4;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pipeline-stage span {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.pipeline-stage.active {
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+/* Test pyramid */
+.diagram-pyramid {
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+}
+
+.pyramid-layer {
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  opacity: 0;
+  animation: layer-build 4s infinite;
+}
+
+.layer-unit {
+  width: 100%;
+  animation-delay: 0s;
+}
+
+.layer-integration {
+  width: 68%;
+  margin: 0 auto;
+  animation-delay: 0.4s;
+}
+
+.layer-e2e {
+  width: 38%;
+  margin: 0 auto;
+  animation-delay: 0.8s;
+}
+
+@keyframes layer-build {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+  15%,
+  90% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+}
+
+/* Video embeds */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.video-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.video-embed {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: #000;
+}
+
+.video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-card h3 {
+  margin: 0 0 6px;
+  font-size: 0.86rem;
+}
+
+.video-card a {
+  font-size: 0.78rem;
+  color: var(--accent-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+
 /* ---------- Resources / filter chips ---------- */
 
 .filter-row {
@@ -1337,6 +1603,7 @@ a {
 }
 
 .tool-btn {
+  display: inline-block;
   border: none;
   border-radius: 10px;
   padding: 9px 16px;
@@ -1345,6 +1612,7 @@ a {
   font-weight: 600;
   font-size: 0.82rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .tool-btn.secondary {

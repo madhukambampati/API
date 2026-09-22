@@ -43,4 +43,57 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `/chat?q=${encodeURIComponent(prompt)}`;
     });
   });
+
+  const atsBtn = document.getElementById("ats-check-btn");
+  if (atsBtn) {
+    atsBtn.addEventListener("click", async () => {
+      const resume = document.getElementById("ats-resume-input").value.trim();
+      const jd = document.getElementById("ats-jd-input").value.trim();
+      const output = document.getElementById("ats-output");
+
+      if (!resume) {
+        showToast("Paste your resume text first.");
+        return;
+      }
+
+      atsBtn.disabled = true;
+      atsBtn.textContent = "Analyzing...";
+      output.style.display = "block";
+      output.classList.remove("error");
+      output.textContent = "Analyzing your resume...";
+
+      const message =
+        `Act as an ATS (Applicant Tracking System) resume evaluator for a QA/SDET/AI-QA candidate. ` +
+        `Analyze the resume below${jd ? " against the provided job description" : ""} and respond in exactly this format:\n\n` +
+        `ATS Score: X/100\n\n` +
+        `Keyword Match: ${jd ? "(list key terms from the job description that are missing from the resume)" : "No job description provided — add one for a keyword match check."}\n\n` +
+        `Strengths:\n- ...\n\n` +
+        `Issues & Fixes:\n- ...\n\n` +
+        `Be concise and specific, not generic.\n\nRESUME:\n${resume}` +
+        (jd ? `\n\nJOB DESCRIPTION:\n${jd}` : "");
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: [{ role: "user", content: message }] }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          output.classList.add("error");
+          output.textContent = `Error: ${data.error || res.statusText}`;
+          return;
+        }
+
+        output.textContent = data.reply;
+      } catch (err) {
+        output.classList.add("error");
+        output.textContent = `Error: ${err.message}`;
+      } finally {
+        atsBtn.disabled = false;
+        atsBtn.textContent = "🔍 Check My Resume";
+      }
+    });
+  }
 });

@@ -1,10 +1,19 @@
 window.filterTopics = function (query) {
   const q = query.trim().toLowerCase();
+  let visibleCount = 0;
   document.querySelectorAll("#topic-grid .topic-card").forEach((card) => {
     const haystack = card.dataset.title || "";
     const match = !q || haystack.includes(q);
     card.classList.toggle("hidden", !match);
+    if (match) visibleCount += 1;
   });
+
+  const emptyHint = document.getElementById("topic-empty-hint");
+  const grid = document.getElementById("topic-grid");
+  if (emptyHint && grid) {
+    emptyHint.style.display = visibleCount === 0 ? "block" : "none";
+    grid.style.display = visibleCount === 0 ? "none" : "grid";
+  }
 };
 
 function goToChat(question) {

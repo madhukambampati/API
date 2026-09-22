@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}QA Mentor — Career{% endblock %}
+{% block title %}SDET Mentor — Career{% endblock %}
 {% block content %}
 <h1 class="page-title">💼 Career &amp; Certifications</h1>
 <p class="page-subtitle">Certifications worth having, resume &amp; portfolio checklists, and AI-driven mock interviews.</p>
@@ -63,6 +63,31 @@
     <p>Testing LLM features, evaluation strategies, and prompt/output quality.</p>
     <button type="button" class="tool-btn interview-btn" data-track="aiqa">Start Interview →</button>
   </div>
+</div>
+
+<div class="section-heading">
+  <div>
+    <h2>📋 ATS Resume Score Checker</h2>
+    <p>Paste your resume — and optionally a job description — for an AI-estimated ATS compatibility score</p>
+  </div>
+</div>
+<div class="settings-panel" style="margin-bottom: 32px;">
+  <div class="field-group">
+    <label for="ats-resume-input">Your resume text</label>
+    <textarea id="ats-resume-input" rows="10" class="challenge-code" placeholder="Paste your resume text here..."></textarea>
+  </div>
+  <div class="field-group">
+    <label for="ats-jd-input">Target job description (optional — improves accuracy)</label>
+    <textarea id="ats-jd-input" rows="6" class="challenge-code" placeholder="Paste the job description to check keyword match..."></textarea>
+  </div>
+  <div class="tool-row">
+    <button type="button" class="tool-btn" id="ats-check-btn">🔍 Check My Resume</button>
+  </div>
+  <p class="settings-note">
+    This is an AI-estimated approximation to help you self-review — not a guarantee of how any
+    specific company's ATS software will parse your resume.
+  </p>
+  <div class="tool-output" id="ats-output" style="display: none; margin-top: 14px;"></div>
 </div>
 
 <div class="settings-grid" style="margin-bottom: 20px;">

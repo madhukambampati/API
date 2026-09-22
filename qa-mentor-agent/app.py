@@ -1,4 +1,8 @@
+import json
 import os
+import time
+import urllib.error
+import urllib.request
 
 import anthropic
 from dotenv import load_dotenv
@@ -8,12 +12,64 @@ load_dotenv()
 
 app = Flask(__name__)
 
+TECH_NEWS_REPOS = [
+    ("Selenium", "SeleniumHQ/selenium", "🧪"),
+    ("Playwright", "microsoft/playwright", "🎭"),
+    ("Cypress", "cypress-io/cypress", "🌲"),
+    ("k6", "grafana/k6", "⚡"),
+    ("Newman (Postman CLI)", "postmanlabs/newman", "📮"),
+    ("Anthropic Python SDK", "anthropics/anthropic-sdk-python", "🤖"),
+    ("OpenAI Python SDK", "openai/openai-python", "🧠"),
+    ("LangChain", "langchain-ai/langchain", "🔗"),
+]
+TECH_NEWS_TTL_SECONDS = 24 * 60 * 60
+_tech_news_cache = {"fetched_at": 0, "items": []}
+
+
+def _fetch_latest_release(owner_repo):
+    url = f"https://api.github.com/repos/{owner_repo}/releases/latest"
+    req = urllib.request.Request(
+        url,
+        headers={"Accept": "application/vnd.github+json", "User-Agent": "sdet-mentor-app"},
+    )
+    with urllib.request.urlopen(req, timeout=6) as resp:
+        data = json.loads(resp.read().decode())
+    return {
+        "tag": data.get("tag_name"),
+        "title": data.get("name") or data.get("tag_name"),
+        "published_at": data.get("published_at"),
+        "url": data.get("html_url"),
+        "notes": (data.get("body") or "").strip()[:400],
+    }
+
+
+def get_tech_news(force=False):
+    now = time.time()
+    is_fresh = _tech_news_cache["items"] and (now - _tech_news_cache["fetched_at"] < TECH_NEWS_TTL_SECONDS)
+    if not force and is_fresh:
+        return _tech_news_cache
+
+    items = []
+    for display_name, repo, icon in TECH_NEWS_REPOS:
+        try:
+            release = _fetch_latest_release(repo)
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError):
+            continue
+        items.append({"name": display_name, "icon": icon, "repo": repo, **release})
+
+    if items:
+        items.sort(key=lambda item: item.get("published_at") or "", reverse=True)
+        _tech_news_cache["items"] = items
+        _tech_news_cache["fetched_at"] = now
+
+    return _tech_news_cache
+
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 client = anthropic.Anthropic(api_key=API_KEY) if API_KEY else None
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5")
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "1024"))
 
-SYSTEM_PROMPT = """You are QA Mentor, an AI learning companion for QA Engineers, \
+SYSTEM_PROMPT = """You are SDET Mentor, an AI learning companion for QA Engineers, \
 SDETs, and AI-QA practitioners of all levels (freshers to experienced).
 
 Your job is to help people LEARN, not just get answers. For every topic you cover:
@@ -53,6 +109,18 @@ def roadmaps():
 @app.route("/practice")
 def practice():
     return render_template("practice.html", active="practice")
+
+
+@app.route("/tech-news")
+def tech_news():
+    return render_template("tech_news.html", active="tech-news")
+
+
+@app.route("/api/tech-news")
+def api_tech_news():
+    force = request.args.get("refresh") == "1"
+    cache = get_tech_news(force=force)
+    return jsonify({"items": cache["items"], "fetched_at": cache["fetched_at"]})
 
 
 @app.route("/resources")

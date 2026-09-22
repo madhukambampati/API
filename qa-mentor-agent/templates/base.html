@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}QA Mentor{% endblock %}</title>
+  <title>{% block title %}SDET Mentor{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -24,10 +24,10 @@
   <div class="shell">
     <aside class="sidebar">
       <div class="brand">
-        <span class="brand-icon">🧪</span>
+        <span class="brand-icon">⚙️</span>
         <div>
-          <div class="brand-name">QA Mentor</div>
-          <div class="brand-tag">LEARN · PRACTICE · GROW</div>
+          <div class="brand-name">SDET Mentor</div>
+          <div class="brand-tag">AUTOMATE · TEST · SHIP</div>
         </div>
       </div>
 
@@ -41,8 +41,8 @@
         <a href="{{ url_for('roadmaps') }}" class="nav-item {{ 'active' if active == 'roadmaps' }}">
           <span class="nav-icon">🗺️</span> Roadmaps
         </a>
-        <a href="{{ url_for('practice') }}" class="nav-item {{ 'active' if active == 'practice' }}">
-          <span class="nav-icon">🎯</span> Practice
+        <a href="{{ url_for('tech_news') }}" class="nav-item {{ 'active' if active == 'tech-news' }}">
+          <span class="nav-icon">📰</span> Tech News
         </a>
         <a href="{{ url_for('resources') }}" class="nav-item {{ 'active' if active == 'resources' }}">
           <span class="nav-icon">📚</span> Resources

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}QA Mentor — Home{% endblock %}
+{% block title %}SDET Mentor — Home{% endblock %}
 {% block content %}
 <section class="hero">
   <div class="hero-blob one"></div>
   <div class="hero-blob two"></div>
-  <h1>QA <span>Mentor</span></h1>
+  <h1>SDET <span>Mentor</span></h1>
   <p class="lead">
     Your AI learning companion for QA, SDET &amp; AI-QA. Get instant answers, learn
     with real examples, practice hands-on, and accelerate your testing career.
@@ -42,6 +42,9 @@
   </div>
   <div class="quiz-options" id="daily-options"></div>
   <div class="quiz-explanation" id="daily-explanation"></div>
+  <div class="tool-row" style="margin-top: 14px;">
+    <a href="{{ url_for('practice') }}" class="tool-btn secondary">🎯 Full Quiz &amp; Coding Challenges →</a>
+  </div>
 </div>
 
 <div class="section-heading">
@@ -52,6 +55,7 @@
   <a href="{{ url_for('roadmaps') }}">View roadmaps →</a>
 </div>
 
+<div id="topic-empty-hint" class="empty-hint" style="display: none;">No topics match your search. Try Chat to ask anything directly.</div>
 <div class="topic-grid" id="topic-grid">
   <a class="topic-card" data-title="selenium waits explicit implicit"
      href="{{ url_for('chat_page') }}?q={{ 'What is the difference between explicit and implicit waits in Selenium?' | urlencode }}"
