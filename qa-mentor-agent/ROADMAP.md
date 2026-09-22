@@ -157,14 +157,21 @@ projects, interview topics, certifications, related roles, transition
 paths, "is this role right for me" assessment, AI-effect note, future
 outlook, sources.
 
-- [ ] Build `/careers` index (searchable/filterable, not a giant sidebar
-      per blueprint §5).
-- [ ] Build `/careers/<role-slug>` generic template against the Epic 0.2
-      schema.
-- [ ] Write full content for the 3 roles above.
-- [ ] Add 2-3 transition-path examples from §6 (e.g. Manual QA →
-      Automation → SDET, since that's this app's strongest existing
-      content).
+- [x] Build `/careers` index — basic version shipped in Phase 0 Epic 0.4;
+      still needs real search/filter once there are enough roles to
+      justify it (fine with 2-6 roles as plain cards for now).
+- [x] Build `/careers/<role-slug>` generic template against the Epic 0.2
+      schema — shipped in Phase 0 Epic 0.2.
+- [ ] Write full content for the 3 roles above:
+  - [x] QA Engineer → SDET (`data/roles/sdet.json`)
+  - [x] Full-Stack Developer (`data/roles/developer.json`) — roadmap
+        stages are self-contained in the JSON, not linked to the
+        Roadmaps page, since that page is scoped to the SDET Mentor
+        academy, not general TechOrbit (see Epic 0.4 hierarchy note).
+  - [ ] DevOps Engineer — not started.
+- [x] Add 2-3 transition-path examples from §6 — SDET's transition paths
+      plus Developer's "QA/SDET → Developer" and "Backend Developer →
+      AI Engineer" (both named in the blueprint's own examples).
 
 ### Epic 1.2 — Onboarding + personalized dashboard (§4)
 - [ ] Onboarding flow capturing: current role, target role, experience

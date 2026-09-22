@@ -262,7 +262,6 @@ def _load_content_json(subdir, slug):
 
 
 PLANNED_ROLES = [
-    {"title": "Software Developer", "icon": "💻"},
     {"title": "DevOps / SRE Engineer", "icon": "🚀"},
     {"title": "Data & AI Engineer", "icon": "🧠"},
     {"title": "Product / Business Analyst", "icon": "📋"},

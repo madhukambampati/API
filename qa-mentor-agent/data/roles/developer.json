@@ -1,0 +1,116 @@
+{
+  "slug": "developer",
+  "title": "Full-Stack Developer",
+  "status": "Established",
+  "definition": "A full-stack developer builds both the parts of an application users see (frontend) and the parts that power it behind the scenes (backend, APIs, databases) — able to work across the whole stack rather than specializing in only one layer.",
+  "daily_responsibilities": [
+    "Build and maintain UI components and the APIs/services that back them",
+    "Design and query databases, and reason about data models",
+    "Write and review pull requests, including tests for new code",
+    "Debug issues across the stack — from a UI glitch down to a slow database query",
+    "Collaborate with product/design on feasibility and with QA/SDET on testability"
+  ],
+  "required_technical_skills": [
+    "A frontend framework (React, Vue, or Angular) and core HTML/CSS/JavaScript",
+    "A backend language and framework (Node.js/Express, Python/Django or FastAPI, or Java/Spring)",
+    "Relational databases and SQL; comfort with at least one NoSQL store",
+    "REST or GraphQL API design",
+    "Git and collaborative version control workflows",
+    "Basic cloud/deployment literacy (containers, a CI/CD pipeline, a cloud provider's core services)"
+  ],
+  "required_nontechnical_skills": [
+    "Breaking ambiguous requirements into concrete, buildable tasks",
+    "Clear technical communication in code reviews, PRs, and design docs",
+    "Time and scope estimation, and flagging risk early rather than late"
+  ],
+  "expectations": {
+    "beginner": "Can implement well-defined features and fix bugs with guidance, understands the existing codebase's patterns.",
+    "intermediate": "Designs and ships features independently across the stack, writes solid tests, participates meaningfully in code review.",
+    "advanced": "Makes architecture decisions, mentors other developers, and owns quality and performance for a service or product area."
+  },
+  "common_tools": [
+    "Git/GitHub", "VS Code", "Docker", "Postman", "npm/pip/Maven", "GitHub Actions or Jenkins", "A cloud console (AWS/Azure/GCP)"
+  ],
+  "recommended_languages": ["JavaScript/TypeScript", "Python", "Java"],
+  "roadmap": {
+    "summary": "A self-contained learning path from programming fundamentals to a deployed full-stack application. Not yet linked to an in-app Roadmaps track — the existing Roadmaps page is currently scoped to the SDET Mentor academy; a dedicated Developer roadmap track is a future addition, tracked separately in ROADMAP.md.",
+    "link": null,
+    "stages": [
+      { "name": "Programming fundamentals", "duration": "4-6 weeks", "topics": ["Variables, control flow, functions", "Data structures: arrays, objects/maps, basic algorithms"] },
+      { "name": "Frontend fundamentals", "duration": "4-6 weeks", "topics": ["HTML/CSS layout and responsive design", "JavaScript DOM manipulation, then a framework (React)"] },
+      { "name": "Backend fundamentals", "duration": "4-6 weeks", "topics": ["Building a REST API", "Authentication basics, request validation, error handling"] },
+      { "name": "Databases", "duration": "2-3 weeks", "topics": ["Relational modeling and SQL", "Connecting an API to a database, migrations"] },
+      { "name": "Git & collaboration", "duration": "1-2 weeks", "topics": ["Branching, pull requests, code review etiquette"] },
+      { "name": "Deploy a full-stack project", "duration": "2-3 weeks", "topics": ["Containerize the app", "Deploy frontend + backend + database to a cloud provider"] }
+    ]
+  },
+  "labs": [
+    "Coming in Phase 2: a browser-based coding playground and a web (HTML/CSS/JS) playground with live preview.",
+    "For now, practice by building the projects below locally and pushing them to GitHub."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Build a CRUD REST API with authentication", "description": "A backend API (e.g. a task list or notes app) with signup/login and full create/read/update/delete endpoints." },
+    { "level": "independent", "title": "Build a full-stack app with a database", "description": "Connect a frontend framework to your own API and a real database; deploy it so it's live at a public URL." },
+    { "level": "advanced-capstone", "title": "Contribute to an open-source project", "description": "Find a 'good first issue' on a real open-source repo, fix it, and get a pull request merged." }
+  ],
+  "interview_topics": [
+    "Data structures & algorithms (arrays, hash maps, trees, basic complexity analysis)",
+    "System design fundamentals (for intermediate+: designing a simple API or service at a high level)",
+    "Language/framework-specific questions for your stack",
+    "Debugging and code-review scenarios"
+  ],
+  "certifications": [
+    { "name": "AWS Certified Developer — Associate", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-developer-associate" },
+    { "name": "Meta Front-End Developer Professional Certificate", "issuer": "Meta (via Coursera)", "url": "https://www.coursera.org/professional-certificates/meta-front-end-developer" },
+    { "name": "Full Stack Developer Certification", "issuer": "freeCodeCamp (free)", "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9" },
+    { "name": "Oracle Certified Professional: Java SE Developer", "issuer": "Oracle", "url": "https://education.oracle.com/oracle-certification-path/pFamily_48" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["Frontend Developer", "Backend Developer", "Mobile Developer", "DevOps Engineer", "AI Engineer"],
+  "transition_paths": ["QA/SDET → Developer (via strong automation coding skills)", "Backend Developer → AI Engineer", "Full-Stack Developer → Platform/DevOps Engineer"],
+  "advantages": [
+    "Broad skill set makes you useful on small teams and startups where one person wears many hats",
+    "High demand across nearly every industry, not just tech companies",
+    "Strong foundation for later specializing into frontend, backend, mobile, DevOps, or AI engineering"
+  ],
+  "challenges": [
+    "Breadth can come at the cost of depth — easy to be 'okay' at everything and expert at nothing without deliberate focus",
+    "The tooling and framework landscape changes quickly and requires continuous learning",
+    "Context-switching between frontend and backend concerns in the same day can be mentally taxing"
+  ],
+  "example_progression": ["Junior Developer", "Developer", "Senior Developer", "Tech Lead or Staff Engineer", "Engineering Manager or Principal Engineer"],
+  "portfolio_expectations": [
+    "A deployed full-stack project with a public URL, not just source code",
+    "A REST or GraphQL API you designed yourself, with tests",
+    "A clear README on every repo: what it does, how to run it, and why you made key technical decisions",
+    "At least one merged pull request to a project that wasn't solely yours (open source or a group project)"
+  ],
+  "fit_assessment": [
+    "Do you enjoy going from 'nothing exists' to 'a real feature works end to end,' even when that means touching unfamiliar parts of the stack?",
+    "Are you comfortable being a generalist, picking up new frameworks and languages as a project needs them?",
+    "Do you like reasoning about both what the user sees and how the data behind it is structured?"
+  ],
+  "ai_impact": "AI coding assistants are speeding up boilerplate and first-draft code, but understanding the system well enough to review, debug, and own that code is becoming more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "Full-stack skills remain a strong general-purpose foundation that specializations (AI engineering, platform engineering, mobile) are typically built on top of, rather than a path being replaced by them — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "MDN Web Docs (HTML/CSS/JavaScript)", "url": "https://developer.mozilla.org/" },
+    { "title": "freeCodeCamp Full Stack curriculum (free)", "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Written from general, well-established software development practice; certification names/URLs verified via web search on 2026-09-22."
+    ]
+  }
+}

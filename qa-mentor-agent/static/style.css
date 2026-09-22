@@ -93,10 +93,11 @@ a {
 }
 
 .brand-tag {
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   color: var(--text-faint);
-  letter-spacing: 0.08em;
-  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .brand-academy {
