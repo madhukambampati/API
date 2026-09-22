@@ -1,30 +1,60 @@
 :root {
-  --bg: #0b1220;
-  --bg-soft: #0f1830;
-  --surface: #141b2e;
-  --surface-alt: #1c2540;
-  --border: #2a3454;
+  /* Modern Cosmic Learning Studio - dark (default) */
+  --bg: #080b14;
+  --bg-soft: #0c1120;
+  --surface: #111827;
+  --surface-alt: #161f2e;
+  --border: rgba(255, 255, 255, 0.08);
   --text: #e8ecf9;
-  --text-dim: #93a0c4;
-  --text-faint: #64708f;
+  --text-dim: #a7b0c9;
+  --text-faint: #74809e;
   --accent: #6366f1;
   --accent-2: #22d3ee;
   --success: #22c55e;
   --danger: #ef4444;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  /* Role accent colors */
+  --role-sdet: #22d3ee;
+  --role-developer: #3b82f6;
+  --role-devops: #f97316;
+  --role-sre: #f97316;
+  --role-data-ai: #8b5cf6;
+  --role-product-ba: #22c55e;
+  --role-cloud-platform: #6366f1;
+
+  --font-heading: "Sora", "Inter", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 }
 
 [data-theme="light"] {
-  --bg: #f5f7fb;
-  --bg-soft: #eef1fa;
+  --bg: #f6f7fb;
+  --bg-soft: #eef0f8;
   --surface: #ffffff;
-  --surface-alt: #f1f4fb;
-  --border: #dde3f3;
-  --text: #1b2333;
-  --text-dim: #5b6685;
-  --text-faint: #8993b0;
+  --surface-alt: #f2f4fa;
+  --border: rgba(15, 23, 42, 0.09);
+  --text: #10182b;
+  --text-dim: #4b5673;
+  --text-faint: #737f9e;
   --accent-2: #0891b2;
-  --shadow: 0 8px 24px rgba(20, 30, 60, 0.08);
+  --shadow-sm: 0 1px 3px rgba(20, 30, 60, 0.06);
+  --shadow-md: 0 8px 24px rgba(20, 30, 60, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 * {
@@ -40,13 +70,28 @@ body {
 
 body {
   margin: 0;
-  font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
+  line-height: 1.55;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+code, pre, kbd, .tool-output, .challenge-code, .cheatsheet-table code {
+  font-family: var(--font-mono);
 }
 
 a {
   color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ---------- Shell ---------- */
@@ -138,9 +183,9 @@ a {
 }
 
 .nav-icon {
-  font-size: 1rem;
   width: 18px;
-  text-align: center;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .nav-divider {
@@ -192,6 +237,170 @@ a {
   color: var(--text-faint);
   padding: 0 4px;
   line-height: 1.4;
+}
+
+/* ---------- Icon set ---------- */
+
+.icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.icon-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.chevron {
+  width: 14px;
+  height: 14px;
+}
+
+.pro-card-title .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Sidebar groups + collapse ---------- */
+
+.sidebar-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.sidebar-collapse-btn {
+  flex-shrink: 0;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+
+.nav-group:last-child {
+  margin-bottom: 0;
+}
+
+.nav-group-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0 12px;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-sidebar="collapsed"] .sidebar {
+  width: 76px;
+}
+
+html[data-sidebar="collapsed"] .sidebar .brand-text,
+html[data-sidebar="collapsed"] .sidebar .nav-group-label,
+html[data-sidebar="collapsed"] .sidebar .nav-label,
+html[data-sidebar="collapsed"] .sidebar .pro-card,
+html[data-sidebar="collapsed"] .sidebar .quote {
+  display: none;
+}
+
+html[data-sidebar="collapsed"] .sidebar .nav-item {
+  justify-content: center;
+  padding: 10px;
+}
+
+html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 960px) {
+  html[data-sidebar="collapsed"] .sidebar {
+    width: 280px;
+  }
+  html[data-sidebar="collapsed"] .sidebar .brand-text,
+  html[data-sidebar="collapsed"] .sidebar .nav-group-label,
+  html[data-sidebar="collapsed"] .sidebar .nav-label,
+  html[data-sidebar="collapsed"] .sidebar .pro-card,
+  html[data-sidebar="collapsed"] .sidebar .quote {
+    display: block;
+  }
+  html[data-sidebar="collapsed"] .sidebar .nav-item {
+    justify-content: flex-start;
+    padding: 10px 12px;
+  }
+  .sidebar-collapse-btn {
+    display: none;
+  }
+}
+
+/* ---------- Academy / role switcher ---------- */
+
+.academy-switcher {
+  flex-shrink: 0;
+}
+
+#academy-switcher-select {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  max-width: 220px;
+}
+
+@media (max-width: 720px) {
+  .academy-switcher {
+    display: none;
+  }
+}
+
+/* ---------- Role accent colors ---------- */
+
+.role-accent-sdet { --role-accent: var(--role-sdet); }
+.role-accent-developer { --role-accent: var(--role-developer); }
+.role-accent-devops { --role-accent: var(--role-devops); }
+.role-accent-sre { --role-accent: var(--role-sre); }
+.role-accent-data-ai { --role-accent: var(--role-data-ai); }
+.role-accent-product-ba { --role-accent: var(--role-product-ba); }
+.role-accent-cloud-platform { --role-accent: var(--role-cloud-platform); }
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--role-accent, var(--accent)) 16%, transparent);
+  color: var(--role-accent, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--role-accent, var(--accent)) 35%, transparent);
+}
+
+.role-accent-bar {
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: var(--role-accent, var(--accent));
 }
 
 .main {
@@ -248,8 +457,8 @@ a {
 
 .icon-btn {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--surface-alt);
@@ -258,6 +467,18 @@ a {
   justify-content: center;
   cursor: pointer;
   font-size: 1rem;
+}
+
+.theme-icon-light {
+  display: none;
+}
+
+[data-theme="light"] .theme-icon-dark {
+  display: none;
+}
+
+[data-theme="light"] .theme-icon-light {
+  display: block;
 }
 
 .icon-btn.has-dot::after {
@@ -1318,14 +1539,6 @@ a {
   line-height: 1.45;
 }
 
-.icon {
-  width: 18px;
-  height: 18px;
-  stroke-width: 1.8;
-  flex-shrink: 0;
-  color: currentColor;
-}
-
 .resource-card-arrow {
   display: block;
   margin-top: 10px;
@@ -2173,6 +2386,15 @@ a {
   .tool-grid,
   .settings-grid {
     grid-template-columns: 1fr;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .nav-item {
+    min-height: 44px;
   }
 }
 

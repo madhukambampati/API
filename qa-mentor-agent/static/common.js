@@ -133,13 +133,10 @@ function showToast(message) {
 
 function applyTheme() {
   const theme = localStorage.getItem(THEME_KEY);
-  const toggleBtn = document.getElementById("theme-toggle");
   if (theme === "light") {
     document.documentElement.setAttribute("data-theme", "light");
-    if (toggleBtn) toggleBtn.textContent = "🌙";
   } else {
     document.documentElement.removeAttribute("data-theme");
-    if (toggleBtn) toggleBtn.textContent = "☀️";
   }
 }
 
@@ -162,6 +159,34 @@ document.addEventListener("DOMContentLoaded", () => {
     backdrop.addEventListener("click", closeMenu);
     sidebarEl.querySelectorAll(".nav-item").forEach((link) => {
       link.addEventListener("click", closeMenu);
+    });
+  }
+
+  const SIDEBAR_COLLAPSE_KEY = "techorbit-sidebar-collapsed";
+  const collapseBtn = document.getElementById("sidebar-collapse-btn");
+  if (collapseBtn) {
+    collapseBtn.addEventListener("click", () => {
+      const isCollapsed = document.documentElement.getAttribute("data-sidebar") === "collapsed";
+      if (isCollapsed) {
+        document.documentElement.removeAttribute("data-sidebar");
+        collapseBtn.setAttribute("aria-label", "Collapse sidebar");
+      } else {
+        document.documentElement.setAttribute("data-sidebar", "collapsed");
+        collapseBtn.setAttribute("aria-label", "Expand sidebar");
+      }
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSE_KEY, String(!isCollapsed));
+      } catch (e) {}
+    });
+    if (document.documentElement.getAttribute("data-sidebar") === "collapsed") {
+      collapseBtn.setAttribute("aria-label", "Expand sidebar");
+    }
+  }
+
+  const academySwitcher = document.getElementById("academy-switcher-select");
+  if (academySwitcher) {
+    academySwitcher.addEventListener("change", () => {
+      if (academySwitcher.value) window.location.href = academySwitcher.value;
     });
   }
 

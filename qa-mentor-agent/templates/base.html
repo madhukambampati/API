@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% from "_icons.html" import icon %}
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
@@ -20,6 +21,8 @@
       try {
         var theme = localStorage.getItem("qa-mentor-theme");
         if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+        var collapsed = localStorage.getItem("techorbit-sidebar-collapsed");
+        if (collapsed === "true") document.documentElement.setAttribute("data-sidebar", "collapsed");
       } catch (e) {}
     })();
   </script>
@@ -27,63 +30,86 @@
 <body>
   <div class="shell">
     <aside class="sidebar">
-      <div class="brand">
-        <span class="brand-icon">🪐</span>
-        <div>
-          <div class="brand-name">TechOrbit</div>
-          <div class="brand-tag">Every role. Every skill. One learning universe.</div>
-          <div class="brand-academy">└ {{ academy_label | default("SDET Mentor — QA & Quality Engineering Academy") }}</div>
+      <div class="sidebar-top">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">🪐</span>
+          <div class="brand-text">
+            <div class="brand-name">TechOrbit</div>
+            <div class="brand-tag">Every role. Every skill. One learning universe.</div>
+            <div class="brand-academy">└ {{ academy_label | default("SDET Mentor — QA & Quality Engineering Academy") }}</div>
+          </div>
         </div>
+        <button type="button" class="icon-btn sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Collapse sidebar">
+          {{ icon("panel-left-close") }}
+        </button>
       </div>
 
-      <nav class="nav">
-        <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active == 'home' }}">
-          <span class="nav-icon">🏠</span> Home
-        </a>
-        <a href="{{ url_for('careers_index') }}" class="nav-item {{ 'active' if active == 'careers-explorer' }}">
-          <span class="nav-icon">🧭</span> Explore Careers
-        </a>
-        <a href="{{ url_for('chat_page') }}" class="nav-item {{ 'active' if active == 'chat' }}">
-          <span class="nav-icon">💬</span> Chat
-        </a>
-        <a href="{{ url_for('roadmaps') }}" class="nav-item {{ 'active' if active == 'roadmaps' }}">
-          <span class="nav-icon">🗺️</span> Roadmaps
-        </a>
-        <a href="{{ url_for('tech_news') }}" class="nav-item {{ 'active' if active == 'tech-news' }}">
-          <span class="nav-icon">📰</span> Tech News
-        </a>
-        <a href="{{ url_for('tech_radar') }}" class="nav-item {{ 'active' if active == 'radar' }}">
-          <span class="nav-icon">🛰️</span> Tech Radar
-        </a>
-        <a href="{{ url_for('resources') }}" class="nav-item {{ 'active' if active == 'resources' }}">
-          <span class="nav-icon">📚</span> Resources
-        </a>
-        <a href="{{ url_for('glossary') }}" class="nav-item {{ 'active' if active == 'glossary' }}">
-          <span class="nav-icon">📖</span> Glossary
-        </a>
-        <a href="{{ url_for('career') }}" class="nav-item {{ 'active' if active == 'career' }}">
-          <span class="nav-icon">💼</span> Career Tools
-        </a>
-        <a href="{{ url_for('tools_page') }}" class="nav-item {{ 'active' if active == 'tools' }}">
-          <span class="nav-icon">🔧</span> Tools
-        </a>
-        <a href="{{ url_for('progress_page') }}" class="nav-item {{ 'active' if active == 'progress' }}">
-          <span class="nav-icon">📊</span> Progress
-        </a>
-        <div class="nav-divider"></div>
-        <a href="{{ url_for('bookmarks') }}" class="nav-item {{ 'active' if active == 'bookmarks' }}">
-          <span class="nav-icon">🔖</span> Bookmarks
-        </a>
-        <a href="{{ url_for('history_page') }}" class="nav-item {{ 'active' if active == 'history' }}">
-          <span class="nav-icon">🕒</span> History
-        </a>
-        <a href="{{ url_for('settings') }}" class="nav-item {{ 'active' if active == 'settings' }}">
-          <span class="nav-icon">⚙️</span> Settings
-        </a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-group">
+          <div class="nav-group-label">Discover</div>
+          <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active == 'home' }}" {{ 'aria-current="page"'|safe if active == 'home' else '' }}>
+            {{ icon("home", "nav-icon") }}<span class="nav-label">Home</span>
+          </a>
+          <a href="{{ url_for('careers_index') }}" class="nav-item {{ 'active' if active == 'careers-explorer' }}" {{ 'aria-current="page"'|safe if active == 'careers-explorer' else '' }}>
+            {{ icon("compass", "nav-icon") }}<span class="nav-label">Explore Careers</span>
+          </a>
+          <a href="{{ url_for('tech_news') }}" class="nav-item {{ 'active' if active == 'tech-news' }}" {{ 'aria-current="page"'|safe if active == 'tech-news' else '' }}>
+            {{ icon("newspaper", "nav-icon") }}<span class="nav-label">Tech News</span>
+          </a>
+          <a href="{{ url_for('tech_radar') }}" class="nav-item {{ 'active' if active == 'radar' }}" {{ 'aria-current="page"'|safe if active == 'radar' else '' }}>
+            {{ icon("radar", "nav-icon") }}<span class="nav-label">Tech Radar</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Learn</div>
+          <a href="{{ url_for('roadmaps') }}" class="nav-item {{ 'active' if active == 'roadmaps' }}" {{ 'aria-current="page"'|safe if active == 'roadmaps' else '' }}>
+            {{ icon("map", "nav-icon") }}<span class="nav-label">Roadmaps</span>
+          </a>
+          <a href="{{ url_for('resources') }}" class="nav-item {{ 'active' if active == 'resources' }}" {{ 'aria-current="page"'|safe if active == 'resources' else '' }}>
+            {{ icon("book-open", "nav-icon") }}<span class="nav-label">Resources</span>
+          </a>
+          <a href="{{ url_for('glossary') }}" class="nav-item {{ 'active' if active == 'glossary' }}" {{ 'aria-current="page"'|safe if active == 'glossary' else '' }}>
+            {{ icon("library", "nav-icon") }}<span class="nav-label">Glossary</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Practice</div>
+          <a href="{{ url_for('practice') }}" class="nav-item {{ 'active' if active == 'practice' }}" {{ 'aria-current="page"'|safe if active == 'practice' else '' }}>
+            {{ icon("target", "nav-icon") }}<span class="nav-label">Practice</span>
+          </a>
+          <a href="{{ url_for('tools_page') }}" class="nav-item {{ 'active' if active == 'tools' }}" {{ 'aria-current="page"'|safe if active == 'tools' else '' }}>
+            {{ icon("wrench", "nav-icon") }}<span class="nav-label">Tools</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Career</div>
+          <a href="{{ url_for('career') }}" class="nav-item {{ 'active' if active == 'career' }}" {{ 'aria-current="page"'|safe if active == 'career' else '' }}>
+            {{ icon("briefcase", "nav-icon") }}<span class="nav-label">Career Tools</span>
+          </a>
+          <a href="{{ url_for('progress_page') }}" class="nav-item {{ 'active' if active == 'progress' }}" {{ 'aria-current="page"'|safe if active == 'progress' else '' }}>
+            {{ icon("bar-chart-3", "nav-icon") }}<span class="nav-label">Progress</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Personal</div>
+          <a href="{{ url_for('bookmarks') }}" class="nav-item {{ 'active' if active == 'bookmarks' }}" {{ 'aria-current="page"'|safe if active == 'bookmarks' else '' }}>
+            {{ icon("bookmark", "nav-icon") }}<span class="nav-label">Bookmarks</span>
+          </a>
+          <a href="{{ url_for('history_page') }}" class="nav-item {{ 'active' if active == 'history' }}" {{ 'aria-current="page"'|safe if active == 'history' else '' }}>
+            {{ icon("history", "nav-icon") }}<span class="nav-label">History</span>
+          </a>
+          <a href="{{ url_for('settings') }}" class="nav-item {{ 'active' if active == 'settings' }}" {{ 'aria-current="page"'|safe if active == 'settings' else '' }}>
+            {{ icon("settings", "nav-icon") }}<span class="nav-label">Settings</span>
+          </a>
+        </div>
       </nav>
 
       <div class="pro-card">
-        <div class="pro-card-title"><span>🚧</span> Accounts &amp; Sync</div>
+        <div class="pro-card-title">{{ icon("construction") }} Accounts &amp; Sync</div>
         <p>Coming soon: real accounts and progress that syncs across devices.</p>
         <button type="button" class="pro-btn" id="upgrade-btn">Learn more →</button>
       </div>
@@ -97,27 +123,46 @@
 
     <div class="main">
       <header class="topbar">
-        <button type="button" class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Open navigation menu">☰</button>
+        <button type="button" class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Open navigation menu">
+          {{ icon("menu") }}
+        </button>
         <div class="search-box">
-          <label for="topbar-search" class="sr-only">Search topics</label>
-          <span aria-hidden="true">🔍</span>
+          <label for="topbar-search" class="sr-only">Search careers, roadmaps, lessons, glossary, resources, tools, and Tech Radar</label>
+          {{ icon("search") }}
           <input
             id="topbar-search"
             type="text"
-            placeholder="Search topics, ask anything..."
+            placeholder="Search careers, roadmaps, glossary, radar..."
             autocomplete="off"
           />
         </div>
+
+        <div class="academy-switcher">
+          <label for="academy-switcher-select" class="sr-only">Switch academy or role</label>
+          <select id="academy-switcher-select">
+            <option value="{{ url_for('home') }}" {{ 'selected' if active == 'home' }}>🏠 SDET Mentor (Home)</option>
+            {% for r in switcher_roles %}
+            <option value="{{ url_for('role_detail', slug=r.slug) }}" {{ 'selected' if role is defined and role.slug == r.slug }}>{{ r.title }}</option>
+            {% endfor %}
+            <option value="{{ url_for('careers_index') }}" {{ 'selected' if active == 'careers-explorer' and role is not defined }}>🧭 Browse all roles</option>
+          </select>
+        </div>
+
         <div class="topbar-actions">
-          <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle theme">☀️</button>
-          <button type="button" class="icon-btn has-dot" id="notif-btn" aria-label="Notifications">🔔</button>
+          <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle theme">
+            {{ icon("sun", "theme-icon-dark") }}
+            {{ icon("moon", "theme-icon-light") }}
+          </button>
+          <button type="button" class="icon-btn has-dot" id="notif-btn" aria-label="Notifications">
+            {{ icon("bell") }}
+          </button>
           <div class="profile" id="profile-menu-trigger">
             <div class="profile-avatar" id="profile-avatar">🙂</div>
             <div class="profile-info">
               <div class="profile-name" id="profile-name">You</div>
               <div class="profile-plan">Local profile</div>
             </div>
-            <span class="chevron">▾</span>
+            {{ icon("chevron-down", "chevron") }}
           </div>
         </div>
       </header>
