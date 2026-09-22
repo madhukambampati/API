@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SDET Mentor — Sign in</title>
+  <meta name="description" content="An AI learning companion for QA, SDET, and AI-QA engineers." />
+  <meta property="og:title" content="SDET Mentor" />
+  <meta property="og:description" content="An AI learning companion for QA, SDET, and AI-QA engineers." />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -23,14 +27,41 @@
       <form method="POST">
         <div class="field-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" autofocus required />
+          <div style="position: relative;">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              autofocus
+              required
+              style="padding-right: 44px;"
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              aria-label="Show password"
+              style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--text-dim); padding: 4px 8px;"
+            >👁</button>
+          </div>
         </div>
         {% if error %}
           <p class="settings-note" style="color: var(--danger); margin-bottom: 10px;">{{ error }}</p>
         {% endif %}
         <button type="submit" class="tool-btn" style="width: 100%;">Sign in</button>
       </form>
+      <p class="settings-note" style="text-align: center; margin-top: 16px;">
+        Don't have the password? Contact whoever shared this link with you.
+      </p>
     </div>
   </div>
+  <script>
+    document.getElementById("toggle-password").addEventListener("click", function () {
+      var input = document.getElementById("password");
+      var showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      this.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+    });
+  </script>
 </body>
 </html>

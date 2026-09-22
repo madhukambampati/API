@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import anthropic
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
 load_dotenv()
 
@@ -17,6 +17,28 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
 
 SITE_PASSWORD = os.environ.get("SITE_PASSWORD")
+
+LOGIN_MAX_ATTEMPTS = 5
+LOGIN_WINDOW_SECONDS = 5 * 60
+_login_attempts = {}
+
+
+def _client_ip():
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def _is_rate_limited(ip):
+    now = time.time()
+    attempts = [t for t in _login_attempts.get(ip, []) if now - t < LOGIN_WINDOW_SECONDS]
+    _login_attempts[ip] = attempts
+    return len(attempts) >= LOGIN_MAX_ATTEMPTS
+
+
+def _record_failed_attempt(ip):
+    _login_attempts.setdefault(ip, []).append(time.time())
 
 TECH_NEWS_REPOS = [
     ("Selenium", "SeleniumHQ/selenium", "🧪"),
@@ -114,11 +136,14 @@ long essays.
 """
 
 
+PUBLIC_PATHS = {"/login", "/robots.txt", "/favicon.ico"}
+
+
 @app.before_request
 def require_login():
     if not SITE_PASSWORD:
         return None
-    if request.path.startswith("/static/") or request.path == "/login":
+    if request.path.startswith("/static/") or request.path in PUBLIC_PATHS:
         return None
     if not session.get("authenticated"):
         return redirect(url_for("login"))
@@ -129,10 +154,18 @@ def require_login():
 def login():
     error = None
     if request.method == "POST":
-        if request.form.get("password") == SITE_PASSWORD:
+        ip = _client_ip()
+        password = request.form.get("password")
+        if _is_rate_limited(ip):
+            error = "Too many attempts. Please wait a few minutes and try again."
+        elif not password:
+            error = "Password is required."
+        elif password == SITE_PASSWORD:
             session["authenticated"] = True
             return redirect(url_for("home"))
-        error = "Incorrect password."
+        else:
+            _record_failed_attempt(ip)
+            error = "Incorrect password."
     return render_template("login.html", error=error)
 
 
@@ -140,6 +173,16 @@ def login():
 def logout():
     session.pop("authenticated", None)
     return redirect(url_for("login"))
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    return Response("User-agent: *\nDisallow: /\n", mimetype="text/plain")
+
+
+@app.route("/favicon.ico")
+def favicon_ico():
+    return app.send_static_file("favicon.svg")
 
 
 @app.context_processor
