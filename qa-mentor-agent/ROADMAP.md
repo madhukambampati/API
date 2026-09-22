@@ -366,30 +366,34 @@ on its own before committing to a timeline for Phase 2.
 
 ---
 
-## Known deployment gap: role/lesson content may render empty on Vercel
+## RESOLVED: role/lesson content rendered empty — real root cause was CSS, not Vercel
 
-Reported twice: role pages (e.g. `/careers/sdet`) show headings but empty
-content lists on the live deployment, while every local test in this
-session renders full content correctly. The most likely cause is that
-`@vercel/python`'s build-time file bundling doesn't reliably include
-non-Python data files read via `open()` at request time (`data/*.json`),
-even though `templates/*.html` clearly do get bundled (the rebrand and
-nav changes are visibly live). Since this could not be verified directly
-against the live deployment from this environment, the fix applied is
-defensive rather than confirmed: role/lesson/radar content now lives in
-`content_data.py` as plain Python dict/list literals, generated from and
-verified byte-for-byte identical to the original `data/*.json` files,
-and is imported normally (`from content_data import ROLES, LESSONS,
-RADAR_ITEMS`). Vercel's Python builder traces and bundles imported `.py`
-modules reliably, which removes the uncertainty entirely regardless of
-whether the file-bundling theory was the actual root cause. The
-`data/*.json` files remain as the human-edited source; re-run the
-generation step (read each JSON, `pprint.pformat` into `content_data.py`)
-after editing them, and verify with an equality check against the
-original JSON before committing, the way this was done.
+Reported twice: role pages (e.g. `/careers/sdet`) showed headings but
+empty content lists on the live deployment. Two wrong hypotheses were
+chased first (Vercel deployment lag, then `@vercel/python` file-bundling
+of `data/*.json` — the latter produced the `content_data.py` module,
+which is harmless and stays as a minor hardening improvement but did
+NOT fix this bug). The user then supplied live screenshots, which made
+the actual cause obvious: `role_detail.html` and `lesson_detail.html`
+reused the `.stage-skills` CSS class for their bullet lists, but that
+class is `display: none` by default — it was built for the Roadmaps
+page's collapsible accordion and only becomes visible inside
+`.stage-card.open`. Every list on the role/lesson pages was rendering
+correctly in the DOM (confirmed via `curl`+`grep`, which is why it kept
+looking fine) but was invisible to an actual browser because it was
+never inside a `.stage-card.open` ancestor.
 
-**This needs to be re-verified against the live URL after this deploys**
-— that verification could not be done from this session.
+Why local testing missed it twice: every check in this session either
+read raw HTML (`curl`/`grep` — sees the DOM, not CSS) or checked layout
+overflow via `getBoundingClientRect()` (Playwright — `display:none`
+elements have zero dimensions and are invisible to overflow checks by
+construction). Nothing actually asserted "this element is visible."
+Fixed by adding a dedicated `.detail-list` class (same visual styling,
+no hidden-by-default toggle) and swapping it in on the ~14 affected
+`<ul>` elements across both templates. Verified this time with
+`window.getComputedStyle(el).display` plus an actual rendered
+screenshot, not just DOM/HTML presence — that's now the standard for
+verifying any new list/content section, not just overflow.
 
 ## What's blocked on infrastructure (can't be completed without it)
 

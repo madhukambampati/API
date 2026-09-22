@@ -1454,6 +1454,14 @@ a {
   display: block;
 }
 
+.detail-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
 .stage-toggle {
   color: var(--text-faint);
   font-size: 0.75rem;

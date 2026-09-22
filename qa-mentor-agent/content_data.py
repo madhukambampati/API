@@ -590,10 +590,10 @@ LESSONS = {'git-and-github': {'slug': 'git-and-github',
                                         'avoidable merge conflicts',
                                         'Committing secrets or API keys by accident because they '
                                         "weren't excluded via .gitignore"],
-                    'interactive_exercise': 'Coming in Phase 2: a guided in-browser terminal '
-                                            'exercise where you initialize a repo, make a commit, '
-                                            'create a branch, and open a pull request against a '
-                                            'sample project.',
+                    'interactive_exercise': 'Coming soon: a guided in-browser terminal exercise '
+                                            'where you initialize a repo, make a commit, create a '
+                                            'branch, and open a pull request against a sample '
+                                            'project.',
                     'quiz': [{'question': "What does 'git commit' do?",
                               'options': ['Uploads your code to GitHub',
                                           'Saves a labeled snapshot of your staged changes to the '
@@ -613,10 +613,10 @@ LESSONS = {'git-and-github': {'slug': 'git-and-github',
                               'answer_index': 2,
                               'explanation': 'Feature branches let you experiment and get work '
                                              'reviewed before it affects the main codebase.'}],
-                    'practical_lab': 'Coming in Phase 2: a real sandboxed Git environment. Until '
-                                     "then, practice locally: create a folder, run 'git init', "
-                                     'make a few commits, create a branch, and push it to a GitHub '
-                                     'repo you create.',
+                    'practical_lab': 'Coming soon: a real sandboxed Git environment. Until then, '
+                                     "practice locally: create a folder, run 'git init', make a "
+                                     'few commits, create a branch, and push it to a GitHub repo '
+                                     'you create.',
                     'mini_project': 'Create a small GitHub repository for any personal script or '
                                     'notes file. Make at least 3 commits with clear messages, '
                                     'create one feature branch, and open a pull request merging it '

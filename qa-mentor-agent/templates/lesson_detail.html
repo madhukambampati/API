@@ -9,9 +9,9 @@
 </div>
 
 <p class="settings-note" style="margin-top: -10px;">
-  Schema-driven lesson page — an early Phase 0 proof of concept for the
-  Foundational Learning content model. Content v{{ lesson.governance.version }},
-  last reviewed {{ lesson.governance.last_reviewed }}.
+  🚧 Early draft — some sections may still be thin while we build out the
+  lesson library. Content v{{ lesson.governance.version }}, last reviewed
+  {{ lesson.governance.last_reviewed }}.
 </p>
 
 <div class="settings-panel" style="margin-bottom: 24px;">
@@ -37,7 +37,7 @@
 {% if lesson.common_mistakes %}
 <div class="settings-panel" style="margin-bottom: 24px;">
   <h3>🚫 Common mistakes</h3>
-  <ul class="stage-skills">{% for item in lesson.common_mistakes %}<li>{{ item }}</li>{% endfor %}</ul>
+  <ul class="detail-list">{% for item in lesson.common_mistakes %}<li>{{ item }}</li>{% endfor %}</ul>
 </div>
 {% endif %}
 
@@ -55,7 +55,7 @@
 {% for q in lesson.quiz %}
 <div class="settings-panel" style="margin-bottom: 16px;">
   <p style="font-weight: 600; margin-top: 0;">{{ loop.index }}. {{ q.question }}</p>
-  <ul class="stage-skills">
+  <ul class="detail-list">
     {% for opt in q.options %}
     <li{% if loop.index0 == q.answer_index %} style="color: var(--accent); font-weight: 600;"{% endif %}>{{ opt }}{% if loop.index0 == q.answer_index %} ✓{% endif %}</li>
     {% endfor %}
@@ -75,7 +75,7 @@
 {% if lesson.interview_questions %}
 <div class="settings-panel" style="margin-bottom: 24px;">
   <h3>🎤 Interview questions</h3>
-  <ul class="stage-skills">{% for q in lesson.interview_questions %}<li>{{ q }}</li>{% endfor %}</ul>
+  <ul class="detail-list">{% for q in lesson.interview_questions %}<li>{{ q }}</li>{% endfor %}</ul>
 </div>
 {% endif %}
 
