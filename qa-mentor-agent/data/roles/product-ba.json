@@ -29,18 +29,69 @@
     "intermediate": "Owns requirements gathering for a feature area independently, prioritizes a backlog, presents findings to stakeholders.",
     "advanced": "Sets product/process strategy for an area, mentors other analysts, drives cross-team alignment on priorities."
   },
-  "common_tools": ["Jira", "Confluence", "Figma (for reviewing designs)", "SQL client", "Miro", "Excel/Sheets"],
-  "recommended_languages": ["SQL"],
+  "common_tools": [
+    "Jira",
+    "Confluence",
+    "Figma (for reviewing designs)",
+    "SQL client",
+    "Miro",
+    "Excel/Sheets"
+  ],
+  "recommended_languages": [
+    "SQL"
+  ],
   "roadmap": {
     "summary": "A path from requirements-gathering fundamentals through agile delivery practices into product-thinking and prioritization. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "Requirements gathering fundamentals", "duration": "2-3 weeks", "topics": ["Stakeholder interviewing techniques", "Writing a clear BRD/functional spec"] },
-      { "name": "User stories & acceptance criteria", "duration": "2 weeks", "topics": ["Story format and INVEST criteria", "Writing testable acceptance criteria"] },
-      { "name": "Agile & Scrum fundamentals", "duration": "2 weeks", "topics": ["Ceremonies, roles, backlog refinement", "Estimation basics"] },
-      { "name": "Data analysis basics", "duration": "3-4 weeks", "topics": ["Spreadsheet analysis", "Basic SQL for pulling your own data"] },
-      { "name": "Process modeling", "duration": "1-2 weeks", "topics": ["BPMN basics", "Mapping a real business process end to end"] },
-      { "name": "Prioritization & product thinking", "duration": "2-3 weeks", "topics": ["Prioritization frameworks (RICE, MoSCoW)", "Writing a simple PRD"] }
+      {
+        "name": "Requirements gathering fundamentals",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Stakeholder interviewing techniques",
+          "Writing a clear BRD/functional spec"
+        ]
+      },
+      {
+        "name": "User stories & acceptance criteria",
+        "duration": "2 weeks",
+        "topics": [
+          "Story format and INVEST criteria",
+          "Writing testable acceptance criteria"
+        ]
+      },
+      {
+        "name": "Agile & Scrum fundamentals",
+        "duration": "2 weeks",
+        "topics": [
+          "Ceremonies, roles, backlog refinement",
+          "Estimation basics"
+        ]
+      },
+      {
+        "name": "Data analysis basics",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Spreadsheet analysis",
+          "Basic SQL for pulling your own data"
+        ]
+      },
+      {
+        "name": "Process modeling",
+        "duration": "1-2 weeks",
+        "topics": [
+          "BPMN basics",
+          "Mapping a real business process end to end"
+        ]
+      },
+      {
+        "name": "Prioritization & product thinking",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Prioritization frameworks (RICE, MoSCoW)",
+          "Writing a simple PRD"
+        ]
+      }
     ]
   },
   "labs": [
@@ -48,9 +99,69 @@
     "For now, practice by picking an app you use daily and writing a full BRD + user stories for one improvement you'd make."
   ],
   "projects": [
-    { "level": "guided", "title": "Write a requirements package", "description": "Pick a real product gap and write a full BRD, user stories, and acceptance criteria for it." },
-    { "level": "independent", "title": "Run a mock prioritization exercise", "description": "Take a list of 10+ feature ideas, apply a prioritization framework (RICE/MoSCoW), and document your reasoning." },
-    { "level": "advanced-capstone", "title": "Map and improve a business process", "description": "Document a real (or realistic) business process with BPMN, identify a bottleneck, and propose a concrete fix." }
+    {
+      "level": "guided",
+      "title": "Write a requirements package",
+      "description": "Pick a real product gap and write a full BRD, user stories, and acceptance criteria for it.",
+      "id": "write-requirements-package",
+      "steps": [
+        "Pick a real gap in a product you use (or a sample app) worth solving",
+        "Write a business requirements document explaining the problem and why it matters",
+        "Break it into user stories with clear acceptance criteria",
+        "Identify edge cases and open questions a developer would actually ask",
+        "Get feedback from someone else and revise based on it"
+      ],
+      "tech_stack": [
+        "a doc tool (Notion/Confluence/Google Docs)",
+        "a backlog tool (Jira/Trello)"
+      ],
+      "stretch_goals": [
+        "Turn the stories into a lightweight prototype or wireframe",
+        "Estimate the work with a developer and adjust scope based on their feedback"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Run a mock prioritization exercise",
+      "description": "Take a list of 10+ feature ideas, apply a prioritization framework (RICE/MoSCoW), and document your reasoning.",
+      "id": "mock-prioritization-exercise",
+      "steps": [
+        "Collect 10+ real or realistic feature ideas for a product",
+        "Choose a prioritization framework (RICE, MoSCoW, or similar) and define its inputs clearly",
+        "Score every idea consistently, not just the ones you like",
+        "Rank them and write the reasoning behind the top 3 and bottom 3",
+        "Present the ranking as if to a real stakeholder who might disagree"
+      ],
+      "tech_stack": [
+        "a spreadsheet tool",
+        "a prioritization framework"
+      ],
+      "stretch_goals": [
+        "Run the same list through a second framework and compare the rankings",
+        "Facilitate the exercise with actual peers and reconcile disagreements"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Map and improve a business process",
+      "description": "Document a real (or realistic) business process with BPMN, identify a bottleneck, and propose a concrete fix.",
+      "id": "map-improve-business-process",
+      "steps": [
+        "Pick a real or realistic multi-step business process worth documenting",
+        "Map it with BPMN, including decision points and handoffs between people/systems",
+        "Identify the single biggest bottleneck in the process",
+        "Propose a concrete, specific fix with an estimate of the impact",
+        "Document the before/after so the improvement is easy to evaluate"
+      ],
+      "tech_stack": [
+        "a BPMN tool (Lucidchart/draw.io)",
+        "a doc tool"
+      ],
+      "stretch_goals": [
+        "Validate your proposed fix with someone who actually runs the process",
+        "Model a second, alternative fix and compare tradeoffs"
+      ]
+    }
   ],
   "interview_topics": [
     "Walk me through how you'd gather requirements for a new feature with vague initial input",
@@ -59,8 +170,16 @@
     "How would you prioritize a backlog with limited engineering capacity?"
   ],
   "certifications": [
-    { "name": "IIBA Entry Certificate in Business Analysis (ECBA)", "issuer": "IIBA", "url": "https://www.iiba.org/business-analysis-certifications/ecba/" },
-    { "name": "Certified Scrum Product Owner (CSPO)", "issuer": "Scrum Alliance", "url": "https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner" }
+    {
+      "name": "IIBA Entry Certificate in Business Analysis (ECBA)",
+      "issuer": "IIBA",
+      "url": "https://www.iiba.org/business-analysis-certifications/ecba/"
+    },
+    {
+      "name": "Certified Scrum Product Owner (CSPO)",
+      "issuer": "Scrum Alliance",
+      "url": "https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -69,8 +188,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["Product Manager", "Product Owner", "Systems Analyst", "Data Analyst", "Scrum Master"],
-  "transition_paths": ["Business Analyst → Product Owner", "Product/Business Analyst → Product Manager", "Data Analyst → Product/Business Analyst"],
+  "related_roles": [
+    "Product Manager",
+    "Product Owner",
+    "Systems Analyst",
+    "Data Analyst",
+    "Scrum Master"
+  ],
+  "transition_paths": [
+    "Business Analyst → Product Owner",
+    "Product/Business Analyst → Product Manager",
+    "Data Analyst → Product/Business Analyst"
+  ],
   "advantages": [
     "Highly transferable skills that work across industries, not just tech",
     "Direct, visible influence on what actually gets built",
@@ -81,7 +210,13 @@
     "Can be undervalued on teams that don't understand the difference between 'writing tickets' and real requirements work",
     "Success is harder to measure directly than a shipped feature or a closed bug"
   ],
-  "example_progression": ["Junior Business Analyst", "Business/Product Analyst", "Senior Analyst or Associate Product Manager", "Product Manager", "Senior/Group Product Manager"],
+  "example_progression": [
+    "Junior Business Analyst",
+    "Business/Product Analyst",
+    "Senior Analyst or Associate Product Manager",
+    "Product Manager",
+    "Senior/Group Product Manager"
+  ],
   "portfolio_expectations": [
     "A sample requirements package (BRD + user stories + acceptance criteria) for a self-chosen real product gap",
     "A documented prioritization exercise showing your reasoning, not just a ranked list",
@@ -96,9 +231,18 @@
   "ai_impact": "AI tools can now draft first-pass user stories and summarize stakeholder interviews, but judging whether requirements are actually complete, unambiguous, and prioritized correctly is still a human call — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "As AI-assisted development lowers the cost of building the wrong thing quickly, the requirements/prioritization judgment this role provides becomes more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "IIBA Business Analysis Body of Knowledge (BABOK) overview", "url": "https://www.iiba.org/knowledgehub/business-analysis-body-of-knowledge-babok-guide/" },
-    { "title": "Atlassian's guide to agile user stories", "url": "https://www.atlassian.com/agile/project-management/user-stories" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "IIBA Business Analysis Body of Knowledge (BABOK) overview",
+      "url": "https://www.iiba.org/knowledgehub/business-analysis-body-of-knowledge-babok-guide/"
+    },
+    {
+      "title": "Atlassian's guide to agile user stories",
+      "url": "https://www.atlassian.com/agile/project-management/user-stories"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

@@ -29,19 +29,70 @@
     "advanced": "Makes architecture decisions, mentors other developers, and owns quality and performance for a service or product area."
   },
   "common_tools": [
-    "Git/GitHub", "VS Code", "Docker", "Postman", "npm/pip/Maven", "GitHub Actions or Jenkins", "A cloud console (AWS/Azure/GCP)"
+    "Git/GitHub",
+    "VS Code",
+    "Docker",
+    "Postman",
+    "npm/pip/Maven",
+    "GitHub Actions or Jenkins",
+    "A cloud console (AWS/Azure/GCP)"
   ],
-  "recommended_languages": ["JavaScript/TypeScript", "Python", "Java"],
+  "recommended_languages": [
+    "JavaScript/TypeScript",
+    "Python",
+    "Java"
+  ],
   "roadmap": {
     "summary": "A learning path from programming fundamentals to a deployed full-stack application. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "Programming fundamentals", "duration": "4-6 weeks", "topics": ["Variables, control flow, functions", "Data structures: arrays, objects/maps, basic algorithms"] },
-      { "name": "Frontend fundamentals", "duration": "4-6 weeks", "topics": ["HTML/CSS layout and responsive design", "JavaScript DOM manipulation, then a framework (React)"] },
-      { "name": "Backend fundamentals", "duration": "4-6 weeks", "topics": ["Building a REST API", "Authentication basics, request validation, error handling"] },
-      { "name": "Databases", "duration": "2-3 weeks", "topics": ["Relational modeling and SQL", "Connecting an API to a database, migrations"] },
-      { "name": "Git & collaboration", "duration": "1-2 weeks", "topics": ["Branching, pull requests, code review etiquette"] },
-      { "name": "Deploy a full-stack project", "duration": "2-3 weeks", "topics": ["Containerize the app", "Deploy frontend + backend + database to a cloud provider"] }
+      {
+        "name": "Programming fundamentals",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Variables, control flow, functions",
+          "Data structures: arrays, objects/maps, basic algorithms"
+        ]
+      },
+      {
+        "name": "Frontend fundamentals",
+        "duration": "4-6 weeks",
+        "topics": [
+          "HTML/CSS layout and responsive design",
+          "JavaScript DOM manipulation, then a framework (React)"
+        ]
+      },
+      {
+        "name": "Backend fundamentals",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Building a REST API",
+          "Authentication basics, request validation, error handling"
+        ]
+      },
+      {
+        "name": "Databases",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Relational modeling and SQL",
+          "Connecting an API to a database, migrations"
+        ]
+      },
+      {
+        "name": "Git & collaboration",
+        "duration": "1-2 weeks",
+        "topics": [
+          "Branching, pull requests, code review etiquette"
+        ]
+      },
+      {
+        "name": "Deploy a full-stack project",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Containerize the app",
+          "Deploy frontend + backend + database to a cloud provider"
+        ]
+      }
     ]
   },
   "labs": [
@@ -49,9 +100,72 @@
     "For now, practice by building the projects below locally and pushing them to GitHub."
   ],
   "projects": [
-    { "level": "guided", "title": "Build a CRUD REST API with authentication", "description": "A backend API (e.g. a task list or notes app) with signup/login and full create/read/update/delete endpoints." },
-    { "level": "independent", "title": "Build a full-stack app with a database", "description": "Connect a frontend framework to your own API and a real database; deploy it so it's live at a public URL." },
-    { "level": "advanced-capstone", "title": "Contribute to an open-source project", "description": "Find a 'good first issue' on a real open-source repo, fix it, and get a pull request merged." }
+    {
+      "level": "guided",
+      "title": "Build a CRUD REST API with authentication",
+      "description": "A backend API (e.g. a task list or notes app) with signup/login and full create/read/update/delete endpoints.",
+      "id": "crud-rest-api-with-auth",
+      "steps": [
+        "Design the data model for a small domain (tasks, notes, etc.)",
+        "Build signup/login with hashed passwords and session or token auth",
+        "Implement full create/read/update/delete endpoints with input validation",
+        "Add authorization so users can only touch their own data",
+        "Write tests covering the happy path and key failure cases (bad auth, bad input)"
+      ],
+      "tech_stack": [
+        "Node.js or Python",
+        "a web framework (Express/FastAPI)",
+        "PostgreSQL or SQLite"
+      ],
+      "stretch_goals": [
+        "Add rate limiting and pagination",
+        "Document the API with OpenAPI/Swagger"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Build a full-stack app with a database",
+      "description": "Connect a frontend framework to your own API and a real database; deploy it so it's live at a public URL.",
+      "id": "full-stack-app-with-database",
+      "steps": [
+        "Design a small but real feature set, not a todo-list clone",
+        "Build the API and connect it to a real database",
+        "Build the frontend and wire it to the API, handling loading/error states",
+        "Deploy both frontend and backend so the app is live at a public URL",
+        "Fix at least one bug that only shows up in the deployed environment"
+      ],
+      "tech_stack": [
+        "a frontend framework (React/Vue)",
+        "a backend API",
+        "a hosting provider"
+      ],
+      "stretch_goals": [
+        "Add automated deploys on push (CI/CD)",
+        "Add basic monitoring/error tracking to the live app"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Contribute to an open-source project",
+      "description": "Find a 'good first issue' on a real open-source repo, fix it, and get a pull request merged.",
+      "id": "contribute-open-source-project",
+      "steps": [
+        "Find an active repo and read its CONTRIBUTING guide before doing anything else",
+        "Pick a \"good first issue\" that's scoped small enough to finish",
+        "Set up the project locally and reproduce the issue",
+        "Write a fix with tests, following the project's style and PR conventions",
+        "Open the PR, respond to review feedback, and get it merged"
+      ],
+      "tech_stack": [
+        "Git",
+        "GitHub",
+        "whatever stack the project uses"
+      ],
+      "stretch_goals": [
+        "Take on a second, slightly harder issue in the same repo",
+        "Help review someone else's PR on the same project"
+      ]
+    }
   ],
   "interview_topics": [
     "Data structures & algorithms (arrays, hash maps, trees, basic complexity analysis)",
@@ -60,10 +174,26 @@
     "Debugging and code-review scenarios"
   ],
   "certifications": [
-    { "name": "AWS Certified Developer — Associate", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-developer-associate" },
-    { "name": "Meta Front-End Developer Professional Certificate", "issuer": "Meta (via Coursera)", "url": "https://www.coursera.org/professional-certificates/meta-front-end-developer" },
-    { "name": "Full Stack Developer Certification", "issuer": "freeCodeCamp (free)", "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9" },
-    { "name": "Oracle Certified Professional: Java SE Developer", "issuer": "Oracle", "url": "https://education.oracle.com/oracle-certification-path/pFamily_48" }
+    {
+      "name": "AWS Certified Developer — Associate",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-developer-associate"
+    },
+    {
+      "name": "Meta Front-End Developer Professional Certificate",
+      "issuer": "Meta (via Coursera)",
+      "url": "https://www.coursera.org/professional-certificates/meta-front-end-developer"
+    },
+    {
+      "name": "Full Stack Developer Certification",
+      "issuer": "freeCodeCamp (free)",
+      "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9"
+    },
+    {
+      "name": "Oracle Certified Professional: Java SE Developer",
+      "issuer": "Oracle",
+      "url": "https://education.oracle.com/oracle-certification-path/pFamily_48"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -72,8 +202,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["Frontend Developer", "Backend Developer", "Mobile Developer", "DevOps Engineer", "AI Engineer"],
-  "transition_paths": ["QA/SDET → Developer (via strong automation coding skills)", "Backend Developer → AI Engineer", "Full-Stack Developer → Platform/DevOps Engineer"],
+  "related_roles": [
+    "Frontend Developer",
+    "Backend Developer",
+    "Mobile Developer",
+    "DevOps Engineer",
+    "AI Engineer"
+  ],
+  "transition_paths": [
+    "QA/SDET → Developer (via strong automation coding skills)",
+    "Backend Developer → AI Engineer",
+    "Full-Stack Developer → Platform/DevOps Engineer"
+  ],
   "advantages": [
     "Broad skill set makes you useful on small teams and startups where one person wears many hats",
     "High demand across nearly every industry, not just tech companies",
@@ -84,7 +224,13 @@
     "The tooling and framework landscape changes quickly and requires continuous learning",
     "Context-switching between frontend and backend concerns in the same day can be mentally taxing"
   ],
-  "example_progression": ["Junior Developer", "Developer", "Senior Developer", "Tech Lead or Staff Engineer", "Engineering Manager or Principal Engineer"],
+  "example_progression": [
+    "Junior Developer",
+    "Developer",
+    "Senior Developer",
+    "Tech Lead or Staff Engineer",
+    "Engineering Manager or Principal Engineer"
+  ],
   "portfolio_expectations": [
     "A deployed full-stack project with a public URL, not just source code",
     "A REST or GraphQL API you designed yourself, with tests",
@@ -99,9 +245,18 @@
   "ai_impact": "AI coding assistants are speeding up boilerplate and first-draft code, but understanding the system well enough to review, debug, and own that code is becoming more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "Full-stack skills remain a strong general-purpose foundation that specializations (AI engineering, platform engineering, mobile) are typically built on top of, rather than a path being replaced by them — this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "MDN Web Docs (HTML/CSS/JavaScript)", "url": "https://developer.mozilla.org/" },
-    { "title": "freeCodeCamp Full Stack curriculum (free)", "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "MDN Web Docs (HTML/CSS/JavaScript)",
+      "url": "https://developer.mozilla.org/"
+    },
+    {
+      "title": "freeCodeCamp Full Stack curriculum (free)",
+      "url": "https://www.freecodecamp.org/learn/full-stack-developer-v9"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

@@ -29,18 +29,71 @@
     "intermediate": "Designs new pipelines and data models independently, builds and evaluates basic ML models.",
     "advanced": "Owns data platform architecture, leads ML/AI feature integration end to end, mentors others on data quality practices."
   },
-  "common_tools": ["Airflow", "dbt", "Snowflake", "BigQuery", "Spark", "Kafka", "Jupyter"],
-  "recommended_languages": ["Python", "SQL"],
+  "common_tools": [
+    "Airflow",
+    "dbt",
+    "Snowflake",
+    "BigQuery",
+    "Spark",
+    "Kafka",
+    "Jupyter"
+  ],
+  "recommended_languages": [
+    "Python",
+    "SQL"
+  ],
   "roadmap": {
     "summary": "A path from SQL and data fundamentals through pipeline engineering into applied ML/AI integration. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "SQL & data modeling fundamentals", "duration": "3-4 weeks", "topics": ["Joins, window functions, aggregations", "Star schema and dimensional modeling basics"] },
-      { "name": "Python for data engineering", "duration": "3-4 weeks", "topics": ["pandas, data validation", "Writing testable, production-quality data code"] },
-      { "name": "ETL/ELT & orchestration", "duration": "4 weeks", "topics": ["Airflow DAGs", "Incremental loads, backfills, idempotency"] },
-      { "name": "Data warehousing", "duration": "2-3 weeks", "topics": ["Snowflake or BigQuery basics", "Partitioning and cost-aware query design"] },
-      { "name": "Applied ML fundamentals", "duration": "4-6 weeks", "topics": ["Training/evaluating a basic model", "Feature engineering basics"] },
-      { "name": "AI feature integration", "duration": "2-3 weeks", "topics": ["Calling an LLM API for a real feature", "Basic prompt engineering and evaluation"] }
+      {
+        "name": "SQL & data modeling fundamentals",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Joins, window functions, aggregations",
+          "Star schema and dimensional modeling basics"
+        ]
+      },
+      {
+        "name": "Python for data engineering",
+        "duration": "3-4 weeks",
+        "topics": [
+          "pandas, data validation",
+          "Writing testable, production-quality data code"
+        ]
+      },
+      {
+        "name": "ETL/ELT & orchestration",
+        "duration": "4 weeks",
+        "topics": [
+          "Airflow DAGs",
+          "Incremental loads, backfills, idempotency"
+        ]
+      },
+      {
+        "name": "Data warehousing",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Snowflake or BigQuery basics",
+          "Partitioning and cost-aware query design"
+        ]
+      },
+      {
+        "name": "Applied ML fundamentals",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Training/evaluating a basic model",
+          "Feature engineering basics"
+        ]
+      },
+      {
+        "name": "AI feature integration",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Calling an LLM API for a real feature",
+          "Basic prompt engineering and evaluation"
+        ]
+      }
     ]
   },
   "labs": [
@@ -48,9 +101,73 @@
     "For now, practice by building a small ETL pipeline locally with a free sample dataset and Airflow or a simple Python script."
   ],
   "projects": [
-    { "level": "guided", "title": "Build an ETL pipeline", "description": "Pull data from a public API, clean and load it into a database on a schedule, with basic data-quality checks." },
-    { "level": "independent", "title": "Train and deploy a simple ML model", "description": "Train a model on a public dataset, evaluate it properly, and serve predictions via a small API." },
-    { "level": "advanced-capstone", "title": "Build an LLM-powered feature with real data", "description": "Combine a data pipeline with an LLM API call to build something like a summarization or classification feature, with basic evaluation." }
+    {
+      "level": "guided",
+      "title": "Build an ETL pipeline",
+      "description": "Pull data from a public API, clean and load it into a database on a schedule, with basic data-quality checks.",
+      "id": "build-etl-pipeline",
+      "steps": [
+        "Pick a free public API with enough data to be interesting (weather, finance, transit, etc.)",
+        "Write an extract step that pulls data on a schedule and handles failures gracefully",
+        "Write transform logic that cleans, validates, and reshapes the data",
+        "Load it into a real database (Postgres/SQLite) with a sensible schema",
+        "Add data-quality checks that fail loudly when the source data looks wrong"
+      ],
+      "tech_stack": [
+        "Python",
+        "Pandas",
+        "a scheduler (cron/Airflow)",
+        "PostgreSQL or SQLite"
+      ],
+      "stretch_goals": [
+        "Add incremental loads instead of full refreshes",
+        "Visualize the pipeline's output in a small dashboard"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Train and deploy a simple ML model",
+      "description": "Train a model on a public dataset, evaluate it properly, and serve predictions via a small API.",
+      "id": "train-deploy-ml-model",
+      "steps": [
+        "Choose a public dataset and a clearly-scoped prediction task",
+        "Split data properly (train/validation/test) and establish a baseline",
+        "Train a model, tune it, and evaluate with metrics appropriate to the task",
+        "Wrap the trained model in a small API that returns predictions",
+        "Document the model's limitations and where it's likely to fail"
+      ],
+      "tech_stack": [
+        "Python",
+        "scikit-learn or PyTorch",
+        "FastAPI or Flask"
+      ],
+      "stretch_goals": [
+        "Add model versioning and a simple retraining script",
+        "Monitor prediction drift once the API is live"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Build an LLM-powered feature with real data",
+      "description": "Combine a data pipeline with an LLM API call to build something like a summarization or classification feature, with basic evaluation.",
+      "id": "llm-powered-feature-real-data",
+      "steps": [
+        "Pick a concrete task (summarization, classification, extraction) grounded in real data",
+        "Build a small pipeline that feeds real records into an LLM API with a well-scoped prompt",
+        "Add basic evaluation: a labeled sample set and a scoring method, not just eyeballing outputs",
+        "Handle failure modes (rate limits, malformed output, hallucinated fields)",
+        "Write up what the evaluation showed, including where the feature is unreliable"
+      ],
+      "tech_stack": [
+        "Python",
+        "an LLM API",
+        "a data source or database"
+      ],
+      "stretch_goals": [
+        "Add automated regression evaluation that runs on every prompt change",
+        "Compare two different prompts or models against the same eval set"
+      ]
+    }
   ],
   "interview_topics": [
     "SQL problem-solving (joins, window functions, query optimization)",
@@ -59,9 +176,21 @@
     "How would you evaluate whether an LLM-powered feature is working well?"
   ],
   "certifications": [
-    { "name": "Google Cloud Professional Data Engineer", "issuer": "Google Cloud", "url": "https://cloud.google.com/learn/certification/data-engineer" },
-    { "name": "Databricks Certified Data Engineer Associate", "issuer": "Databricks", "url": "https://www.databricks.com/learn/certification/data-engineer-associate" },
-    { "name": "AWS Certified Machine Learning Engineer — Associate", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/" }
+    {
+      "name": "Google Cloud Professional Data Engineer",
+      "issuer": "Google Cloud",
+      "url": "https://cloud.google.com/learn/certification/data-engineer"
+    },
+    {
+      "name": "Databricks Certified Data Engineer Associate",
+      "issuer": "Databricks",
+      "url": "https://www.databricks.com/learn/certification/data-engineer-associate"
+    },
+    {
+      "name": "AWS Certified Machine Learning Engineer — Associate",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -70,8 +199,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["Data Engineer", "Machine Learning Engineer", "AI Engineer", "Analytics Engineer", "Data Scientist"],
-  "transition_paths": ["Data Analyst → Data Engineer", "Backend Developer → AI Engineer", "Data Engineer → Machine Learning Engineer"],
+  "related_roles": [
+    "Data Engineer",
+    "Machine Learning Engineer",
+    "AI Engineer",
+    "Analytics Engineer",
+    "Data Scientist"
+  ],
+  "transition_paths": [
+    "Data Analyst → Data Engineer",
+    "Backend Developer → AI Engineer",
+    "Data Engineer → Machine Learning Engineer"
+  ],
   "advantages": [
     "Sits at the center of a company's decision-making — data work has broad, visible impact",
     "Fast-growing demand as more products add AI/ML features",
@@ -82,7 +221,13 @@
     "Data quality problems are often someone else's mess to clean up, which can be thankless",
     "Fast-moving AI tooling means constantly re-evaluating what's worth learning deeply vs. lightly"
   ],
-  "example_progression": ["Junior Data Engineer", "Data Engineer", "Senior Data/AI Engineer", "Staff Engineer or ML/AI Lead", "Principal Engineer / Head of Data"],
+  "example_progression": [
+    "Junior Data Engineer",
+    "Data Engineer",
+    "Senior Data/AI Engineer",
+    "Staff Engineer or ML/AI Lead",
+    "Principal Engineer / Head of Data"
+  ],
   "portfolio_expectations": [
     "A public repo with a real, working data pipeline (not just a tutorial copy), including data-quality checks",
     "A trained model with a documented evaluation — accuracy alone isn't enough, show you understand the metric choice",
@@ -97,9 +242,18 @@
   "ai_impact": "This role is being reshaped by AI faster than most — LLMs are now a standard building block for features, not just a research topic, and demand for people who can integrate them reliably (not just call an API) is growing fast — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "As companies scale, this combined role commonly splits into Data Engineer, ML Engineer, and AI Engineer specializations — starting here is a reasonable way to discover which of those you actually enjoy — this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "dbt official docs", "url": "https://docs.getdbt.com/" },
-    { "title": "Apache Airflow official docs", "url": "https://airflow.apache.org/docs/" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "dbt official docs",
+      "url": "https://docs.getdbt.com/"
+    },
+    {
+      "title": "Apache Airflow official docs",
+      "url": "https://airflow.apache.org/docs/"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

@@ -251,6 +251,11 @@ def inject_auth_flags():
     return {"login_enabled": bool(SITE_PASSWORD)}
 
 
+@app.context_processor
+def inject_switcher_roles():
+    return {"switcher_roles": list(ROLES.values())}
+
+
 @app.route("/")
 def home():
     return render_template("home.html", active="home", roles=_load_all_roles())
@@ -357,6 +362,23 @@ def role_detail(slug):
     return render_template(
         "role_detail.html",
         role=role,
+        active="careers-explorer",
+        academy_label="Career Explorer — browsing all TechOrbit roles",
+    )
+
+
+@app.route("/careers/<role_slug>/projects/<project_id>")
+def project_detail(role_slug, project_id):
+    role = ROLES.get(role_slug)
+    if role is None:
+        abort(404)
+    project = next((p for p in role.get("projects", []) if p.get("id") == project_id), None)
+    if project is None:
+        abort(404)
+    return render_template(
+        "project_detail.html",
+        role=role,
+        project=project,
         active="careers-explorer",
         academy_label="Career Explorer — browsing all TechOrbit roles",
     )

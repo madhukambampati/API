@@ -29,18 +29,71 @@
     "intermediate": "Designs new infrastructure and platform tooling independently, manages cost and access for a team's cloud footprint.",
     "advanced": "Owns cloud/platform architecture strategy across the org, builds self-service developer platforms, mentors other engineers."
   },
-  "common_tools": ["Terraform", "Kubernetes", "AWS/Azure/GCP console", "Backstage", "Helm", "Vault"],
-  "recommended_languages": ["Python", "Go", "Bash"],
+  "common_tools": [
+    "Terraform",
+    "Kubernetes",
+    "AWS/Azure/GCP console",
+    "Backstage",
+    "Helm",
+    "Vault"
+  ],
+  "recommended_languages": [
+    "Python",
+    "Go",
+    "Bash"
+  ],
   "roadmap": {
     "summary": "A path from core cloud fundamentals through infrastructure as code into platform engineering — building tools other engineers use. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "Cloud fundamentals", "duration": "3-4 weeks", "topics": ["Compute, storage, networking basics on one cloud provider", "IAM and least-privilege design"] },
-      { "name": "Networking deep dive", "duration": "2-3 weeks", "topics": ["VPCs, subnets, routing, load balancers", "DNS and TLS basics"] },
-      { "name": "Infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform modules and state management", "Reviewing infra changes safely"] },
-      { "name": "Containers & Kubernetes", "duration": "4 weeks", "topics": ["Running workloads on a managed Kubernetes service", "Helm charts and cluster operations"] },
-      { "name": "Cost & security governance", "duration": "2 weeks", "topics": ["Cost monitoring and budgets", "Security baselines and guardrails"] },
-      { "name": "Platform engineering", "duration": "3-4 weeks", "topics": ["Building a self-service golden path for a common task", "Internal developer platform concepts (e.g. Backstage)"] }
+      {
+        "name": "Cloud fundamentals",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Compute, storage, networking basics on one cloud provider",
+          "IAM and least-privilege design"
+        ]
+      },
+      {
+        "name": "Networking deep dive",
+        "duration": "2-3 weeks",
+        "topics": [
+          "VPCs, subnets, routing, load balancers",
+          "DNS and TLS basics"
+        ]
+      },
+      {
+        "name": "Infrastructure as code",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Terraform modules and state management",
+          "Reviewing infra changes safely"
+        ]
+      },
+      {
+        "name": "Containers & Kubernetes",
+        "duration": "4 weeks",
+        "topics": [
+          "Running workloads on a managed Kubernetes service",
+          "Helm charts and cluster operations"
+        ]
+      },
+      {
+        "name": "Cost & security governance",
+        "duration": "2 weeks",
+        "topics": [
+          "Cost monitoring and budgets",
+          "Security baselines and guardrails"
+        ]
+      },
+      {
+        "name": "Platform engineering",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Building a self-service golden path for a common task",
+          "Internal developer platform concepts (e.g. Backstage)"
+        ]
+      }
     ]
   },
   "labs": [
@@ -48,9 +101,72 @@
     "For now, practice on a free-tier cloud account: provision real infrastructure with Terraform and tear it down cleanly."
   ],
   "projects": [
-    { "level": "guided", "title": "Provision a real environment with Terraform", "description": "Stand up a small real environment (network, compute, database) on a free-tier cloud account, fully as code." },
-    { "level": "independent", "title": "Build a golden-path template", "description": "Create a reusable, documented template (e.g. Terraform module or Helm chart) another team could self-serve with." },
-    { "level": "advanced-capstone", "title": "Design a multi-account/multi-region setup", "description": "Document (and where possible provision) a realistic multi-account cloud structure with clear security and cost boundaries." }
+    {
+      "level": "guided",
+      "title": "Provision a real environment with Terraform",
+      "description": "Stand up a small real environment (network, compute, database) on a free-tier cloud account, fully as code.",
+      "id": "provision-environment-terraform",
+      "steps": [
+        "Pick a free-tier cloud account (AWS, GCP, or Azure) and set up billing alerts before writing any code",
+        "Write Terraform for a VPC/network with public and private subnets",
+        "Provision a small compute instance and a managed database in the private subnet",
+        "Add remote state (S3/GCS bucket + lock table) instead of local state",
+        "Run terraform plan and apply from a clean checkout to prove it's fully reproducible"
+      ],
+      "tech_stack": [
+        "Terraform",
+        "AWS, GCP, or Azure",
+        "Git"
+      ],
+      "stretch_goals": [
+        "Add a terraform destroy check to CI so environments don't leak cost",
+        "Split the config into reusable modules (network, compute, database)"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Build a golden-path template",
+      "description": "Create a reusable, documented template (e.g. Terraform module or Helm chart) another team could self-serve with.",
+      "id": "build-golden-path-template",
+      "steps": [
+        "Pick one recurring need (e.g. \"a service with a database and a queue\") and design its ideal shape",
+        "Build it as a Terraform module or Helm chart with sane, overridable defaults",
+        "Write a README a stranger could follow with zero extra context",
+        "Provision a real environment from the template to prove it actually works end-to-end",
+        "Get a teammate or study-group peer to use it without your help and fix whatever confused them"
+      ],
+      "tech_stack": [
+        "Terraform or Helm",
+        "Git",
+        "a free-tier cloud account"
+      ],
+      "stretch_goals": [
+        "Add automated validation (terraform validate / helm lint) in CI",
+        "Publish it to a private module registry or internal Git repo with versioned releases"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Design a multi-account/multi-region setup",
+      "description": "Document (and where possible provision) a realistic multi-account cloud structure with clear security and cost boundaries.",
+      "id": "multi-account-multi-region-setup",
+      "steps": [
+        "Design an account/project structure separating prod, staging, and shared tooling",
+        "Document IAM boundaries: who can do what, in which account",
+        "Provision at least two accounts/regions and a way to deploy to both from one pipeline",
+        "Add a cost-boundary story: budgets, tagging, and alerts per account",
+        "Write a one-page architecture doc explaining the tradeoffs you chose"
+      ],
+      "tech_stack": [
+        "Terraform",
+        "AWS Organizations or GCP folders",
+        "IAM"
+      ],
+      "stretch_goals": [
+        "Add automated drift detection between the documented design and actual infrastructure",
+        "Simulate a region failure and document the failover plan"
+      ]
+    }
   ],
   "interview_topics": [
     "Design the cloud network architecture for a given scenario",
@@ -59,10 +175,26 @@
     "What makes a good internal developer platform vs. just a pile of scripts?"
   ],
   "certifications": [
-    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
-    { "name": "AWS Certified Solutions Architect — Associate", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate" },
-    { "name": "HashiCorp Certified: Terraform Associate", "issuer": "HashiCorp", "url": "https://developer.hashicorp.com/certifications/infrastructure-automation" },
-    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" }
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"
+    },
+    {
+      "name": "AWS Certified Solutions Architect — Associate",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate"
+    },
+    {
+      "name": "HashiCorp Certified: Terraform Associate",
+      "issuer": "HashiCorp",
+      "url": "https://developer.hashicorp.com/certifications/infrastructure-automation"
+    },
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "CNCF / Linux Foundation",
+      "url": "https://www.cncf.io/training/certification/cka/"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -71,8 +203,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["DevOps Engineer", "Site Reliability Engineer", "Cloud Engineer", "Solutions Architect", "Infrastructure Engineer"],
-  "transition_paths": ["DevOps Engineer → Platform Engineer", "Cloud Engineer → Solutions Architect", "Backend Developer → Cloud/Platform Engineer"],
+  "related_roles": [
+    "DevOps Engineer",
+    "Site Reliability Engineer",
+    "Cloud Engineer",
+    "Solutions Architect",
+    "Infrastructure Engineer"
+  ],
+  "transition_paths": [
+    "DevOps Engineer → Platform Engineer",
+    "Cloud Engineer → Solutions Architect",
+    "Backend Developer → Cloud/Platform Engineer"
+  ],
   "advantages": [
     "High-leverage work — good platform tooling multiplies the productivity of every other engineer",
     "Strong demand and compensation for deep cloud expertise",
@@ -83,7 +225,13 @@
     "Easy to over-engineer a platform nobody asked for instead of solving the actual pain point",
     "Security and cost governance responsibilities carry real organizational risk if done poorly"
   ],
-  "example_progression": ["Junior Cloud Engineer", "Cloud/Platform Engineer", "Senior Platform Engineer", "Staff Engineer or Solutions Architect", "Principal Engineer / Head of Infrastructure"],
+  "example_progression": [
+    "Junior Cloud Engineer",
+    "Cloud/Platform Engineer",
+    "Senior Platform Engineer",
+    "Staff Engineer or Solutions Architect",
+    "Principal Engineer / Head of Infrastructure"
+  ],
   "portfolio_expectations": [
     "A public repo of real Terraform modules provisioning actual infrastructure, not a tutorial copy",
     "Documentation showing your reasoning for a network/security design, not just the end result",
@@ -98,9 +246,18 @@
   "ai_impact": "AI tools are speeding up first-draft Terraform/IaC and helping catch some misconfigurations, but judgment about security posture, cost tradeoffs, and blast radius still needs a human owner — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "Platform engineering (building internal developer platforms, not just raw cloud infra) is the clearest growth direction for this role as organizations try to reduce the cognitive load on product engineering teams — this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "Terraform official docs", "url": "https://developer.hashicorp.com/terraform/docs" },
-    { "title": "AWS Well-Architected Framework", "url": "https://aws.amazon.com/architecture/well-architected/" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "Terraform official docs",
+      "url": "https://developer.hashicorp.com/terraform/docs"
+    },
+    {
+      "title": "AWS Well-Architected Framework",
+      "url": "https://aws.amazon.com/architecture/well-architected/"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

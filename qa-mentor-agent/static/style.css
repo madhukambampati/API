@@ -1318,6 +1318,68 @@ a {
   line-height: 1.45;
 }
 
+.icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.resource-card-arrow {
+  display: block;
+  margin-top: 10px;
+  color: var(--text-faint);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.resource-card:hover .resource-card-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+.back-link:hover {
+  color: var(--accent-2);
+}
+
+.back-link .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip-row li {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
 /* ---------- Glossary ---------- */
 
 #glossary-search {

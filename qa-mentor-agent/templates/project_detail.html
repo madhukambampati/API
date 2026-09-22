@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}TechOrbit — {{ project.title }}{% endblock %}
+{% block content %}
+<a class="back-link" href="{{ url_for('role_detail', slug=role.slug) }}">
+  {{ icon("chevron-right", "rotate-180") }} Back to {{ role.title }}
+</a>
+
+<div class="section-heading">
+  <div>
+    <h1 class="page-title">{{ project.title }}</h1>
+    <p class="page-subtitle">{{ project.description }}</p>
+  </div>
+  <span class="quiz-score-pill" title="How much prior experience this project assumes">{{ project.level }}</span>
+</div>
+
+<p class="settings-note" style="margin-top: -10px;">
+  🏗️ A self-guided hands-on project for the {{ role.title }} path — there's no
+  walkthrough video or step-by-step tutorial; use the steps below as a brief and
+  build it your own way.
+</p>
+
+<div class="settings-grid">
+  {% if project.steps %}
+  <div class="settings-panel">
+    <h3>✅ What you'll build</h3>
+    <ul class="detail-list">{% for step in project.steps %}<li>{{ step }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+
+  {% if project.tech_stack %}
+  <div class="settings-panel">
+    <h3>🧰 Suggested tech stack</h3>
+    <ul class="chip-row">{% for tech in project.tech_stack %}<li>{{ tech }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if project.stretch_goals %}
+<div class="settings-panel" style="margin-top: 20px;">
+  <h3>🚀 Stretch goals</h3>
+  <ul class="detail-list">{% for goal in project.stretch_goals %}<li>{{ goal }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+{% endblock %}

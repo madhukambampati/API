@@ -31,19 +31,72 @@
     "advanced": "Owns reliability and infrastructure strategy for a team or org, mentors others, drives incident response process and tooling."
   },
   "common_tools": [
-    "Docker", "Kubernetes", "Terraform", "GitHub Actions", "Jenkins", "Prometheus", "Grafana", "AWS/Azure/GCP console"
+    "Docker",
+    "Kubernetes",
+    "Terraform",
+    "GitHub Actions",
+    "Jenkins",
+    "Prometheus",
+    "Grafana",
+    "AWS/Azure/GCP console"
   ],
-  "recommended_languages": ["Python", "Go", "Bash"],
+  "recommended_languages": [
+    "Python",
+    "Go",
+    "Bash"
+  ],
   "roadmap": {
     "summary": "A learning path from Linux and scripting fundamentals through containers, CI/CD, infrastructure as code, and production monitoring. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "Linux & scripting fundamentals", "duration": "3-4 weeks", "topics": ["Filesystem, processes, permissions", "Bash scripting for automation"] },
-      { "name": "Git & CI/CD fundamentals", "duration": "2 weeks", "topics": ["Branching workflows", "Build a pipeline that tests and deploys on every push"] },
-      { "name": "Containers", "duration": "3-4 weeks", "topics": ["Docker images and containers", "Docker Compose for multi-service apps"] },
-      { "name": "Kubernetes", "duration": "4-6 weeks", "topics": ["Pods, deployments, services", "ConfigMaps/secrets, basic troubleshooting"] },
-      { "name": "Infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform basics: providers, resources, state", "Provision real cloud resources from code"] },
-      { "name": "Monitoring & incident response", "duration": "2-3 weeks", "topics": ["Metrics/logs/traces basics", "Writing a runbook and a postmortem"] }
+      {
+        "name": "Linux & scripting fundamentals",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Filesystem, processes, permissions",
+          "Bash scripting for automation"
+        ]
+      },
+      {
+        "name": "Git & CI/CD fundamentals",
+        "duration": "2 weeks",
+        "topics": [
+          "Branching workflows",
+          "Build a pipeline that tests and deploys on every push"
+        ]
+      },
+      {
+        "name": "Containers",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Docker images and containers",
+          "Docker Compose for multi-service apps"
+        ]
+      },
+      {
+        "name": "Kubernetes",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Pods, deployments, services",
+          "ConfigMaps/secrets, basic troubleshooting"
+        ]
+      },
+      {
+        "name": "Infrastructure as code",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Terraform basics: providers, resources, state",
+          "Provision real cloud resources from code"
+        ]
+      },
+      {
+        "name": "Monitoring & incident response",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Metrics/logs/traces basics",
+          "Writing a runbook and a postmortem"
+        ]
+      }
     ]
   },
   "labs": [
@@ -51,9 +104,72 @@
     "For now, practice locally: install Docker, run a multi-container app with Compose, and write a Terraform config that provisions a real (free-tier) cloud resource."
   ],
   "projects": [
-    { "level": "guided", "title": "Containerize and deploy a small app", "description": "Dockerize an existing app, then deploy it with a CI/CD pipeline that runs tests before every deploy." },
-    { "level": "independent", "title": "Provision infrastructure with Terraform", "description": "Write Terraform to stand up a small real environment (e.g. a web server + database) on a free-tier cloud account, checked into version control." },
-    { "level": "advanced-capstone", "title": "Deploy a monitored Kubernetes app", "description": "Run an app on Kubernetes with Prometheus/Grafana monitoring and a documented runbook for what to do if it goes down." }
+    {
+      "level": "guided",
+      "title": "Containerize and deploy a small app",
+      "description": "Dockerize an existing app, then deploy it with a CI/CD pipeline that runs tests before every deploy.",
+      "id": "containerize-deploy-small-app",
+      "steps": [
+        "Write a Dockerfile for an existing app, keeping the image small and reproducible",
+        "Run it locally and fix anything that only breaks inside the container",
+        "Write a CI pipeline that builds the image and runs the test suite on every push",
+        "Gate deploys on tests passing",
+        "Deploy the container to a real host or platform"
+      ],
+      "tech_stack": [
+        "Docker",
+        "GitHub Actions or GitLab CI",
+        "a hosting platform"
+      ],
+      "stretch_goals": [
+        "Add multi-stage builds to shrink the image further",
+        "Add a rollback step if the deploy health check fails"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Provision infrastructure with Terraform",
+      "description": "Write Terraform to stand up a small real environment (e.g. a web server + database) on a free-tier cloud account, checked into version control.",
+      "id": "provision-infrastructure-terraform",
+      "steps": [
+        "Pick a free-tier cloud account and define the environment you need (web server + database)",
+        "Write Terraform for it, avoiding manual click-ops entirely",
+        "Check the config into version control with a clear README",
+        "Apply it from scratch to prove it's reproducible",
+        "Add a way to safely tear it down (terraform destroy) without manual cleanup"
+      ],
+      "tech_stack": [
+        "Terraform",
+        "a cloud provider",
+        "Git"
+      ],
+      "stretch_goals": [
+        "Add remote state with locking",
+        "Parameterize it for a second, similar environment (staging vs prod)"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Deploy a monitored Kubernetes app",
+      "description": "Run an app on Kubernetes with Prometheus/Grafana monitoring and a documented runbook for what to do if it goes down.",
+      "id": "deploy-monitored-kubernetes-app",
+      "steps": [
+        "Get an app running on Kubernetes (a managed cluster or local like kind/minikube)",
+        "Add Prometheus metrics and a Grafana dashboard for the key signals",
+        "Define alerts for the failure modes that actually matter",
+        "Write a runbook: what to check first, second, third, if it goes down",
+        "Deliberately break it and follow your own runbook to recover it"
+      ],
+      "tech_stack": [
+        "Kubernetes",
+        "Prometheus",
+        "Grafana"
+      ],
+      "stretch_goals": [
+        "Add autoscaling based on load",
+        "Practice a full incident response and write a postmortem"
+      ]
+    }
   ],
   "interview_topics": [
     "CI/CD pipeline design and troubleshooting",
@@ -62,10 +178,26 @@
     "Incident response: how would you debug a production outage?"
   ],
   "certifications": [
-    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
-    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" },
-    { "name": "HashiCorp Certified: Terraform Associate", "issuer": "HashiCorp", "url": "https://developer.hashicorp.com/certifications/infrastructure-automation" },
-    { "name": "AWS Certified DevOps Engineer — Professional", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional" }
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"
+    },
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "CNCF / Linux Foundation",
+      "url": "https://www.cncf.io/training/certification/cka/"
+    },
+    {
+      "name": "HashiCorp Certified: Terraform Associate",
+      "issuer": "HashiCorp",
+      "url": "https://developer.hashicorp.com/certifications/infrastructure-automation"
+    },
+    {
+      "name": "AWS Certified DevOps Engineer — Professional",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -74,8 +206,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["Site Reliability Engineer", "Platform Engineer", "Cloud Engineer", "Full-Stack Developer", "Security Engineer"],
-  "transition_paths": ["Linux Administrator → DevOps Engineer", "DevOps Engineer → SRE", "Full-Stack Developer → DevOps Engineer"],
+  "related_roles": [
+    "Site Reliability Engineer",
+    "Platform Engineer",
+    "Cloud Engineer",
+    "Full-Stack Developer",
+    "Security Engineer"
+  ],
+  "transition_paths": [
+    "Linux Administrator → DevOps Engineer",
+    "DevOps Engineer → SRE",
+    "Full-Stack Developer → DevOps Engineer"
+  ],
   "advantages": [
     "High demand — nearly every company running software at scale needs this skill set",
     "Sits at the intersection of development and operations, giving broad system-level visibility",
@@ -86,7 +228,13 @@
     "Breadth of required knowledge (networking, security, multiple clouds, containers) is genuinely large",
     "Easy to end up as the team's default troubleshooter for anything infrastructure-shaped, which can crowd out deeper project work"
   ],
-  "example_progression": ["Junior DevOps Engineer", "DevOps Engineer", "Senior DevOps Engineer", "Platform Engineer or SRE Lead", "Principal Engineer / Head of Infrastructure"],
+  "example_progression": [
+    "Junior DevOps Engineer",
+    "DevOps Engineer",
+    "Senior DevOps Engineer",
+    "Platform Engineer or SRE Lead",
+    "Principal Engineer / Head of Infrastructure"
+  ],
   "portfolio_expectations": [
     "A public repo with real Terraform/IaC code that provisions something, not just a tutorial copy",
     "A documented CI/CD pipeline (e.g. a GitHub Actions workflow) with a clear README explaining what it does",
@@ -101,9 +249,18 @@
   "ai_impact": "AI tools are speeding up writing boilerplate IaC and CI/CD config, and helping triage alerts, but judgment about what's actually safe to automate and what needs a human in the loop is becoming more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "As more of the DevOps toolchain becomes managed/platform-provided, the role is shifting toward platform engineering — building the internal tools other engineers use — rather than disappearing; this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "Kubernetes official docs", "url": "https://kubernetes.io/docs/home/" },
-    { "title": "Terraform official docs", "url": "https://developer.hashicorp.com/terraform/docs" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "Kubernetes official docs",
+      "url": "https://kubernetes.io/docs/home/"
+    },
+    {
+      "title": "Terraform official docs",
+      "url": "https://developer.hashicorp.com/terraform/docs"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

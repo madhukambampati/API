@@ -29,18 +29,72 @@
     "intermediate": "Leads incident response independently, defines SLOs for a service, automates significant toil.",
     "advanced": "Sets reliability strategy across teams, mentors on-call engineers, drives org-wide incident process improvements."
   },
-  "common_tools": ["Prometheus", "Grafana", "PagerDuty", "Kubernetes", "Terraform", "OpenTelemetry", "Datadog"],
-  "recommended_languages": ["Python", "Go", "Bash"],
+  "common_tools": [
+    "Prometheus",
+    "Grafana",
+    "PagerDuty",
+    "Kubernetes",
+    "Terraform",
+    "OpenTelemetry",
+    "Datadog"
+  ],
+  "recommended_languages": [
+    "Python",
+    "Go",
+    "Bash"
+  ],
   "roadmap": {
     "summary": "A path from DevOps/operations fundamentals into the specific discipline of reliability engineering: SLOs, error budgets, and incident response. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
     "link": null,
     "stages": [
-      { "name": "Linux, networking & systems fundamentals", "duration": "3-4 weeks", "topics": ["Processes, memory, networking basics", "Debugging a system under load"] },
-      { "name": "SLIs, SLOs & error budgets", "duration": "2 weeks", "topics": ["Choosing meaningful SLIs for a service", "Setting realistic SLO targets and error budgets"] },
-      { "name": "Observability", "duration": "3-4 weeks", "topics": ["Metrics, logs, and traces", "Building dashboards and useful alerts (not noisy ones)"] },
-      { "name": "Automation & infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform or equivalent", "Automating a real toil task end to end"] },
-      { "name": "Incident response", "duration": "2-3 weeks", "topics": ["Running an incident, writing a blameless postmortem", "On-call rotation basics"] },
-      { "name": "Capacity planning & resilience", "duration": "2 weeks", "topics": ["Load testing and capacity forecasting", "Chaos engineering basics"] }
+      {
+        "name": "Linux, networking & systems fundamentals",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Processes, memory, networking basics",
+          "Debugging a system under load"
+        ]
+      },
+      {
+        "name": "SLIs, SLOs & error budgets",
+        "duration": "2 weeks",
+        "topics": [
+          "Choosing meaningful SLIs for a service",
+          "Setting realistic SLO targets and error budgets"
+        ]
+      },
+      {
+        "name": "Observability",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Metrics, logs, and traces",
+          "Building dashboards and useful alerts (not noisy ones)"
+        ]
+      },
+      {
+        "name": "Automation & infrastructure as code",
+        "duration": "3-4 weeks",
+        "topics": [
+          "Terraform or equivalent",
+          "Automating a real toil task end to end"
+        ]
+      },
+      {
+        "name": "Incident response",
+        "duration": "2-3 weeks",
+        "topics": [
+          "Running an incident, writing a blameless postmortem",
+          "On-call rotation basics"
+        ]
+      },
+      {
+        "name": "Capacity planning & resilience",
+        "duration": "2 weeks",
+        "topics": [
+          "Load testing and capacity forecasting",
+          "Chaos engineering basics"
+        ]
+      }
     ]
   },
   "labs": [
@@ -48,9 +102,71 @@
     "For now, practice by instrumenting a small app with Prometheus/Grafana and writing a postmortem for a self-created practice incident."
   ],
   "projects": [
-    { "level": "guided", "title": "Instrument a service with SLOs", "description": "Add metrics to a small app, define an SLO, and build a dashboard showing your error budget." },
-    { "level": "independent", "title": "Automate a toil task", "description": "Pick a repetitive manual operational task and fully automate it, with tests and documentation." },
-    { "level": "advanced-capstone", "title": "Run a simulated incident", "description": "Deliberately break a test system, run an incident response, and write a full blameless postmortem." }
+    {
+      "level": "guided",
+      "title": "Instrument a service with SLOs",
+      "description": "Add metrics to a small app, define an SLO, and build a dashboard showing your error budget.",
+      "id": "instrument-service-with-slos",
+      "steps": [
+        "Pick a small app and add metrics for latency, error rate, and traffic",
+        "Define an SLI (e.g. \"% of requests under 300ms\") for it",
+        "Set an SLO target and calculate the resulting error budget",
+        "Build a dashboard showing current performance against the SLO",
+        "Write a short doc explaining what happens when the error budget is exhausted"
+      ],
+      "tech_stack": [
+        "Prometheus",
+        "Grafana",
+        "a small app to instrument"
+      ],
+      "stretch_goals": [
+        "Add burn-rate alerts that fire before the budget is fully spent",
+        "Track the SLO over a real week of usage and report on it"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Automate a toil task",
+      "description": "Pick a repetitive manual operational task and fully automate it, with tests and documentation.",
+      "id": "automate-toil-task",
+      "steps": [
+        "Identify a real repetitive manual operational task (yours or a documented example)",
+        "Measure how much time/effort it currently costs",
+        "Automate it end-to-end, not just the easy 80%",
+        "Add tests so the automation itself doesn't become a new source of incidents",
+        "Document how to run it, and how to roll back if it goes wrong"
+      ],
+      "tech_stack": [
+        "a scripting language (Python/Bash)",
+        "your existing ops tooling"
+      ],
+      "stretch_goals": [
+        "Schedule it to run automatically and alert on failure",
+        "Measure the time saved and report it as a before/after"
+      ]
+    },
+    {
+      "level": "advanced-capstone",
+      "title": "Run a simulated incident",
+      "description": "Deliberately break a test system, run an incident response, and write a full blameless postmortem.",
+      "id": "run-simulated-incident",
+      "steps": [
+        "Stand up a small test system you're willing to break",
+        "Design a realistic failure (resource exhaustion, bad deploy, dependency outage)",
+        "Trigger it and respond as if it were a real incident: triage, mitigate, resolve",
+        "Track a timeline of what you did and when",
+        "Write a full blameless postmortem with root cause and concrete follow-ups"
+      ],
+      "tech_stack": [
+        "your test system",
+        "a monitoring/alerting tool",
+        "a doc tool"
+      ],
+      "stretch_goals": [
+        "Run it again after your follow-up fixes and confirm the failure no longer reproduces",
+        "Practice it live with a peer playing incident commander"
+      ]
+    }
   ],
   "interview_topics": [
     "SLIs, SLOs, and error budgets — how would you set them for a given service?",
@@ -59,9 +175,21 @@
     "Postmortem writing and blameless culture"
   ],
   "certifications": [
-    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
-    { "name": "Google Cloud Professional Cloud DevOps Engineer", "issuer": "Google Cloud", "url": "https://cloud.google.com/learn/certification/cloud-devops-engineer" },
-    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" }
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"
+    },
+    {
+      "name": "Google Cloud Professional Cloud DevOps Engineer",
+      "issuer": "Google Cloud",
+      "url": "https://cloud.google.com/learn/certification/cloud-devops-engineer"
+    },
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "CNCF / Linux Foundation",
+      "url": "https://www.cncf.io/training/certification/cka/"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -70,8 +198,17 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["DevOps Engineer", "Platform Engineer", "Cloud Engineer", "Observability Engineer"],
-  "transition_paths": ["DevOps Engineer → SRE", "Backend Developer → SRE", "SRE → Platform Engineering Lead"],
+  "related_roles": [
+    "DevOps Engineer",
+    "Platform Engineer",
+    "Cloud Engineer",
+    "Observability Engineer"
+  ],
+  "transition_paths": [
+    "DevOps Engineer → SRE",
+    "Backend Developer → SRE",
+    "SRE → Platform Engineering Lead"
+  ],
   "advantages": [
     "High-leverage role — reliability improvements protect revenue and user trust broadly",
     "Deep, transferable systems knowledge that applies across companies and stacks",
@@ -82,7 +219,13 @@
     "Requires constantly balancing reliability work against feature-team pressure to ship",
     "Can be hard to measure and get credit for — the best SRE work is often invisible (nothing breaks)"
   ],
-  "example_progression": ["Junior SRE / DevOps Engineer", "SRE", "Senior SRE", "Staff SRE or Reliability Lead", "Principal Engineer / Head of Reliability"],
+  "example_progression": [
+    "Junior SRE / DevOps Engineer",
+    "SRE",
+    "Senior SRE",
+    "Staff SRE or Reliability Lead",
+    "Principal Engineer / Head of Reliability"
+  ],
   "portfolio_expectations": [
     "A documented incident response — even a self-created practice scenario — with a full blameless postmortem",
     "A public repo showing SLO instrumentation and a real dashboard",
@@ -97,9 +240,18 @@
   "ai_impact": "AI tools are speeding up log/metric triage and root-cause suggestions during incidents, but a human still has to validate the diagnosis and own the remediation decision — this is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "As more infrastructure becomes managed/serverless, SRE work is shifting further up the stack toward service-level reliability and platform design rather than disappearing — this is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "Google's Site Reliability Engineering book (free online)", "url": "https://sre.google/books/" },
-    { "title": "Prometheus official docs", "url": "https://prometheus.io/docs/introduction/overview/" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "Google's Site Reliability Engineering book (free online)",
+      "url": "https://sre.google/books/"
+    },
+    {
+      "title": "Prometheus official docs",
+      "url": "https://prometheus.io/docs/introduction/overview/"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",

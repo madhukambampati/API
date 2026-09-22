@@ -29,19 +29,67 @@
     "advanced": "Owns framework architecture decisions, mentors other testers, drives quality strategy across a team or product area."
   },
   "common_tools": [
-    "Selenium", "Playwright", "Cypress", "Postman", "REST Assured",
-    "JMeter", "k6", "Jira", "GitHub Actions", "Jenkins", "Allure/Extent reports"
+    "Selenium",
+    "Playwright",
+    "Cypress",
+    "Postman",
+    "REST Assured",
+    "JMeter",
+    "k6",
+    "Jira",
+    "GitHub Actions",
+    "Jenkins",
+    "Allure/Extent reports"
   ],
-  "recommended_languages": ["Java", "Python", "JavaScript/TypeScript"],
+  "recommended_languages": [
+    "Java",
+    "Python",
+    "JavaScript/TypeScript"
+  ],
   "roadmap": {
     "summary": "This app's existing 'Manual Tester → SDET' track is a full 6-month plan covering manual fundamentals, a programming language, Git, Selenium/Playwright automation, API testing, CI/CD, a portfolio project, and interview prep.",
     "link": "/roadmaps#manual-to-sdet",
     "stages": [
-      { "name": "Solidify manual testing fundamentals", "duration": "2-3 weeks", "topics": ["SDLC/STLC, test case design techniques", "Bug lifecycle, exploratory testing"] },
-      { "name": "Learn a programming language", "duration": "4-6 weeks", "topics": ["Java or Python fundamentals", "OOP, collections, exception handling"] },
-      { "name": "Web automation fundamentals", "duration": "4-6 weeks", "topics": ["Selenium WebDriver, locators, waits", "Page Object Model, TestNG/JUnit or pytest"] },
-      { "name": "API testing & automation", "duration": "2-3 weeks", "topics": ["REST concepts, Postman", "REST Assured or Python requests"] },
-      { "name": "CI/CD & reporting", "duration": "2 weeks", "topics": ["Jenkins or GitHub Actions basics", "Allure/Extent reports in a pipeline"] }
+      {
+        "name": "Solidify manual testing fundamentals",
+        "duration": "2-3 weeks",
+        "topics": [
+          "SDLC/STLC, test case design techniques",
+          "Bug lifecycle, exploratory testing"
+        ]
+      },
+      {
+        "name": "Learn a programming language",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Java or Python fundamentals",
+          "OOP, collections, exception handling"
+        ]
+      },
+      {
+        "name": "Web automation fundamentals",
+        "duration": "4-6 weeks",
+        "topics": [
+          "Selenium WebDriver, locators, waits",
+          "Page Object Model, TestNG/JUnit or pytest"
+        ]
+      },
+      {
+        "name": "API testing & automation",
+        "duration": "2-3 weeks",
+        "topics": [
+          "REST concepts, Postman",
+          "REST Assured or Python requests"
+        ]
+      },
+      {
+        "name": "CI/CD & reporting",
+        "duration": "2 weeks",
+        "topics": [
+          "Jenkins or GitHub Actions basics",
+          "Allure/Extent reports in a pipeline"
+        ]
+      }
     ]
   },
   "labs": [
@@ -49,9 +97,71 @@
     "For now, practice via the Practice page's SDET-tagged quiz questions and AI-graded coding challenges."
   ],
   "projects": [
-    { "level": "guided", "title": "Automate a public demo site end-to-end", "description": "Use Playwright or Selenium with the Page Object Model against a free public demo site." },
-    { "level": "independent", "title": "Build a REST API test suite in CI", "description": "Postman or REST Assured against a free public API, wired into GitHub Actions." },
-    { "level": "intermediate", "title": "Write an LLM evaluation harness", "description": "A golden dataset + scoring script for a sample prompt — a first step into AI-QA." }
+    {
+      "level": "guided",
+      "title": "Automate a public demo site end-to-end",
+      "description": "Use Playwright or Selenium with the Page Object Model against a free public demo site.",
+      "id": "automate-public-demo-site",
+      "steps": [
+        "Pick a free public demo/practice site with realistic UI flows",
+        "Set up a Page Object Model structure before writing any tests",
+        "Automate a handful of key user journeys (login, search, checkout, etc.)",
+        "Add explicit waits and stable locators so the suite isn't flaky",
+        "Wire it into CI so it runs automatically and reports results"
+      ],
+      "tech_stack": [
+        "Playwright or Selenium",
+        "Python or Java",
+        "GitHub Actions"
+      ],
+      "stretch_goals": [
+        "Add cross-browser runs (Chromium, Firefox, WebKit)",
+        "Add visual regression checks for key pages"
+      ]
+    },
+    {
+      "level": "independent",
+      "title": "Build a REST API test suite in CI",
+      "description": "Postman or REST Assured against a free public API, wired into GitHub Actions.",
+      "id": "build-rest-api-test-suite-ci",
+      "steps": [
+        "Pick a free public REST API with enough endpoints to be interesting",
+        "Design a test plan covering happy paths, edge cases, and error responses",
+        "Automate it with Postman/Newman or REST Assured",
+        "Add schema/contract validation, not just status-code checks",
+        "Wire the suite into GitHub Actions so it runs on every push"
+      ],
+      "tech_stack": [
+        "Postman/Newman or REST Assured",
+        "GitHub Actions"
+      ],
+      "stretch_goals": [
+        "Add basic performance assertions (response time thresholds)",
+        "Add data-driven tests that run the same checks across many inputs"
+      ]
+    },
+    {
+      "level": "intermediate",
+      "title": "Write an LLM evaluation harness",
+      "description": "A golden dataset + scoring script for a sample prompt — a first step into AI-QA.",
+      "id": "llm-evaluation-harness",
+      "steps": [
+        "Pick a concrete LLM task (e.g. classification, summarization) to evaluate",
+        "Build a small golden dataset of inputs with expected/acceptable outputs",
+        "Write a scoring script that grades responses against the golden set",
+        "Run it against the model and report pass rate plus failure examples",
+        "Re-run it after a prompt change and confirm the harness catches regressions"
+      ],
+      "tech_stack": [
+        "Python",
+        "an LLM API",
+        "a scoring/eval library or custom script"
+      ],
+      "stretch_goals": [
+        "Add a human-review step for borderline scores",
+        "Track score trends over time as the prompt evolves"
+      ]
+    }
   ],
   "interview_topics": [
     "Manual testing: test case design, bug reporting, SDLC/STLC fundamentals",
@@ -59,11 +169,31 @@
     "AI-QA: testing LLM features, evaluation strategies, prompt/output quality"
   ],
   "certifications": [
-    { "name": "ISTQB Foundation Level (CTFL)", "issuer": "ISTQB", "url": "https://www.istqb.org/certifications/certified-tester-foundation-level" },
-    { "name": "ISTQB Advanced Level", "issuer": "ISTQB", "url": "https://www.istqb.org/certifications/advanced-level" },
-    { "name": "ICAgile Certified Professional — Agile Testing", "issuer": "ICAgile", "url": "https://www.icagile.com/certifications/agile-testing" },
-    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
-    { "name": "Postman API Fundamentals", "issuer": "Postman Academy", "url": "https://academy.postman.com/" }
+    {
+      "name": "ISTQB Foundation Level (CTFL)",
+      "issuer": "ISTQB",
+      "url": "https://www.istqb.org/certifications/certified-tester-foundation-level"
+    },
+    {
+      "name": "ISTQB Advanced Level",
+      "issuer": "ISTQB",
+      "url": "https://www.istqb.org/certifications/advanced-level"
+    },
+    {
+      "name": "ICAgile Certified Professional — Agile Testing",
+      "issuer": "ICAgile",
+      "url": "https://www.icagile.com/certifications/agile-testing"
+    },
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "AWS",
+      "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"
+    },
+    {
+      "name": "Postman API Fundamentals",
+      "issuer": "Postman Academy",
+      "url": "https://academy.postman.com/"
+    }
   ],
   "market_info": {
     "status": "not_yet_sourced",
@@ -72,8 +202,18 @@
     "as_of_date": null,
     "source_url": null
   },
-  "related_roles": ["Manual QA Engineer", "Automation Engineer", "Test Architect", "Performance Engineer", "AI Quality Engineer"],
-  "transition_paths": ["Manual QA → Automation Engineer → SDET", "SDET → Test Architect", "SDET → AI Quality Engineer"],
+  "related_roles": [
+    "Manual QA Engineer",
+    "Automation Engineer",
+    "Test Architect",
+    "Performance Engineer",
+    "AI Quality Engineer"
+  ],
+  "transition_paths": [
+    "Manual QA → Automation Engineer → SDET",
+    "SDET → Test Architect",
+    "SDET → AI Quality Engineer"
+  ],
   "advantages": [
     "Strong demand — most product teams now expect some automated test coverage",
     "Sits close to both engineering and product, giving broad visibility into how software actually gets built",
@@ -84,7 +224,13 @@
     "Requires staying current on both testing practice and the languages/tools your team uses",
     "Can be perceived as 'a developer who only writes tests,' which undersells the risk-analysis skill involved"
   ],
-  "example_progression": ["Junior QA Engineer", "QA Engineer / Manual Tester", "SDET", "Senior SDET", "Test Architect or Automation Lead"],
+  "example_progression": [
+    "Junior QA Engineer",
+    "QA Engineer / Manual Tester",
+    "SDET",
+    "Senior SDET",
+    "Test Architect or Automation Lead"
+  ],
   "portfolio_expectations": [
     "A public repo automating a real site end-to-end with the Page Object Model",
     "A REST API test suite wired into a CI pipeline",
@@ -98,9 +244,18 @@
   "ai_impact": "AI tools are speeding up test-case generation and flaky-test triage, but someone still has to judge whether an AI-suggested test is actually meaningful — that judgment is becoming a bigger part of the job, not a smaller one. This is TechOrbit's own assessment, not a cited industry statistic.",
   "future_outlook": "Testing AI-powered features (the AI-QA specialization) is a fast-growing extension of this role rather than a separate job market — most of the underlying skills carry over directly. This is TechOrbit's own assessment, not a cited industry statistic.",
   "resources": [
-    { "title": "Selenium official docs", "url": "https://www.selenium.dev/documentation/" },
-    { "title": "Playwright official docs", "url": "https://playwright.dev/docs/intro" },
-    { "title": "TechOrbit Resources page", "url": "/resources" }
+    {
+      "title": "Selenium official docs",
+      "url": "https://www.selenium.dev/documentation/"
+    },
+    {
+      "title": "Playwright official docs",
+      "url": "https://playwright.dev/docs/intro"
+    },
+    {
+      "title": "TechOrbit Resources page",
+      "url": "/resources"
+    }
   ],
   "governance": {
     "author": "TechOrbit content team",
