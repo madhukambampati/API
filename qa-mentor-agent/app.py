@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.request
@@ -26,6 +27,19 @@ TECH_NEWS_TTL_SECONDS = 24 * 60 * 60
 _tech_news_cache = {"fetched_at": 0, "items": []}
 
 
+def _clean_release_notes(text, limit=220):
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", "", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"^#{1,6}\s*", "", text, flags=re.MULTILINE)
+    text = text.replace("**", "").replace("__", "").replace("`", "")
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) > limit:
+        text = text[:limit].rsplit(" ", 1)[0] + "…"
+    return text
+
+
 def _fetch_latest_release(owner_repo):
     url = f"https://api.github.com/repos/{owner_repo}/releases/latest"
     req = urllib.request.Request(
@@ -39,7 +53,7 @@ def _fetch_latest_release(owner_repo):
         "title": data.get("name") or data.get("tag_name"),
         "published_at": data.get("published_at"),
         "url": data.get("html_url"),
-        "notes": (data.get("body") or "").strip()[:400],
+        "notes": _clean_release_notes(data.get("body") or ""),
     }
 
 
