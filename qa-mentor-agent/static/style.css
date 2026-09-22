@@ -1757,7 +1757,7 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 .track-icon {
   width: 46px;
   height: 46px;
-  border-radius: 14px;
+  border-radius: var(--radius-md, 14px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1809,9 +1809,14 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 .stage-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-md, 14px);
   padding: 16px 18px;
   cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.stage-card:hover {
+  border-color: var(--role-accent, var(--accent));
 }
 
 .stage-card-head {
@@ -1858,9 +1863,14 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 }
 
 .stage-toggle {
+  display: inline-flex;
   color: var(--text-faint);
-  font-size: 0.75rem;
   transition: transform 0.15s;
+}
+
+.stage-toggle .icon {
+  width: 14px;
+  height: 14px;
 }
 
 .stage-card.open .stage-toggle {
