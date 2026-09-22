@@ -918,8 +918,13 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
   max-width: 520px;
   padding: 44px 32px;
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(34, 211, 238, 0.08));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--role-accent, var(--accent)) 14%, transparent),
+    color-mix(in srgb, var(--accent-2) 10%, transparent)
+  );
   border: 1px solid var(--border);
+  transition: background 0.2s ease;
 }
 
 .mascot-svg {
@@ -962,7 +967,7 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 
 .hero-pill:hover {
   transform: translateY(-2px);
-  border-color: var(--accent);
+  border-color: var(--role-accent, var(--accent));
 }
 
 .msg-row {

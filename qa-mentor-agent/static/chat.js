@@ -50,8 +50,16 @@ const MODE_CONTENT = {
   },
 };
 
+const ROLE_ACCENT_MODES = ["sdet", "developer", "devops"];
+
 function applyModeContent(mode) {
   const content = MODE_CONTENT[mode] || MODE_CONTENT.sdet;
+
+  const scopeEl = document.getElementById("chat-accent-scope");
+  if (scopeEl) {
+    ROLE_ACCENT_MODES.forEach((m) => scopeEl.classList.remove(`role-accent-${m}`));
+    if (ROLE_ACCENT_MODES.includes(mode)) scopeEl.classList.add(`role-accent-${mode}`);
+  }
 
   const subtitleEl = document.getElementById("chat-subtitle");
   if (subtitleEl) subtitleEl.textContent = content.subtitle;
