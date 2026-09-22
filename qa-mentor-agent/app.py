@@ -11,6 +11,8 @@ import anthropic
 from dotenv import load_dotenv
 from flask import Flask, Response, abort, jsonify, redirect, render_template, request, session, url_for
 
+from content_data import LESSONS, RADAR_ITEMS, ROLES
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -281,10 +283,7 @@ RADAR_CATEGORIES = ["Adopt", "Trial", "Assess", "Watch", "Declining", "Emerging"
 
 @app.route("/radar")
 def tech_radar():
-    items_path = os.path.join(app.root_path, "data", "radar", "items.json")
-    with open(items_path, encoding="utf-8") as f:
-        items = json.load(f)
-    grouped = {cat: [i for i in items if i["category"] == cat] for cat in RADAR_CATEGORIES}
+    grouped = {cat: [i for i in RADAR_ITEMS if i["category"] == cat] for cat in RADAR_CATEGORIES}
     return render_template(
         "tech_radar.html", grouped=grouped, categories=RADAR_CATEGORIES, active="radar", academy_scoped=False
     )
@@ -312,29 +311,8 @@ def career():
     return render_template("career.html", active="career")
 
 
-SLUG_PATTERN = re.compile(r"^[a-z0-9-]+$")
-DATA_DIR = os.path.join(app.root_path, "data")
-
-
-def _load_content_json(subdir, slug):
-    if not SLUG_PATTERN.match(slug):
-        abort(404)
-    path = os.path.join(DATA_DIR, subdir, f"{slug}.json")
-    if not os.path.isfile(path):
-        abort(404)
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
-
-
 def _load_all_roles():
-    roles = []
-    roles_dir = os.path.join(DATA_DIR, "roles")
-    if os.path.isdir(roles_dir):
-        for filename in sorted(os.listdir(roles_dir)):
-            if filename.endswith(".json"):
-                with open(os.path.join(roles_dir, filename), encoding="utf-8") as f:
-                    roles.append(json.load(f))
-    return roles
+    return list(ROLES.values())
 
 
 PLANNED_ROLES = [
@@ -358,7 +336,9 @@ def careers_index():
 
 @app.route("/careers/<slug>")
 def role_detail(slug):
-    role = _load_content_json("roles", slug)
+    role = ROLES.get(slug)
+    if role is None:
+        abort(404)
     return render_template(
         "role_detail.html", role=role, active="careers-explorer", academy_scoped=False
     )
@@ -366,7 +346,9 @@ def role_detail(slug):
 
 @app.route("/lessons/<slug>")
 def lesson_detail(slug):
-    lesson = _load_content_json("lessons", slug)
+    lesson = LESSONS.get(slug)
+    if lesson is None:
+        abort(404)
     return render_template(
         "lesson_detail.html", lesson=lesson, active="", academy_scoped=False
     )

@@ -366,6 +366,31 @@ on its own before committing to a timeline for Phase 2.
 
 ---
 
+## Known deployment gap: role/lesson content may render empty on Vercel
+
+Reported twice: role pages (e.g. `/careers/sdet`) show headings but empty
+content lists on the live deployment, while every local test in this
+session renders full content correctly. The most likely cause is that
+`@vercel/python`'s build-time file bundling doesn't reliably include
+non-Python data files read via `open()` at request time (`data/*.json`),
+even though `templates/*.html` clearly do get bundled (the rebrand and
+nav changes are visibly live). Since this could not be verified directly
+against the live deployment from this environment, the fix applied is
+defensive rather than confirmed: role/lesson/radar content now lives in
+`content_data.py` as plain Python dict/list literals, generated from and
+verified byte-for-byte identical to the original `data/*.json` files,
+and is imported normally (`from content_data import ROLES, LESSONS,
+RADAR_ITEMS`). Vercel's Python builder traces and bundles imported `.py`
+modules reliably, which removes the uncertainty entirely regardless of
+whether the file-bundling theory was the actual root cause. The
+`data/*.json` files remain as the human-edited source; re-run the
+generation step (read each JSON, `pprint.pformat` into `content_data.py`)
+after editing them, and verify with an equality check against the
+original JSON before committing, the way this was done.
+
+**This needs to be re-verified against the live URL after this deploys**
+— that verification could not be done from this session.
+
 ## What's blocked on infrastructure (can't be completed without it)
 
 Asked to "complete all the phases," this is the honest boundary: everything
