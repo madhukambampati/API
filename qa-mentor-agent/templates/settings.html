@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}TechOrbit — Settings{% endblock %}
 {% block content %}
 <h1 class="page-title">⚙️ Settings</h1>
@@ -6,7 +7,7 @@
 
 <div class="settings-grid">
   <div class="settings-panel">
-    <h3>Profile</h3>
+    <h3>{{ icon("user") }} Profile</h3>
     <div class="field-group">
       <label for="profile-name-input">Display name</label>
       <input type="text" id="profile-name-input" placeholder="You" />
@@ -26,21 +27,27 @@
   </div>
 
   <div class="settings-panel">
-    <h3>🎯 Learning plan</h3>
+    <h3>{{ icon("target") }} Learning plan</h3>
     <p class="tool-desc">Your target role, experience level, and goals — used to personalize the Home page.</p>
     <a href="{{ url_for('onboarding') }}" class="tool-btn">Edit your plan →</a>
   </div>
 
   <div class="settings-panel">
-    <h3>Appearance</h3>
+    <h3>{{ icon("sun") }} Appearance</h3>
     <div class="theme-options" id="theme-options" role="group" aria-label="Theme">
-      <div class="theme-option" data-theme="dark" role="button" tabindex="0" aria-pressed="false">🌙 Dark</div>
-      <div class="theme-option" data-theme="light" role="button" tabindex="0" aria-pressed="false">☀️ Light</div>
+      <div class="theme-option" data-theme="dark" role="button" tabindex="0" aria-pressed="false">
+        <div class="theme-preview preview-dark"><div class="preview-bar"></div><div class="preview-bar short"></div></div>
+        Dark
+      </div>
+      <div class="theme-option" data-theme="light" role="button" tabindex="0" aria-pressed="false">
+        <div class="theme-preview preview-light"><div class="preview-bar"></div><div class="preview-bar short"></div></div>
+        Light
+      </div>
     </div>
   </div>
 
   <div class="settings-panel">
-    <h3>Chat service status</h3>
+    <h3>{{ icon("message-circle") }} Chat service status</h3>
     <p id="api-status-text" aria-live="polite">Checking...</p>
     <p class="settings-note">
       Configured by the site administrator — it isn't stored or edited here for security.
@@ -48,7 +55,7 @@
   </div>
 
   <div class="settings-panel">
-    <h3>🚧 Accounts &amp; Sync</h3>
+    <h3>{{ icon("construction") }} Accounts &amp; Sync</h3>
     <p class="tool-desc">Real accounts and progress that syncs across devices are planned but not built yet.</p>
     <button type="button" class="tool-btn" id="settings-upgrade-btn">Learn more →</button>
     <p class="settings-note">This is a roadmap item, not a paid feature — nothing to buy here.</p>
@@ -56,7 +63,7 @@
 
   {% if login_enabled %}
   <div class="settings-panel">
-    <h3>🔒 Session</h3>
+    <h3>{{ icon("lock") }} Session</h3>
     <p class="tool-desc">This deployment is password-protected.</p>
     <a href="{{ url_for('logout') }}" class="tool-btn secondary">Log out</a>
   </div>

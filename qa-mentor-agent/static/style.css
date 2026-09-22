@@ -2309,13 +2309,16 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 .settings-panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-md, 16px);
   padding: 20px;
 }
 
 .settings-panel h3 {
   margin: 0 0 14px;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .field-group {
@@ -2370,8 +2373,8 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 
 .theme-option {
   flex: 1;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md, 12px);
   border: 2px solid var(--border);
   text-align: center;
   cursor: pointer;
@@ -2379,6 +2382,43 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
   font-weight: 600;
   background: var(--surface-alt);
   color: var(--text);
+}
+
+.theme-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: var(--radius-sm, 8px);
+  padding: 8px;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.theme-preview .preview-bar {
+  height: 6px;
+  border-radius: 999px;
+}
+
+.theme-preview .preview-bar.short {
+  width: 60%;
+}
+
+.theme-preview.preview-dark {
+  background: #0c1120;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-preview.preview-dark .preview-bar {
+  background: linear-gradient(90deg, #6366f1, #22d3ee);
+}
+
+.theme-preview.preview-light {
+  background: #eef0f8;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+}
+
+.theme-preview.preview-light .preview-bar {
+  background: linear-gradient(90deg, #6366f1, #0891b2);
 }
 
 .theme-option.selected {
