@@ -15,11 +15,11 @@ This is a proof of concept: a local multi-page Flask app, with all personal data
 
 - **Home** — hero, personalized "Recommended for you" card (once onboarded),
   daily challenge with a streak counter, popular topics grid, quick-ask box
-- **Explore Careers** — the Career Explorer at `/careers`: 3 fully-built roles
-  (SDET, Full-Stack Developer, DevOps Engineer) with responsibilities, skills,
-  roadmap, projects, interview topics, verified certifications, transition
-  paths, and more, plus honestly-labeled "Planned" placeholders for roles not
-  built yet
+- **Explore Careers** — the Career Explorer at `/careers`: 7 fully-built roles
+  (SDET, Full-Stack Developer, DevOps Engineer, Site Reliability Engineer,
+  Data & AI Engineer, Product/Business Analyst, Cloud/Platform Engineer) with
+  responsibilities, skills, roadmap, projects, interview topics, verified
+  certifications, transition paths, and more
 - **Onboarding** — `/onboarding`: a 4-question flow (target role, experience,
   weekly time, goal) that personalizes the Home page; answers stored in
   localStorage, editable any time from Settings

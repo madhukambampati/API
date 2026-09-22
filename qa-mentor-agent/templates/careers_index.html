@@ -18,6 +18,7 @@
   {% endfor %}
 </div>
 
+{% if planned_roles %}
 <div class="section-heading"><div><h2>Coming soon</h2><p>These roles aren't built yet — not clickable.</p></div></div>
 <div class="resource-grid">
   {% for planned in planned_roles %}
@@ -27,4 +28,5 @@
   </div>
   {% endfor %}
 </div>
+{% endif %}
 {% endblock %}

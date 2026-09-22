@@ -64,6 +64,16 @@ def _clean_release_notes(text, limit=220):
     text = re.sub(r"^#{1,6}\s*", "", text, flags=re.MULTILINE)
     text = text.replace("**", "").replace("__", "").replace("`", "")
     text = re.sub(r"\s+", " ", text).strip()
+
+    # Some releases (e.g. Cypress) have no real notes, just a bare link to a
+    # hosted changelog page. Once URLs are stripped, if what's left is a
+    # short label like "Changelog:" rather than an actual summary, there's
+    # nothing worth showing - return empty so the UI falls back to a clean
+    # "No release notes provided" message instead of a raw URL.
+    remainder = re.sub(r"https?://\S+", "", text).strip(" :.-")
+    if len(remainder) < 12:
+        return ""
+
     if len(text) > limit:
         text = text[:limit].rsplit(" ", 1)[0] + "…"
     return text
@@ -315,12 +325,7 @@ def _load_all_roles():
     return list(ROLES.values())
 
 
-PLANNED_ROLES = [
-    {"title": "Site Reliability Engineer", "icon": "🛰️"},
-    {"title": "Data & AI Engineer", "icon": "🧠"},
-    {"title": "Product / Business Analyst", "icon": "📋"},
-    {"title": "Cloud / Platform Engineer", "icon": "☁️"},
-]
+PLANNED_ROLES = []
 
 
 @app.route("/careers")

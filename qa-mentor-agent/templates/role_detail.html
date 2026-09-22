@@ -53,11 +53,17 @@
 </div>
 {% endif %}
 
-{% if role.common_tools or role.recommended_languages %}
-<div class="section-heading"><div><h2>🧰 Tools &amp; languages</h2></div></div>
+{% if role.recommended_languages %}
+<div class="section-heading"><div><h2>💬 Languages</h2></div></div>
+<div class="filter-row" style="margin-bottom: 20px;">
+  {% for lang in role.recommended_languages %}<span class="tag-chip">{{ lang }}</span>{% endfor %}
+</div>
+{% endif %}
+
+{% if role.common_tools %}
+<div class="section-heading"><div><h2>🧰 Tools</h2></div></div>
 <div class="filter-row" style="margin-bottom: 28px;">
-  {% for lang in role.recommended_languages %}<span class="filter-chip active">{{ lang }}</span>{% endfor %}
-  {% for tool in role.common_tools %}<span class="filter-chip">{{ tool }}</span>{% endfor %}
+  {% for tool in role.common_tools %}<span class="tag-chip">{{ tool }}</span>{% endfor %}
 </div>
 {% endif %}
 
@@ -149,7 +155,7 @@
   {% if role.related_roles %}
   <div class="settings-panel">
     <h3>🔗 Related roles</h3>
-    <div class="filter-row">{% for r in role.related_roles %}<span class="filter-chip">{{ r }}</span>{% endfor %}</div>
+    <div class="filter-row">{% for r in role.related_roles %}<span class="tag-chip">{{ r }}</span>{% endfor %}</div>
   </div>
   {% endif %}
   {% if role.transition_paths %}
@@ -178,7 +184,7 @@
 {% if role.example_progression %}
 <div class="section-heading" style="margin-top: 20px;"><div><h2>📊 Example career progression</h2></div></div>
 <div class="filter-row" style="margin-bottom: 28px;">
-  {% for step in role.example_progression %}<span class="filter-chip">{{ step }}</span>{% endfor %}
+  {% for step in role.example_progression %}<span class="tag-chip">{{ step }}</span>{% endfor %}
 </div>
 {% endif %}
 

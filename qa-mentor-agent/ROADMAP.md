@@ -138,6 +138,23 @@ not a copy fix — see Epic 1.1 and the Resources/Glossary backlog):
   role-neutral resources is Phase 1+ content authoring, not something
   to rush here.
 
+### Epic 0.5 — UI polish fixes (added after user review)
+- [x] `.tag-chip` class added for non-interactive informational badges
+      (languages, tools, related roles, career progression steps) on
+      role pages. These were reusing `.filter-chip`, which has
+      `cursor: pointer` and muted text by default (styling meant for
+      real clickable filters elsewhere in the app) — made them look
+      like disabled/secondary content and implied false clickability.
+      Also split "Tools & languages" into two clearly-labeled sections
+      instead of arbitrarily highlighting only languages.
+- [x] Tech News: some GitHub releases (e.g. Cypress) have no real
+      release notes, just a bare link to a hosted changelog page.
+      `_clean_release_notes` now detects when the cleaned text is
+      nothing but a URL (optionally with a short label like
+      "Changelog:") and returns empty, which triggers the existing
+      "No release notes provided" fallback instead of showing a raw
+      link fragment.
+
 ---
 
 ## Phase 1 — Strong foundation (content-first, fits mostly on Phase 0)
@@ -178,6 +195,28 @@ outlook, sources.
       blueprint's own examples).
 
 **Epic 1.1 complete** — all 3 recommended first roles shipped.
+
+**Extended beyond Epic 1.1's original scope, per explicit user request:**
+all 4 of the Career Explorer's former "Planned" placeholder roles were
+also built out to the same full standard (every field, no fabricated
+market data, certifications verified via web search):
+  - [x] Site Reliability Engineer (`data/roles/sre.json`)
+  - [x] Data & AI Engineer (`data/roles/data-ai.json`) — a deliberate
+        hybrid role combining data engineering + applied ML/AI, with the
+        definition itself noting larger orgs typically split this into
+        separate Data Engineer / ML Engineer / AI Engineer roles.
+  - [x] Product / Business Analyst (`data/roles/product-ba.json`) —
+        also a deliberate hybrid, common at smaller companies before the
+        role splits into distinct BA and PM tracks.
+  - [x] Cloud / Platform Engineer (`data/roles/cloud-platform.json`)
+
+`PLANNED_ROLES` in `app.py` is now empty and the Career Explorer's
+"Coming soon" section is conditionally hidden rather than shown empty.
+**7 of 7** roles originally scoped across Epic 1.1 + its placeholder
+list are now live at `/careers`. Note this goes beyond blueprint §36's
+"don't launch a wide, shallow catalogue" guardrail's original spirit of
+starting with just 3 — accepted here as an explicit, informed choice by
+the user after reviewing the first 3 roles' quality, not a default.
 
 ### Epic 1.2 — Onboarding + personalized dashboard (§4) — scoped down, no DB
 - [x] Onboarding flow at `/onboarding` capturing: target role (from the

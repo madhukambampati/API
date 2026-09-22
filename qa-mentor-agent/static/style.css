@@ -1245,6 +1245,18 @@ a {
   background: rgba(99, 102, 241, 0.12);
 }
 
+.tag-chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
 .resource-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

@@ -1,0 +1,113 @@
+{
+  "slug": "product-ba",
+  "title": "Product / Business Analyst",
+  "status": "Established",
+  "definition": "A Product/Business Analyst bridges business needs and technical delivery — gathering and clarifying requirements, writing user stories, and helping the team decide what to build next. A common starting point before specializing into Product Management or deeper Business Analysis.",
+  "daily_responsibilities": [
+    "Gather and clarify requirements from stakeholders",
+    "Write clear user stories and acceptance criteria for the engineering team",
+    "Run backlog refinement and help prioritize what gets built next",
+    "Analyze data to support product or process decisions",
+    "Facilitate communication between business stakeholders and engineers",
+    "Support user acceptance testing (UAT) before release"
+  ],
+  "required_technical_skills": [
+    "Requirements gathering and documentation (BRDs, functional specs)",
+    "Writing user stories and acceptance criteria",
+    "Basic data analysis (spreadsheets, SQL is a strong plus)",
+    "Process/flow modeling (BPMN or simple flowcharts)",
+    "Familiarity with agile ceremonies and a backlog tool (Jira or similar)"
+  ],
+  "required_nontechnical_skills": [
+    "Active listening and stakeholder interviewing",
+    "Clear written communication — specs get read far more than they get discussed live",
+    "Prioritization judgment: saying no to good ideas that aren't the right ones right now",
+    "Comfort navigating ambiguity and conflicting stakeholder opinions"
+  ],
+  "expectations": {
+    "beginner": "Writes clear tickets from given requirements, runs basic stakeholder interviews with support, learns the product domain.",
+    "intermediate": "Owns requirements gathering for a feature area independently, prioritizes a backlog, presents findings to stakeholders.",
+    "advanced": "Sets product/process strategy for an area, mentors other analysts, drives cross-team alignment on priorities."
+  },
+  "common_tools": ["Jira", "Confluence", "Figma (for reviewing designs)", "SQL client", "Miro", "Excel/Sheets"],
+  "recommended_languages": ["SQL"],
+  "roadmap": {
+    "summary": "A path from requirements-gathering fundamentals through agile delivery practices into product-thinking and prioritization. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
+    "link": null,
+    "stages": [
+      { "name": "Requirements gathering fundamentals", "duration": "2-3 weeks", "topics": ["Stakeholder interviewing techniques", "Writing a clear BRD/functional spec"] },
+      { "name": "User stories & acceptance criteria", "duration": "2 weeks", "topics": ["Story format and INVEST criteria", "Writing testable acceptance criteria"] },
+      { "name": "Agile & Scrum fundamentals", "duration": "2 weeks", "topics": ["Ceremonies, roles, backlog refinement", "Estimation basics"] },
+      { "name": "Data analysis basics", "duration": "3-4 weeks", "topics": ["Spreadsheet analysis", "Basic SQL for pulling your own data"] },
+      { "name": "Process modeling", "duration": "1-2 weeks", "topics": ["BPMN basics", "Mapping a real business process end to end"] },
+      { "name": "Prioritization & product thinking", "duration": "2-3 weeks", "topics": ["Prioritization frameworks (RICE, MoSCoW)", "Writing a simple PRD"] }
+    ]
+  },
+  "labs": [
+    "Coming soon: requirement-review and user-story-writing exercises with feedback.",
+    "For now, practice by picking an app you use daily and writing a full BRD + user stories for one improvement you'd make."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Write a requirements package", "description": "Pick a real product gap and write a full BRD, user stories, and acceptance criteria for it." },
+    { "level": "independent", "title": "Run a mock prioritization exercise", "description": "Take a list of 10+ feature ideas, apply a prioritization framework (RICE/MoSCoW), and document your reasoning." },
+    { "level": "advanced-capstone", "title": "Map and improve a business process", "description": "Document a real (or realistic) business process with BPMN, identify a bottleneck, and propose a concrete fix." }
+  ],
+  "interview_topics": [
+    "Walk me through how you'd gather requirements for a new feature with vague initial input",
+    "How do you handle conflicting priorities from two stakeholders?",
+    "Write a user story and acceptance criteria for a given scenario",
+    "How would you prioritize a backlog with limited engineering capacity?"
+  ],
+  "certifications": [
+    { "name": "IIBA Entry Certificate in Business Analysis (ECBA)", "issuer": "IIBA", "url": "https://www.iiba.org/business-analysis-certifications/ecba/" },
+    { "name": "Certified Scrum Product Owner (CSPO)", "issuer": "Scrum Alliance", "url": "https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["Product Manager", "Product Owner", "Systems Analyst", "Data Analyst", "Scrum Master"],
+  "transition_paths": ["Business Analyst → Product Owner", "Product/Business Analyst → Product Manager", "Data Analyst → Product/Business Analyst"],
+  "advantages": [
+    "Highly transferable skills that work across industries, not just tech",
+    "Direct, visible influence on what actually gets built",
+    "A common and well-trodden path into Product Management"
+  ],
+  "challenges": [
+    "Often caught between competing stakeholder demands with no clean answer",
+    "Can be undervalued on teams that don't understand the difference between 'writing tickets' and real requirements work",
+    "Success is harder to measure directly than a shipped feature or a closed bug"
+  ],
+  "example_progression": ["Junior Business Analyst", "Business/Product Analyst", "Senior Analyst or Associate Product Manager", "Product Manager", "Senior/Group Product Manager"],
+  "portfolio_expectations": [
+    "A sample requirements package (BRD + user stories + acceptance criteria) for a self-chosen real product gap",
+    "A documented prioritization exercise showing your reasoning, not just a ranked list",
+    "A process map (BPMN or similar) for a real workflow, with a proposed improvement",
+    "Clear, well-organized writing — this is the core deliverable of the role, so your portfolio should read like your actual work would"
+  ],
+  "fit_assessment": [
+    "Do you enjoy turning a vague ask ('make this better') into something concrete and buildable?",
+    "Are you comfortable being the person who has to say no to a stakeholder's favorite idea?",
+    "Do you like understanding both the business 'why' and the technical 'how' of a feature?"
+  ],
+  "ai_impact": "AI tools can now draft first-pass user stories and summarize stakeholder interviews, but judging whether requirements are actually complete, unambiguous, and prioritized correctly is still a human call — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "As AI-assisted development lowers the cost of building the wrong thing quickly, the requirements/prioritization judgment this role provides becomes more valuable, not less — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "IIBA Business Analysis Body of Knowledge (BABOK) overview", "url": "https://www.iiba.org/knowledgehub/business-analysis-body-of-knowledge-babok-guide/" },
+    { "title": "Atlassian's guide to agile user stories", "url": "https://www.atlassian.com/agile/project-management/user-stories" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Written from general, well-established business analysis/product practice; certification names/URLs verified via web search on 2026-09-22."
+    ]
+  }
+}

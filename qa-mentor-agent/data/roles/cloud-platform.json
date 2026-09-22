@@ -1,0 +1,115 @@
+{
+  "slug": "cloud-platform",
+  "title": "Cloud / Platform Engineer",
+  "status": "Growing",
+  "definition": "A Cloud/Platform Engineer builds and manages the cloud infrastructure and internal tooling other engineers rely on — provisioning cloud resources, and increasingly, building self-service \"internal developer platforms\" so product teams can ship without needing deep infrastructure expertise themselves.",
+  "daily_responsibilities": [
+    "Design and provision cloud infrastructure (compute, networking, storage, identity)",
+    "Build and maintain internal developer platform tooling and golden paths",
+    "Manage cost, security, and access controls across cloud accounts",
+    "Write infrastructure as code and review infra changes from other teams",
+    "Support developers who are unblocking infrastructure issues",
+    "Plan for multi-region, high-availability, and disaster-recovery scenarios"
+  ],
+  "required_technical_skills": [
+    "Deep knowledge of at least one cloud provider (AWS, Azure, or GCP)",
+    "Infrastructure as code (Terraform or a cloud-native equivalent)",
+    "Networking fundamentals (VPCs, subnets, load balancers, DNS)",
+    "Identity and access management (least-privilege design)",
+    "Kubernetes or a managed container platform",
+    "Cost management and monitoring for cloud spend"
+  ],
+  "required_nontechnical_skills": [
+    "Designing tools and workflows other engineers will actually want to use",
+    "Balancing security/governance requirements against developer velocity",
+    "Clear documentation — a platform is only as good as its onboarding docs"
+  ],
+  "expectations": {
+    "beginner": "Provisions well-defined infrastructure with guidance, understands the account/network structure, fixes small platform issues.",
+    "intermediate": "Designs new infrastructure and platform tooling independently, manages cost and access for a team's cloud footprint.",
+    "advanced": "Owns cloud/platform architecture strategy across the org, builds self-service developer platforms, mentors other engineers."
+  },
+  "common_tools": ["Terraform", "Kubernetes", "AWS/Azure/GCP console", "Backstage", "Helm", "Vault"],
+  "recommended_languages": ["Python", "Go", "Bash"],
+  "roadmap": {
+    "summary": "A path from core cloud fundamentals through infrastructure as code into platform engineering — building tools other engineers use. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
+    "link": null,
+    "stages": [
+      { "name": "Cloud fundamentals", "duration": "3-4 weeks", "topics": ["Compute, storage, networking basics on one cloud provider", "IAM and least-privilege design"] },
+      { "name": "Networking deep dive", "duration": "2-3 weeks", "topics": ["VPCs, subnets, routing, load balancers", "DNS and TLS basics"] },
+      { "name": "Infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform modules and state management", "Reviewing infra changes safely"] },
+      { "name": "Containers & Kubernetes", "duration": "4 weeks", "topics": ["Running workloads on a managed Kubernetes service", "Helm charts and cluster operations"] },
+      { "name": "Cost & security governance", "duration": "2 weeks", "topics": ["Cost monitoring and budgets", "Security baselines and guardrails"] },
+      { "name": "Platform engineering", "duration": "3-4 weeks", "topics": ["Building a self-service golden path for a common task", "Internal developer platform concepts (e.g. Backstage)"] }
+    ]
+  },
+  "labs": [
+    "Coming soon: cloud/Kubernetes simulations and a CI/CD pipeline builder.",
+    "For now, practice on a free-tier cloud account: provision real infrastructure with Terraform and tear it down cleanly."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Provision a real environment with Terraform", "description": "Stand up a small real environment (network, compute, database) on a free-tier cloud account, fully as code." },
+    { "level": "independent", "title": "Build a golden-path template", "description": "Create a reusable, documented template (e.g. Terraform module or Helm chart) another team could self-serve with." },
+    { "level": "advanced-capstone", "title": "Design a multi-account/multi-region setup", "description": "Document (and where possible provision) a realistic multi-account cloud structure with clear security and cost boundaries." }
+  ],
+  "interview_topics": [
+    "Design the cloud network architecture for a given scenario",
+    "How would you structure IAM/access for multiple teams sharing a cloud account?",
+    "Infrastructure as code review: spot the risk in this Terraform change",
+    "What makes a good internal developer platform vs. just a pile of scripts?"
+  ],
+  "certifications": [
+    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
+    { "name": "AWS Certified Solutions Architect — Associate", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate" },
+    { "name": "HashiCorp Certified: Terraform Associate", "issuer": "HashiCorp", "url": "https://developer.hashicorp.com/certifications/infrastructure-automation" },
+    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["DevOps Engineer", "Site Reliability Engineer", "Cloud Engineer", "Solutions Architect", "Infrastructure Engineer"],
+  "transition_paths": ["DevOps Engineer → Platform Engineer", "Cloud Engineer → Solutions Architect", "Backend Developer → Cloud/Platform Engineer"],
+  "advantages": [
+    "High-leverage work — good platform tooling multiplies the productivity of every other engineer",
+    "Strong demand and compensation for deep cloud expertise",
+    "Clear path toward Solutions Architect or Principal Engineer roles"
+  ],
+  "challenges": [
+    "Multi-cloud/hybrid environments add real complexity beyond single-provider knowledge",
+    "Easy to over-engineer a platform nobody asked for instead of solving the actual pain point",
+    "Security and cost governance responsibilities carry real organizational risk if done poorly"
+  ],
+  "example_progression": ["Junior Cloud Engineer", "Cloud/Platform Engineer", "Senior Platform Engineer", "Staff Engineer or Solutions Architect", "Principal Engineer / Head of Infrastructure"],
+  "portfolio_expectations": [
+    "A public repo of real Terraform modules provisioning actual infrastructure, not a tutorial copy",
+    "Documentation showing your reasoning for a network/security design, not just the end result",
+    "A golden-path template or internal tool with a clear README explaining the problem it solves",
+    "Evidence of cost-awareness — e.g. a note on how you'd keep a given setup within a budget"
+  ],
+  "fit_assessment": [
+    "Do you enjoy designing systems that other engineers will build on top of, more than building user-facing features yourself?",
+    "Are you comfortable owning security and cost tradeoffs, not just uptime?",
+    "Do you like turning a repeated manual infrastructure request into a reusable, documented, self-service tool?"
+  ],
+  "ai_impact": "AI tools are speeding up first-draft Terraform/IaC and helping catch some misconfigurations, but judgment about security posture, cost tradeoffs, and blast radius still needs a human owner — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "Platform engineering (building internal developer platforms, not just raw cloud infra) is the clearest growth direction for this role as organizations try to reduce the cognitive load on product engineering teams — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "Terraform official docs", "url": "https://developer.hashicorp.com/terraform/docs" },
+    { "title": "AWS Well-Architected Framework", "url": "https://aws.amazon.com/architecture/well-architected/" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Written from general, well-established cloud/platform engineering practice; certification names/URLs verified via web search on 2026-09-22."
+    ]
+  }
+}

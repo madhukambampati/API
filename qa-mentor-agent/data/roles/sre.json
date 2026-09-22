@@ -1,0 +1,114 @@
+{
+  "slug": "sre",
+  "title": "Site Reliability Engineer",
+  "status": "Established",
+  "definition": "A Site Reliability Engineer (SRE) applies software engineering practices to keep production systems reliable at scale — defining and tracking reliability targets, reducing manual toil through automation, and leading incident response when things break.",
+  "daily_responsibilities": [
+    "Define and track SLIs/SLOs and manage error budgets for services",
+    "Build automation to reduce repetitive operational work (toil)",
+    "Respond to and lead resolution of production incidents",
+    "Write and review postmortems, then drive follow-up fixes",
+    "Improve monitoring, alerting, and on-call processes",
+    "Do capacity planning and design for high availability"
+  ],
+  "required_technical_skills": [
+    "Strong Linux and networking fundamentals",
+    "A programming/scripting language (Python or Go) for automation",
+    "Container orchestration (Kubernetes) and infrastructure as code",
+    "Observability tooling (Prometheus/Grafana, distributed tracing)",
+    "Incident response and debugging distributed systems under pressure",
+    "Understanding of distributed-systems failure modes (timeouts, retries, cascading failures)"
+  ],
+  "required_nontechnical_skills": [
+    "Calm, clear communication during high-pressure incidents",
+    "Blameless postmortem writing that focuses on systems, not people",
+    "Negotiating reliability work against feature-delivery pressure with stakeholders"
+  ],
+  "expectations": {
+    "beginner": "Participates in on-call with support, follows runbooks, fixes small toil items.",
+    "intermediate": "Leads incident response independently, defines SLOs for a service, automates significant toil.",
+    "advanced": "Sets reliability strategy across teams, mentors on-call engineers, drives org-wide incident process improvements."
+  },
+  "common_tools": ["Prometheus", "Grafana", "PagerDuty", "Kubernetes", "Terraform", "OpenTelemetry", "Datadog"],
+  "recommended_languages": ["Python", "Go", "Bash"],
+  "roadmap": {
+    "summary": "A path from DevOps/operations fundamentals into the specific discipline of reliability engineering: SLOs, error budgets, and incident response. Follow the stages below — a dedicated interactive roadmap page for this track is coming soon.",
+    "link": null,
+    "stages": [
+      { "name": "Linux, networking & systems fundamentals", "duration": "3-4 weeks", "topics": ["Processes, memory, networking basics", "Debugging a system under load"] },
+      { "name": "SLIs, SLOs & error budgets", "duration": "2 weeks", "topics": ["Choosing meaningful SLIs for a service", "Setting realistic SLO targets and error budgets"] },
+      { "name": "Observability", "duration": "3-4 weeks", "topics": ["Metrics, logs, and traces", "Building dashboards and useful alerts (not noisy ones)"] },
+      { "name": "Automation & infrastructure as code", "duration": "3-4 weeks", "topics": ["Terraform or equivalent", "Automating a real toil task end to end"] },
+      { "name": "Incident response", "duration": "2-3 weeks", "topics": ["Running an incident, writing a blameless postmortem", "On-call rotation basics"] },
+      { "name": "Capacity planning & resilience", "duration": "2 weeks", "topics": ["Load testing and capacity forecasting", "Chaos engineering basics"] }
+    ]
+  },
+  "labs": [
+    "Coming soon: a simulated incident/outage playground with logs, metrics, and traces to triage.",
+    "For now, practice by instrumenting a small app with Prometheus/Grafana and writing a postmortem for a self-created practice incident."
+  ],
+  "projects": [
+    { "level": "guided", "title": "Instrument a service with SLOs", "description": "Add metrics to a small app, define an SLO, and build a dashboard showing your error budget." },
+    { "level": "independent", "title": "Automate a toil task", "description": "Pick a repetitive manual operational task and fully automate it, with tests and documentation." },
+    { "level": "advanced-capstone", "title": "Run a simulated incident", "description": "Deliberately break a test system, run an incident response, and write a full blameless postmortem." }
+  ],
+  "interview_topics": [
+    "SLIs, SLOs, and error budgets — how would you set them for a given service?",
+    "Distributed systems failure modes: timeouts, retries, cascading failures",
+    "Walk through how you'd debug a service with rising latency in production",
+    "Postmortem writing and blameless culture"
+  ],
+  "certifications": [
+    { "name": "AWS Certified Cloud Practitioner", "issuer": "AWS", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
+    { "name": "Google Cloud Professional Cloud DevOps Engineer", "issuer": "Google Cloud", "url": "https://cloud.google.com/learn/certification/cloud-devops-engineer" },
+    { "name": "Certified Kubernetes Administrator (CKA)", "issuer": "CNCF / Linux Foundation", "url": "https://www.cncf.io/training/certification/cka/" }
+  ],
+  "market_info": {
+    "status": "not_yet_sourced",
+    "summary": "Salary and demand figures are intentionally left blank until a specific, dated, citable source is attached — the blueprint requires location/date context, and this page shouldn't guess.",
+    "location": null,
+    "as_of_date": null,
+    "source_url": null
+  },
+  "related_roles": ["DevOps Engineer", "Platform Engineer", "Cloud Engineer", "Observability Engineer"],
+  "transition_paths": ["DevOps Engineer → SRE", "Backend Developer → SRE", "SRE → Platform Engineering Lead"],
+  "advantages": [
+    "High-leverage role — reliability improvements protect revenue and user trust broadly",
+    "Deep, transferable systems knowledge that applies across companies and stacks",
+    "Strong compensation and demand at companies running services at real scale"
+  ],
+  "challenges": [
+    "On-call can be genuinely stressful, especially at organizations with immature reliability practices",
+    "Requires constantly balancing reliability work against feature-team pressure to ship",
+    "Can be hard to measure and get credit for — the best SRE work is often invisible (nothing breaks)"
+  ],
+  "example_progression": ["Junior SRE / DevOps Engineer", "SRE", "Senior SRE", "Staff SRE or Reliability Lead", "Principal Engineer / Head of Reliability"],
+  "portfolio_expectations": [
+    "A documented incident response — even a self-created practice scenario — with a full blameless postmortem",
+    "A public repo showing SLO instrumentation and a real dashboard",
+    "Evidence of automating a real, specific toil task with before/after time savings noted",
+    "Clear writing: reliability work is judged heavily on how well you communicate about systems"
+  ],
+  "fit_assessment": [
+    "Do you enjoy the moment of methodically diagnosing why a complex system is failing, under time pressure?",
+    "Are you comfortable owning production reliability, including being paged when something breaks?",
+    "Do you like building automation and tooling as much as (or more than) building user-facing features?"
+  ],
+  "ai_impact": "AI tools are speeding up log/metric triage and root-cause suggestions during incidents, but a human still has to validate the diagnosis and own the remediation decision — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "future_outlook": "As more infrastructure becomes managed/serverless, SRE work is shifting further up the stack toward service-level reliability and platform design rather than disappearing — this is TechOrbit's own assessment, not a cited industry statistic.",
+  "resources": [
+    { "title": "Google's Site Reliability Engineering book (free online)", "url": "https://sre.google/books/" },
+    { "title": "Prometheus official docs", "url": "https://prometheus.io/docs/introduction/overview/" },
+    { "title": "TechOrbit Resources page", "url": "/resources" }
+  ],
+  "governance": {
+    "author": "TechOrbit content team",
+    "reviewer": null,
+    "version": "0.1",
+    "last_reviewed": "2026-09-22",
+    "next_review": null,
+    "sources": [
+      "Written from general, well-established SRE practice (including Google's public SRE book); certification names/URLs verified via web search on 2026-09-22."
+    ]
+  }
+}

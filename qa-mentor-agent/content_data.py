@@ -557,7 +557,737 @@ ROLES = {'sdet': {'slug': 'sdet',
                            'next_review': None,
                            'sources': ['Written from general, well-established DevOps practice; '
                                        'certification names/URLs verified via web search on '
-                                       '2026-09-22.']}}}
+                                       '2026-09-22.']}},
+ 'sre': {'slug': 'sre',
+         'title': 'Site Reliability Engineer',
+         'status': 'Established',
+         'definition': 'A Site Reliability Engineer (SRE) applies software engineering practices '
+                       'to keep production systems reliable at scale — defining and tracking '
+                       'reliability targets, reducing manual toil through automation, and leading '
+                       'incident response when things break.',
+         'daily_responsibilities': ['Define and track SLIs/SLOs and manage error budgets for '
+                                    'services',
+                                    'Build automation to reduce repetitive operational work (toil)',
+                                    'Respond to and lead resolution of production incidents',
+                                    'Write and review postmortems, then drive follow-up fixes',
+                                    'Improve monitoring, alerting, and on-call processes',
+                                    'Do capacity planning and design for high availability'],
+         'required_technical_skills': ['Strong Linux and networking fundamentals',
+                                       'A programming/scripting language (Python or Go) for '
+                                       'automation',
+                                       'Container orchestration (Kubernetes) and infrastructure as '
+                                       'code',
+                                       'Observability tooling (Prometheus/Grafana, distributed '
+                                       'tracing)',
+                                       'Incident response and debugging distributed systems under '
+                                       'pressure',
+                                       'Understanding of distributed-systems failure modes '
+                                       '(timeouts, retries, cascading failures)'],
+         'required_nontechnical_skills': ['Calm, clear communication during high-pressure '
+                                          'incidents',
+                                          'Blameless postmortem writing that focuses on systems, '
+                                          'not people',
+                                          'Negotiating reliability work against feature-delivery '
+                                          'pressure with stakeholders'],
+         'expectations': {'beginner': 'Participates in on-call with support, follows runbooks, '
+                                      'fixes small toil items.',
+                          'intermediate': 'Leads incident response independently, defines SLOs for '
+                                          'a service, automates significant toil.',
+                          'advanced': 'Sets reliability strategy across teams, mentors on-call '
+                                      'engineers, drives org-wide incident process improvements.'},
+         'common_tools': ['Prometheus',
+                          'Grafana',
+                          'PagerDuty',
+                          'Kubernetes',
+                          'Terraform',
+                          'OpenTelemetry',
+                          'Datadog'],
+         'recommended_languages': ['Python', 'Go', 'Bash'],
+         'roadmap': {'summary': 'A path from DevOps/operations fundamentals into the specific '
+                                'discipline of reliability engineering: SLOs, error budgets, and '
+                                'incident response. Follow the stages below — a dedicated '
+                                'interactive roadmap page for this track is coming soon.',
+                     'link': None,
+                     'stages': [{'name': 'Linux, networking & systems fundamentals',
+                                 'duration': '3-4 weeks',
+                                 'topics': ['Processes, memory, networking basics',
+                                            'Debugging a system under load']},
+                                {'name': 'SLIs, SLOs & error budgets',
+                                 'duration': '2 weeks',
+                                 'topics': ['Choosing meaningful SLIs for a service',
+                                            'Setting realistic SLO targets and error budgets']},
+                                {'name': 'Observability',
+                                 'duration': '3-4 weeks',
+                                 'topics': ['Metrics, logs, and traces',
+                                            'Building dashboards and useful alerts (not noisy '
+                                            'ones)']},
+                                {'name': 'Automation & infrastructure as code',
+                                 'duration': '3-4 weeks',
+                                 'topics': ['Terraform or equivalent',
+                                            'Automating a real toil task end to end']},
+                                {'name': 'Incident response',
+                                 'duration': '2-3 weeks',
+                                 'topics': ['Running an incident, writing a blameless postmortem',
+                                            'On-call rotation basics']},
+                                {'name': 'Capacity planning & resilience',
+                                 'duration': '2 weeks',
+                                 'topics': ['Load testing and capacity forecasting',
+                                            'Chaos engineering basics']}]},
+         'labs': ['Coming soon: a simulated incident/outage playground with logs, metrics, and '
+                  'traces to triage.',
+                  'For now, practice by instrumenting a small app with Prometheus/Grafana and '
+                  'writing a postmortem for a self-created practice incident.'],
+         'projects': [{'level': 'guided',
+                       'title': 'Instrument a service with SLOs',
+                       'description': 'Add metrics to a small app, define an SLO, and build a '
+                                      'dashboard showing your error budget.'},
+                      {'level': 'independent',
+                       'title': 'Automate a toil task',
+                       'description': 'Pick a repetitive manual operational task and fully '
+                                      'automate it, with tests and documentation.'},
+                      {'level': 'advanced-capstone',
+                       'title': 'Run a simulated incident',
+                       'description': 'Deliberately break a test system, run an incident response, '
+                                      'and write a full blameless postmortem.'}],
+         'interview_topics': ['SLIs, SLOs, and error budgets — how would you set them for a given '
+                              'service?',
+                              'Distributed systems failure modes: timeouts, retries, cascading '
+                              'failures',
+                              "Walk through how you'd debug a service with rising latency in "
+                              'production',
+                              'Postmortem writing and blameless culture'],
+         'certifications': [{'name': 'AWS Certified Cloud Practitioner',
+                             'issuer': 'AWS',
+                             'url': 'https://aws.amazon.com/certification/certified-cloud-practitioner/'},
+                            {'name': 'Google Cloud Professional Cloud DevOps Engineer',
+                             'issuer': 'Google Cloud',
+                             'url': 'https://cloud.google.com/learn/certification/cloud-devops-engineer'},
+                            {'name': 'Certified Kubernetes Administrator (CKA)',
+                             'issuer': 'CNCF / Linux Foundation',
+                             'url': 'https://www.cncf.io/training/certification/cka/'}],
+         'market_info': {'status': 'not_yet_sourced',
+                         'summary': 'Salary and demand figures are intentionally left blank until '
+                                    'a specific, dated, citable source is attached — the blueprint '
+                                    "requires location/date context, and this page shouldn't "
+                                    'guess.',
+                         'location': None,
+                         'as_of_date': None,
+                         'source_url': None},
+         'related_roles': ['DevOps Engineer',
+                           'Platform Engineer',
+                           'Cloud Engineer',
+                           'Observability Engineer'],
+         'transition_paths': ['DevOps Engineer → SRE',
+                              'Backend Developer → SRE',
+                              'SRE → Platform Engineering Lead'],
+         'advantages': ['High-leverage role — reliability improvements protect revenue and user '
+                        'trust broadly',
+                        'Deep, transferable systems knowledge that applies across companies and '
+                        'stacks',
+                        'Strong compensation and demand at companies running services at real '
+                        'scale'],
+         'challenges': ['On-call can be genuinely stressful, especially at organizations with '
+                        'immature reliability practices',
+                        'Requires constantly balancing reliability work against feature-team '
+                        'pressure to ship',
+                        'Can be hard to measure and get credit for — the best SRE work is often '
+                        'invisible (nothing breaks)'],
+         'example_progression': ['Junior SRE / DevOps Engineer',
+                                 'SRE',
+                                 'Senior SRE',
+                                 'Staff SRE or Reliability Lead',
+                                 'Principal Engineer / Head of Reliability'],
+         'portfolio_expectations': ['A documented incident response — even a self-created practice '
+                                    'scenario — with a full blameless postmortem',
+                                    'A public repo showing SLO instrumentation and a real '
+                                    'dashboard',
+                                    'Evidence of automating a real, specific toil task with '
+                                    'before/after time savings noted',
+                                    'Clear writing: reliability work is judged heavily on how well '
+                                    'you communicate about systems'],
+         'fit_assessment': ['Do you enjoy the moment of methodically diagnosing why a complex '
+                            'system is failing, under time pressure?',
+                            'Are you comfortable owning production reliability, including being '
+                            'paged when something breaks?',
+                            'Do you like building automation and tooling as much as (or more than) '
+                            'building user-facing features?'],
+         'ai_impact': 'AI tools are speeding up log/metric triage and root-cause suggestions '
+                      'during incidents, but a human still has to validate the diagnosis and own '
+                      "the remediation decision — this is TechOrbit's own assessment, not a cited "
+                      'industry statistic.',
+         'future_outlook': 'As more infrastructure becomes managed/serverless, SRE work is '
+                           'shifting further up the stack toward service-level reliability and '
+                           "platform design rather than disappearing — this is TechOrbit's own "
+                           'assessment, not a cited industry statistic.',
+         'resources': [{'title': "Google's Site Reliability Engineering book (free online)",
+                        'url': 'https://sre.google/books/'},
+                       {'title': 'Prometheus official docs',
+                        'url': 'https://prometheus.io/docs/introduction/overview/'},
+                       {'title': 'TechOrbit Resources page', 'url': '/resources'}],
+         'governance': {'author': 'TechOrbit content team',
+                        'reviewer': None,
+                        'version': '0.1',
+                        'last_reviewed': '2026-09-22',
+                        'next_review': None,
+                        'sources': ['Written from general, well-established SRE practice '
+                                    "(including Google's public SRE book); certification "
+                                    'names/URLs verified via web search on 2026-09-22.']}},
+ 'data-ai': {'slug': 'data-ai',
+             'title': 'Data & AI Engineer',
+             'status': 'Growing',
+             'definition': 'A Data & AI Engineer builds the pipelines that move and shape data, '
+                           'and the systems that turn it into machine learning or AI-powered '
+                           'features — a hybrid role common at small-to-mid-size companies before '
+                           "they're large enough to split it into separate Data Engineer, ML "
+                           'Engineer, and AI Engineer roles.',
+             'daily_responsibilities': ['Build and maintain data pipelines (ETL/ELT) that move '
+                                        'data reliably between systems',
+                                        'Design data models and warehouse/lakehouse schemas',
+                                        'Prepare, clean, and validate data for analytics or ML use',
+                                        'Build, evaluate, and deploy ML models or integrate '
+                                        'LLM-powered features',
+                                        'Monitor data quality and pipeline health, and fix '
+                                        'breakages',
+                                        'Work with analysts/data scientists on what data and '
+                                        'features they need'],
+             'required_technical_skills': ['Strong SQL and a programming language (Python)',
+                                           'ETL/ELT tools and orchestration (Airflow or similar)',
+                                           'Data warehousing concepts (Snowflake, BigQuery, or a '
+                                           'similar platform)',
+                                           'Basics of machine learning workflows: training, '
+                                           'evaluation, deployment',
+                                           'Working with APIs to integrate LLM-based features',
+                                           'Data modeling and understanding of batch vs. streaming '
+                                           'pipelines'],
+             'required_nontechnical_skills': ['Translating vague business questions into concrete '
+                                              'data requirements',
+                                              'Communicating data quality issues and their impact '
+                                              'clearly to non-technical stakeholders',
+                                              'Judgment about when a simple pipeline is enough vs. '
+                                              'when real ML is warranted'],
+             'expectations': {'beginner': 'Builds and maintains existing pipelines with guidance, '
+                                          'writes solid SQL, understands the data model.',
+                              'intermediate': 'Designs new pipelines and data models '
+                                              'independently, builds and evaluates basic ML '
+                                              'models.',
+                              'advanced': 'Owns data platform architecture, leads ML/AI feature '
+                                          'integration end to end, mentors others on data quality '
+                                          'practices.'},
+             'common_tools': ['Airflow',
+                              'dbt',
+                              'Snowflake',
+                              'BigQuery',
+                              'Spark',
+                              'Kafka',
+                              'Jupyter'],
+             'recommended_languages': ['Python', 'SQL'],
+             'roadmap': {'summary': 'A path from SQL and data fundamentals through pipeline '
+                                    'engineering into applied ML/AI integration. Follow the stages '
+                                    'below — a dedicated interactive roadmap page for this track '
+                                    'is coming soon.',
+                         'link': None,
+                         'stages': [{'name': 'SQL & data modeling fundamentals',
+                                     'duration': '3-4 weeks',
+                                     'topics': ['Joins, window functions, aggregations',
+                                                'Star schema and dimensional modeling basics']},
+                                    {'name': 'Python for data engineering',
+                                     'duration': '3-4 weeks',
+                                     'topics': ['pandas, data validation',
+                                                'Writing testable, production-quality data code']},
+                                    {'name': 'ETL/ELT & orchestration',
+                                     'duration': '4 weeks',
+                                     'topics': ['Airflow DAGs',
+                                                'Incremental loads, backfills, idempotency']},
+                                    {'name': 'Data warehousing',
+                                     'duration': '2-3 weeks',
+                                     'topics': ['Snowflake or BigQuery basics',
+                                                'Partitioning and cost-aware query design']},
+                                    {'name': 'Applied ML fundamentals',
+                                     'duration': '4-6 weeks',
+                                     'topics': ['Training/evaluating a basic model',
+                                                'Feature engineering basics']},
+                                    {'name': 'AI feature integration',
+                                     'duration': '2-3 weeks',
+                                     'topics': ['Calling an LLM API for a real feature',
+                                                'Basic prompt engineering and evaluation']}]},
+             'labs': ['Coming soon: a SQL playground with sample databases and a pipeline builder.',
+                      'For now, practice by building a small ETL pipeline locally with a free '
+                      'sample dataset and Airflow or a simple Python script.'],
+             'projects': [{'level': 'guided',
+                           'title': 'Build an ETL pipeline',
+                           'description': 'Pull data from a public API, clean and load it into a '
+                                          'database on a schedule, with basic data-quality '
+                                          'checks.'},
+                          {'level': 'independent',
+                           'title': 'Train and deploy a simple ML model',
+                           'description': 'Train a model on a public dataset, evaluate it '
+                                          'properly, and serve predictions via a small API.'},
+                          {'level': 'advanced-capstone',
+                           'title': 'Build an LLM-powered feature with real data',
+                           'description': 'Combine a data pipeline with an LLM API call to build '
+                                          'something like a summarization or classification '
+                                          'feature, with basic evaluation.'}],
+             'interview_topics': ['SQL problem-solving (joins, window functions, query '
+                                  'optimization)',
+                                  'Designing a data pipeline for a given scenario (batch vs. '
+                                  'streaming, failure handling)',
+                                  'ML fundamentals: overfitting, train/test splits, evaluation '
+                                  'metrics',
+                                  'How would you evaluate whether an LLM-powered feature is '
+                                  'working well?'],
+             'certifications': [{'name': 'Google Cloud Professional Data Engineer',
+                                 'issuer': 'Google Cloud',
+                                 'url': 'https://cloud.google.com/learn/certification/data-engineer'},
+                                {'name': 'Databricks Certified Data Engineer Associate',
+                                 'issuer': 'Databricks',
+                                 'url': 'https://www.databricks.com/learn/certification/data-engineer-associate'},
+                                {'name': 'AWS Certified Machine Learning Engineer — Associate',
+                                 'issuer': 'AWS',
+                                 'url': 'https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/'}],
+             'market_info': {'status': 'not_yet_sourced',
+                             'summary': 'Salary and demand figures are intentionally left blank '
+                                        'until a specific, dated, citable source is attached — the '
+                                        'blueprint requires location/date context, and this page '
+                                        "shouldn't guess.",
+                             'location': None,
+                             'as_of_date': None,
+                             'source_url': None},
+             'related_roles': ['Data Engineer',
+                               'Machine Learning Engineer',
+                               'AI Engineer',
+                               'Analytics Engineer',
+                               'Data Scientist'],
+             'transition_paths': ['Data Analyst → Data Engineer',
+                                  'Backend Developer → AI Engineer',
+                                  'Data Engineer → Machine Learning Engineer'],
+             'advantages': ["Sits at the center of a company's decision-making — data work has "
+                            'broad, visible impact',
+                            'Fast-growing demand as more products add AI/ML features',
+                            'Skills split cleanly into deeper specializations (Data Engineer, ML '
+                            'Engineer, AI Engineer) as you grow'],
+             'challenges': ['Breadth is real — data engineering, ML, and AI integration are each '
+                            'deep fields on their own',
+                            "Data quality problems are often someone else's mess to clean up, "
+                            'which can be thankless',
+                            "Fast-moving AI tooling means constantly re-evaluating what's worth "
+                            'learning deeply vs. lightly'],
+             'example_progression': ['Junior Data Engineer',
+                                     'Data Engineer',
+                                     'Senior Data/AI Engineer',
+                                     'Staff Engineer or ML/AI Lead',
+                                     'Principal Engineer / Head of Data'],
+             'portfolio_expectations': ['A public repo with a real, working data pipeline (not '
+                                        'just a tutorial copy), including data-quality checks',
+                                        'A trained model with a documented evaluation — accuracy '
+                                        "alone isn't enough, show you understand the metric choice",
+                                        'An LLM-integrated feature with a written note on how you '
+                                        'evaluated whether it actually works',
+                                        'Clear documentation of data sources, assumptions, and '
+                                        'known limitations'],
+             'fit_assessment': ['Do you enjoy tracing a data quality issue back through a pipeline '
+                                'to find the real root cause?',
+                                'Are you comfortable moving between SQL, Python, and higher-level '
+                                'ML/AI concepts in the same week?',
+                                'Do you care about whether a model or AI feature is actually '
+                                'reliable, not just whether it demoed well once?'],
+             'ai_impact': 'This role is being reshaped by AI faster than most — LLMs are now a '
+                          'standard building block for features, not just a research topic, and '
+                          'demand for people who can integrate them reliably (not just call an '
+                          "API) is growing fast — this is TechOrbit's own assessment, not a cited "
+                          'industry statistic.',
+             'future_outlook': 'As companies scale, this combined role commonly splits into Data '
+                               'Engineer, ML Engineer, and AI Engineer specializations — starting '
+                               'here is a reasonable way to discover which of those you actually '
+                               "enjoy — this is TechOrbit's own assessment, not a cited industry "
+                               'statistic.',
+             'resources': [{'title': 'dbt official docs', 'url': 'https://docs.getdbt.com/'},
+                           {'title': 'Apache Airflow official docs',
+                            'url': 'https://airflow.apache.org/docs/'},
+                           {'title': 'TechOrbit Resources page', 'url': '/resources'}],
+             'governance': {'author': 'TechOrbit content team',
+                            'reviewer': None,
+                            'version': '0.1',
+                            'last_reviewed': '2026-09-22',
+                            'next_review': None,
+                            'sources': ['Written from general, well-established data/ML '
+                                        'engineering practice; certification names/URLs verified '
+                                        'via web search on 2026-09-22.']}},
+ 'product-ba': {'slug': 'product-ba',
+                'title': 'Product / Business Analyst',
+                'status': 'Established',
+                'definition': 'A Product/Business Analyst bridges business needs and technical '
+                              'delivery — gathering and clarifying requirements, writing user '
+                              'stories, and helping the team decide what to build next. A common '
+                              'starting point before specializing into Product Management or '
+                              'deeper Business Analysis.',
+                'daily_responsibilities': ['Gather and clarify requirements from stakeholders',
+                                           'Write clear user stories and acceptance criteria for '
+                                           'the engineering team',
+                                           'Run backlog refinement and help prioritize what gets '
+                                           'built next',
+                                           'Analyze data to support product or process decisions',
+                                           'Facilitate communication between business stakeholders '
+                                           'and engineers',
+                                           'Support user acceptance testing (UAT) before release'],
+                'required_technical_skills': ['Requirements gathering and documentation (BRDs, '
+                                              'functional specs)',
+                                              'Writing user stories and acceptance criteria',
+                                              'Basic data analysis (spreadsheets, SQL is a strong '
+                                              'plus)',
+                                              'Process/flow modeling (BPMN or simple flowcharts)',
+                                              'Familiarity with agile ceremonies and a backlog '
+                                              'tool (Jira or similar)'],
+                'required_nontechnical_skills': ['Active listening and stakeholder interviewing',
+                                                 'Clear written communication — specs get read far '
+                                                 'more than they get discussed live',
+                                                 'Prioritization judgment: saying no to good ideas '
+                                                 "that aren't the right ones right now",
+                                                 'Comfort navigating ambiguity and conflicting '
+                                                 'stakeholder opinions'],
+                'expectations': {'beginner': 'Writes clear tickets from given requirements, runs '
+                                             'basic stakeholder interviews with support, learns '
+                                             'the product domain.',
+                                 'intermediate': 'Owns requirements gathering for a feature area '
+                                                 'independently, prioritizes a backlog, presents '
+                                                 'findings to stakeholders.',
+                                 'advanced': 'Sets product/process strategy for an area, mentors '
+                                             'other analysts, drives cross-team alignment on '
+                                             'priorities.'},
+                'common_tools': ['Jira',
+                                 'Confluence',
+                                 'Figma (for reviewing designs)',
+                                 'SQL client',
+                                 'Miro',
+                                 'Excel/Sheets'],
+                'recommended_languages': ['SQL'],
+                'roadmap': {'summary': 'A path from requirements-gathering fundamentals through '
+                                       'agile delivery practices into product-thinking and '
+                                       'prioritization. Follow the stages below — a dedicated '
+                                       'interactive roadmap page for this track is coming soon.',
+                            'link': None,
+                            'stages': [{'name': 'Requirements gathering fundamentals',
+                                        'duration': '2-3 weeks',
+                                        'topics': ['Stakeholder interviewing techniques',
+                                                   'Writing a clear BRD/functional spec']},
+                                       {'name': 'User stories & acceptance criteria',
+                                        'duration': '2 weeks',
+                                        'topics': ['Story format and INVEST criteria',
+                                                   'Writing testable acceptance criteria']},
+                                       {'name': 'Agile & Scrum fundamentals',
+                                        'duration': '2 weeks',
+                                        'topics': ['Ceremonies, roles, backlog refinement',
+                                                   'Estimation basics']},
+                                       {'name': 'Data analysis basics',
+                                        'duration': '3-4 weeks',
+                                        'topics': ['Spreadsheet analysis',
+                                                   'Basic SQL for pulling your own data']},
+                                       {'name': 'Process modeling',
+                                        'duration': '1-2 weeks',
+                                        'topics': ['BPMN basics',
+                                                   'Mapping a real business process end to end']},
+                                       {'name': 'Prioritization & product thinking',
+                                        'duration': '2-3 weeks',
+                                        'topics': ['Prioritization frameworks (RICE, MoSCoW)',
+                                                   'Writing a simple PRD']}]},
+                'labs': ['Coming soon: requirement-review and user-story-writing exercises with '
+                         'feedback.',
+                         'For now, practice by picking an app you use daily and writing a full BRD '
+                         "+ user stories for one improvement you'd make."],
+                'projects': [{'level': 'guided',
+                              'title': 'Write a requirements package',
+                              'description': 'Pick a real product gap and write a full BRD, user '
+                                             'stories, and acceptance criteria for it.'},
+                             {'level': 'independent',
+                              'title': 'Run a mock prioritization exercise',
+                              'description': 'Take a list of 10+ feature ideas, apply a '
+                                             'prioritization framework (RICE/MoSCoW), and document '
+                                             'your reasoning.'},
+                             {'level': 'advanced-capstone',
+                              'title': 'Map and improve a business process',
+                              'description': 'Document a real (or realistic) business process with '
+                                             'BPMN, identify a bottleneck, and propose a concrete '
+                                             'fix.'}],
+                'interview_topics': ["Walk me through how you'd gather requirements for a new "
+                                     'feature with vague initial input',
+                                     'How do you handle conflicting priorities from two '
+                                     'stakeholders?',
+                                     'Write a user story and acceptance criteria for a given '
+                                     'scenario',
+                                     'How would you prioritize a backlog with limited engineering '
+                                     'capacity?'],
+                'certifications': [{'name': 'IIBA Entry Certificate in Business Analysis (ECBA)',
+                                    'issuer': 'IIBA',
+                                    'url': 'https://www.iiba.org/business-analysis-certifications/ecba/'},
+                                   {'name': 'Certified Scrum Product Owner (CSPO)',
+                                    'issuer': 'Scrum Alliance',
+                                    'url': 'https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner'}],
+                'market_info': {'status': 'not_yet_sourced',
+                                'summary': 'Salary and demand figures are intentionally left blank '
+                                           'until a specific, dated, citable source is attached — '
+                                           'the blueprint requires location/date context, and this '
+                                           "page shouldn't guess.",
+                                'location': None,
+                                'as_of_date': None,
+                                'source_url': None},
+                'related_roles': ['Product Manager',
+                                  'Product Owner',
+                                  'Systems Analyst',
+                                  'Data Analyst',
+                                  'Scrum Master'],
+                'transition_paths': ['Business Analyst → Product Owner',
+                                     'Product/Business Analyst → Product Manager',
+                                     'Data Analyst → Product/Business Analyst'],
+                'advantages': ['Highly transferable skills that work across industries, not just '
+                               'tech',
+                               'Direct, visible influence on what actually gets built',
+                               'A common and well-trodden path into Product Management'],
+                'challenges': ['Often caught between competing stakeholder demands with no clean '
+                               'answer',
+                               "Can be undervalued on teams that don't understand the difference "
+                               "between 'writing tickets' and real requirements work",
+                               'Success is harder to measure directly than a shipped feature or a '
+                               'closed bug'],
+                'example_progression': ['Junior Business Analyst',
+                                        'Business/Product Analyst',
+                                        'Senior Analyst or Associate Product Manager',
+                                        'Product Manager',
+                                        'Senior/Group Product Manager'],
+                'portfolio_expectations': ['A sample requirements package (BRD + user stories + '
+                                           'acceptance criteria) for a self-chosen real product '
+                                           'gap',
+                                           'A documented prioritization exercise showing your '
+                                           'reasoning, not just a ranked list',
+                                           'A process map (BPMN or similar) for a real workflow, '
+                                           'with a proposed improvement',
+                                           'Clear, well-organized writing — this is the core '
+                                           'deliverable of the role, so your portfolio should read '
+                                           'like your actual work would'],
+                'fit_assessment': ["Do you enjoy turning a vague ask ('make this better') into "
+                                   'something concrete and buildable?',
+                                   'Are you comfortable being the person who has to say no to a '
+                                   "stakeholder's favorite idea?",
+                                   "Do you like understanding both the business 'why' and the "
+                                   "technical 'how' of a feature?"],
+                'ai_impact': 'AI tools can now draft first-pass user stories and summarize '
+                             'stakeholder interviews, but judging whether requirements are '
+                             'actually complete, unambiguous, and prioritized correctly is still a '
+                             "human call — this is TechOrbit's own assessment, not a cited "
+                             'industry statistic.',
+                'future_outlook': 'As AI-assisted development lowers the cost of building the '
+                                  'wrong thing quickly, the requirements/prioritization judgment '
+                                  'this role provides becomes more valuable, not less — this is '
+                                  "TechOrbit's own assessment, not a cited industry statistic.",
+                'resources': [{'title': 'IIBA Business Analysis Body of Knowledge (BABOK) overview',
+                               'url': 'https://www.iiba.org/knowledgehub/business-analysis-body-of-knowledge-babok-guide/'},
+                              {'title': "Atlassian's guide to agile user stories",
+                               'url': 'https://www.atlassian.com/agile/project-management/user-stories'},
+                              {'title': 'TechOrbit Resources page', 'url': '/resources'}],
+                'governance': {'author': 'TechOrbit content team',
+                               'reviewer': None,
+                               'version': '0.1',
+                               'last_reviewed': '2026-09-22',
+                               'next_review': None,
+                               'sources': ['Written from general, well-established business '
+                                           'analysis/product practice; certification names/URLs '
+                                           'verified via web search on 2026-09-22.']}},
+ 'cloud-platform': {'slug': 'cloud-platform',
+                    'title': 'Cloud / Platform Engineer',
+                    'status': 'Growing',
+                    'definition': 'A Cloud/Platform Engineer builds and manages the cloud '
+                                  'infrastructure and internal tooling other engineers rely on — '
+                                  'provisioning cloud resources, and increasingly, building '
+                                  'self-service "internal developer platforms" so product teams '
+                                  'can ship without needing deep infrastructure expertise '
+                                  'themselves.',
+                    'daily_responsibilities': ['Design and provision cloud infrastructure '
+                                               '(compute, networking, storage, identity)',
+                                               'Build and maintain internal developer platform '
+                                               'tooling and golden paths',
+                                               'Manage cost, security, and access controls across '
+                                               'cloud accounts',
+                                               'Write infrastructure as code and review infra '
+                                               'changes from other teams',
+                                               'Support developers who are unblocking '
+                                               'infrastructure issues',
+                                               'Plan for multi-region, high-availability, and '
+                                               'disaster-recovery scenarios'],
+                    'required_technical_skills': ['Deep knowledge of at least one cloud provider '
+                                                  '(AWS, Azure, or GCP)',
+                                                  'Infrastructure as code (Terraform or a '
+                                                  'cloud-native equivalent)',
+                                                  'Networking fundamentals (VPCs, subnets, load '
+                                                  'balancers, DNS)',
+                                                  'Identity and access management (least-privilege '
+                                                  'design)',
+                                                  'Kubernetes or a managed container platform',
+                                                  'Cost management and monitoring for cloud spend'],
+                    'required_nontechnical_skills': ['Designing tools and workflows other '
+                                                     'engineers will actually want to use',
+                                                     'Balancing security/governance requirements '
+                                                     'against developer velocity',
+                                                     'Clear documentation — a platform is only as '
+                                                     'good as its onboarding docs'],
+                    'expectations': {'beginner': 'Provisions well-defined infrastructure with '
+                                                 'guidance, understands the account/network '
+                                                 'structure, fixes small platform issues.',
+                                     'intermediate': 'Designs new infrastructure and platform '
+                                                     'tooling independently, manages cost and '
+                                                     "access for a team's cloud footprint.",
+                                     'advanced': 'Owns cloud/platform architecture strategy across '
+                                                 'the org, builds self-service developer '
+                                                 'platforms, mentors other engineers.'},
+                    'common_tools': ['Terraform',
+                                     'Kubernetes',
+                                     'AWS/Azure/GCP console',
+                                     'Backstage',
+                                     'Helm',
+                                     'Vault'],
+                    'recommended_languages': ['Python', 'Go', 'Bash'],
+                    'roadmap': {'summary': 'A path from core cloud fundamentals through '
+                                           'infrastructure as code into platform engineering — '
+                                           'building tools other engineers use. Follow the stages '
+                                           'below — a dedicated interactive roadmap page for this '
+                                           'track is coming soon.',
+                                'link': None,
+                                'stages': [{'name': 'Cloud fundamentals',
+                                            'duration': '3-4 weeks',
+                                            'topics': ['Compute, storage, networking basics on one '
+                                                       'cloud provider',
+                                                       'IAM and least-privilege design']},
+                                           {'name': 'Networking deep dive',
+                                            'duration': '2-3 weeks',
+                                            'topics': ['VPCs, subnets, routing, load balancers',
+                                                       'DNS and TLS basics']},
+                                           {'name': 'Infrastructure as code',
+                                            'duration': '3-4 weeks',
+                                            'topics': ['Terraform modules and state management',
+                                                       'Reviewing infra changes safely']},
+                                           {'name': 'Containers & Kubernetes',
+                                            'duration': '4 weeks',
+                                            'topics': ['Running workloads on a managed Kubernetes '
+                                                       'service',
+                                                       'Helm charts and cluster operations']},
+                                           {'name': 'Cost & security governance',
+                                            'duration': '2 weeks',
+                                            'topics': ['Cost monitoring and budgets',
+                                                       'Security baselines and guardrails']},
+                                           {'name': 'Platform engineering',
+                                            'duration': '3-4 weeks',
+                                            'topics': ['Building a self-service golden path for a '
+                                                       'common task',
+                                                       'Internal developer platform concepts (e.g. '
+                                                       'Backstage)']}]},
+                    'labs': ['Coming soon: cloud/Kubernetes simulations and a CI/CD pipeline '
+                             'builder.',
+                             'For now, practice on a free-tier cloud account: provision real '
+                             'infrastructure with Terraform and tear it down cleanly.'],
+                    'projects': [{'level': 'guided',
+                                  'title': 'Provision a real environment with Terraform',
+                                  'description': 'Stand up a small real environment (network, '
+                                                 'compute, database) on a free-tier cloud account, '
+                                                 'fully as code.'},
+                                 {'level': 'independent',
+                                  'title': 'Build a golden-path template',
+                                  'description': 'Create a reusable, documented template (e.g. '
+                                                 'Terraform module or Helm chart) another team '
+                                                 'could self-serve with.'},
+                                 {'level': 'advanced-capstone',
+                                  'title': 'Design a multi-account/multi-region setup',
+                                  'description': 'Document (and where possible provision) a '
+                                                 'realistic multi-account cloud structure with '
+                                                 'clear security and cost boundaries.'}],
+                    'interview_topics': ['Design the cloud network architecture for a given '
+                                         'scenario',
+                                         'How would you structure IAM/access for multiple teams '
+                                         'sharing a cloud account?',
+                                         'Infrastructure as code review: spot the risk in this '
+                                         'Terraform change',
+                                         'What makes a good internal developer platform vs. just a '
+                                         'pile of scripts?'],
+                    'certifications': [{'name': 'AWS Certified Cloud Practitioner',
+                                        'issuer': 'AWS',
+                                        'url': 'https://aws.amazon.com/certification/certified-cloud-practitioner/'},
+                                       {'name': 'AWS Certified Solutions Architect — Associate',
+                                        'issuer': 'AWS',
+                                        'url': 'https://aws.amazon.com/certification/certified-solutions-architect-associate'},
+                                       {'name': 'HashiCorp Certified: Terraform Associate',
+                                        'issuer': 'HashiCorp',
+                                        'url': 'https://developer.hashicorp.com/certifications/infrastructure-automation'},
+                                       {'name': 'Certified Kubernetes Administrator (CKA)',
+                                        'issuer': 'CNCF / Linux Foundation',
+                                        'url': 'https://www.cncf.io/training/certification/cka/'}],
+                    'market_info': {'status': 'not_yet_sourced',
+                                    'summary': 'Salary and demand figures are intentionally left '
+                                               'blank until a specific, dated, citable source is '
+                                               'attached — the blueprint requires location/date '
+                                               "context, and this page shouldn't guess.",
+                                    'location': None,
+                                    'as_of_date': None,
+                                    'source_url': None},
+                    'related_roles': ['DevOps Engineer',
+                                      'Site Reliability Engineer',
+                                      'Cloud Engineer',
+                                      'Solutions Architect',
+                                      'Infrastructure Engineer'],
+                    'transition_paths': ['DevOps Engineer → Platform Engineer',
+                                         'Cloud Engineer → Solutions Architect',
+                                         'Backend Developer → Cloud/Platform Engineer'],
+                    'advantages': ['High-leverage work — good platform tooling multiplies the '
+                                   'productivity of every other engineer',
+                                   'Strong demand and compensation for deep cloud expertise',
+                                   'Clear path toward Solutions Architect or Principal Engineer '
+                                   'roles'],
+                    'challenges': ['Multi-cloud/hybrid environments add real complexity beyond '
+                                   'single-provider knowledge',
+                                   'Easy to over-engineer a platform nobody asked for instead of '
+                                   'solving the actual pain point',
+                                   'Security and cost governance responsibilities carry real '
+                                   'organizational risk if done poorly'],
+                    'example_progression': ['Junior Cloud Engineer',
+                                            'Cloud/Platform Engineer',
+                                            'Senior Platform Engineer',
+                                            'Staff Engineer or Solutions Architect',
+                                            'Principal Engineer / Head of Infrastructure'],
+                    'portfolio_expectations': ['A public repo of real Terraform modules '
+                                               'provisioning actual infrastructure, not a tutorial '
+                                               'copy',
+                                               'Documentation showing your reasoning for a '
+                                               'network/security design, not just the end result',
+                                               'A golden-path template or internal tool with a '
+                                               'clear README explaining the problem it solves',
+                                               'Evidence of cost-awareness — e.g. a note on how '
+                                               "you'd keep a given setup within a budget"],
+                    'fit_assessment': ['Do you enjoy designing systems that other engineers will '
+                                       'build on top of, more than building user-facing features '
+                                       'yourself?',
+                                       'Are you comfortable owning security and cost tradeoffs, '
+                                       'not just uptime?',
+                                       'Do you like turning a repeated manual infrastructure '
+                                       'request into a reusable, documented, self-service tool?'],
+                    'ai_impact': 'AI tools are speeding up first-draft Terraform/IaC and helping '
+                                 'catch some misconfigurations, but judgment about security '
+                                 'posture, cost tradeoffs, and blast radius still needs a human '
+                                 "owner — this is TechOrbit's own assessment, not a cited industry "
+                                 'statistic.',
+                    'future_outlook': 'Platform engineering (building internal developer '
+                                      'platforms, not just raw cloud infra) is the clearest growth '
+                                      'direction for this role as organizations try to reduce the '
+                                      'cognitive load on product engineering teams — this is '
+                                      "TechOrbit's own assessment, not a cited industry statistic.",
+                    'resources': [{'title': 'Terraform official docs',
+                                   'url': 'https://developer.hashicorp.com/terraform/docs'},
+                                  {'title': 'AWS Well-Architected Framework',
+                                   'url': 'https://aws.amazon.com/architecture/well-architected/'},
+                                  {'title': 'TechOrbit Resources page', 'url': '/resources'}],
+                    'governance': {'author': 'TechOrbit content team',
+                                   'reviewer': None,
+                                   'version': '0.1',
+                                   'last_reviewed': '2026-09-22',
+                                   'next_review': None,
+                                   'sources': ['Written from general, well-established '
+                                               'cloud/platform engineering practice; certification '
+                                               'names/URLs verified via web search on '
+                                               '2026-09-22.']}}}
 
 LESSONS = {'git-and-github': {'slug': 'git-and-github',
                     'title': 'Git & GitHub',
