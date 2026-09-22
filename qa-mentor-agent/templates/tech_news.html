@@ -11,9 +11,9 @@
   <button type="button" class="tool-btn secondary" id="refresh-news-btn">🔄 Refresh</button>
 </div>
 
-<p class="settings-note" id="news-updated-text" style="margin-bottom: 20px;"></p>
+<p class="settings-note" id="news-updated-text" style="margin-bottom: 20px;" aria-live="polite"></p>
 
-<div id="news-grid" class="resource-grid"></div>
+<div id="news-grid" class="resource-grid" aria-live="polite"></div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='tech-news.js') }}"></script>

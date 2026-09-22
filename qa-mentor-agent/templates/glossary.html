@@ -18,48 +18,58 @@
 </div>
 
 <div id="git-panel" class="ref-panel" style="display: none;">
-  <table class="cheatsheet-table">
-    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
-    <tbody id="git-table-body"></tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="cheatsheet-table">
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody id="git-table-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="http-panel" class="ref-panel" style="display: none;">
-  <table class="cheatsheet-table">
-    <thead><tr><th>Code</th><th>Name</th><th>Meaning</th></tr></thead>
-    <tbody id="http-table-body"></tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="cheatsheet-table">
+      <thead><tr><th>Code</th><th>Name</th><th>Meaning</th></tr></thead>
+      <tbody id="http-table-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="cli-panel" class="ref-panel" style="display: none;">
-  <table class="cheatsheet-table">
-    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
-    <tbody id="cli-table-body"></tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="cheatsheet-table">
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody id="cli-table-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="compare-panel" class="ref-panel" style="display: none;">
   <h3 style="margin-top:0;">UI Automation</h3>
-  <table class="cheatsheet-table" style="margin-bottom: 28px;">
-    <thead><tr><th>Feature</th><th>Selenium</th><th>Playwright</th><th>Cypress</th></tr></thead>
-    <tbody>
-      <tr><td>Languages</td><td>Java, Python, C#, JS, Ruby...</td><td>JS/TS, Python, Java, .NET</td><td>JS/TS only</td></tr>
-      <tr><td>Auto-wait</td><td>Manual/explicit waits</td><td>Built-in auto-wait</td><td>Built-in auto-wait</td></tr>
-      <tr><td>Cross-browser</td><td>Chrome, Firefox, Safari, Edge, IE</td><td>Chromium, Firefox, WebKit</td><td>Chromium-based, limited Firefox/WebKit</td></tr>
-      <tr><td>Architecture</td><td>Out-of-process (WebDriver protocol)</td><td>Out-of-process, single binary</td><td>Runs inside the browser</td></tr>
-      <tr><td>Best for</td><td>Broadest language/browser support</td><td>Speed + modern DX</td><td>JS-heavy teams, great debugging</td></tr>
-    </tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="cheatsheet-table" style="margin-bottom: 28px;">
+      <thead><tr><th>Feature</th><th>Selenium</th><th>Playwright</th><th>Cypress</th></tr></thead>
+      <tbody>
+        <tr><td>Languages</td><td>Java, Python, C#, JS, Ruby...</td><td>JS/TS, Python, Java, .NET</td><td>JS/TS only</td></tr>
+        <tr><td>Auto-wait</td><td>Manual/explicit waits</td><td>Built-in auto-wait</td><td>Built-in auto-wait</td></tr>
+        <tr><td>Cross-browser</td><td>Chrome, Firefox, Safari, Edge, IE</td><td>Chromium, Firefox, WebKit</td><td>Chromium-based, limited Firefox/WebKit</td></tr>
+        <tr><td>Architecture</td><td>Out-of-process (WebDriver protocol)</td><td>Out-of-process, single binary</td><td>Runs inside the browser</td></tr>
+        <tr><td>Best for</td><td>Broadest language/browser support</td><td>Speed + modern DX</td><td>JS-heavy teams, great debugging</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h3>API Testing</h3>
-  <table class="cheatsheet-table">
-    <thead><tr><th>Feature</th><th>Postman</th><th>REST Assured</th></tr></thead>
-    <tbody>
-      <tr><td>Interface</td><td>GUI (+ scripting)</td><td>Code (Java)</td></tr>
-      <tr><td>Best for</td><td>Manual exploration, quick collections</td><td>Automated suites in a Java codebase</td></tr>
-      <tr><td>CI integration</td><td>Via Newman CLI</td><td>Native (it's just Java/Maven/Gradle)</td></tr>
-    </tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="cheatsheet-table">
+      <thead><tr><th>Feature</th><th>Postman</th><th>REST Assured</th></tr></thead>
+      <tbody>
+        <tr><td>Interface</td><td>GUI (+ scripting)</td><td>Code (Java)</td></tr>
+        <tr><td>Best for</td><td>Manual exploration, quick collections</td><td>Automated suites in a Java codebase</td></tr>
+        <tr><td>CI integration</td><td>Via Newman CLI</td><td>Native (it's just Java/Maven/Gradle)</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
 {% block scripts %}

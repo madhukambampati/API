@@ -5,7 +5,7 @@
 <p class="page-subtitle">Ask anything about QA, SDET, or AI-QA.</p>
 
 <div class="chat-shell">
-  <main id="chat" class="chat">
+  <main id="chat" class="chat" aria-live="polite">
     <div id="empty-state" class="chat-hero">
       <svg class="mascot-svg" viewBox="0 0 120 132" width="100" height="110" aria-hidden="true">
         <defs>
@@ -44,6 +44,7 @@
   </main>
 
   <form id="chat-form" class="composer">
+    <label for="message-input" class="sr-only">Ask a question</label>
     <textarea
       id="message-input"
       placeholder="Ask about test design, Selenium, Playwright, API testing, AI-QA..."

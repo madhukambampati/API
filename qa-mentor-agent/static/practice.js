@@ -492,6 +492,9 @@ const QUESTIONS = [
   },
 ];
 
+let quizFilteredIndexes = QUESTIONS.map((_, i) => i);
+let quizPos = 0;
+
 function renderQuestion(index) {
   const q = QUESTIONS[index];
   const card = document.createElement("div");
@@ -504,7 +507,7 @@ function renderQuestion(index) {
 
   const question = document.createElement("p");
   question.className = "quiz-question";
-  question.textContent = `${index + 1}. ${q.question}`;
+  question.textContent = q.question;
   card.appendChild(question);
 
   const optionsWrap = document.createElement("div");
@@ -529,7 +532,7 @@ function renderQuestion(index) {
 
       explanation.classList.add("show");
       recordPracticeAnswer(correct);
-      updateProgressUI();
+      updateScorePill();
     });
     optionsWrap.appendChild(btn);
   });
@@ -539,22 +542,67 @@ function renderQuestion(index) {
   return card;
 }
 
-function updateProgressUI() {
+function updateScorePill() {
   const stats = safeGet(PRACTICE_KEY, { attempted: 0, correct: 0 });
-  document.getElementById("quiz-progress-text").textContent = `${stats.attempted} answered all-time (cumulative)`;
   document.getElementById("quiz-score-pill").textContent = `Score: ${stats.correct}/${stats.attempted}`;
+}
+
+function renderCurrentQuestion() {
+  const root = document.getElementById("quiz-root");
+  root.innerHTML = "";
+  const questionIndex = quizFilteredIndexes[quizPos];
+  root.appendChild(renderQuestion(questionIndex));
+
+  document.getElementById("quiz-position-text").textContent = `Question ${quizPos + 1} of ${quizFilteredIndexes.length}`;
+  document.getElementById("quiz-prev-btn").disabled = quizPos === 0;
+  document.getElementById("quiz-next-btn").disabled = quizPos === quizFilteredIndexes.length - 1;
+}
+
+function populateCategorySelect() {
+  const select = document.getElementById("quiz-category-select");
+  const categories = ["All categories", ...new Set(QUESTIONS.map((q) => q.category))];
+  select.innerHTML = categories
+    .map((c) => `<option value="${c}">${c}</option>`)
+    .join("");
+}
+
+function applyCategoryFilter(category) {
+  quizFilteredIndexes =
+    category === "All categories"
+      ? QUESTIONS.map((_, i) => i)
+      : QUESTIONS.map((_, i) => i).filter((i) => QUESTIONS[i].category === category);
+  quizPos = 0;
+  renderCurrentQuestion();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   logTopicView("practice");
-  const root = document.getElementById("quiz-root");
-  QUESTIONS.forEach((_, index) => root.appendChild(renderQuestion(index)));
-  updateProgressUI();
+  populateCategorySelect();
+  renderCurrentQuestion();
+  updateScorePill();
+
+  document.getElementById("quiz-category-select").addEventListener("change", (e) => {
+    applyCategoryFilter(e.target.value);
+  });
+
+  document.getElementById("quiz-prev-btn").addEventListener("click", () => {
+    if (quizPos > 0) {
+      quizPos -= 1;
+      renderCurrentQuestion();
+    }
+  });
+
+  document.getElementById("quiz-next-btn").addEventListener("click", () => {
+    if (quizPos < quizFilteredIndexes.length - 1) {
+      quizPos += 1;
+      renderCurrentQuestion();
+    }
+  });
 
   document.getElementById("reset-practice-btn").addEventListener("click", () => {
     if (!confirm("Reset your cumulative practice score shown on the Progress page?")) return;
     safeSet(PRACTICE_KEY, { attempted: 0, correct: 0 });
-    updateProgressUI();
+    updateScorePill();
     showToast("Practice stats reset");
   });
 });

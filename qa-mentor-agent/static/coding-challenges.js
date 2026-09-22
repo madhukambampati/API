@@ -103,7 +103,7 @@ function renderChallenge(challenge) {
     <div class="tool-row">
       <button type="button" class="tool-btn challenge-feedback-btn">Get AI Feedback</button>
     </div>
-    <div class="tool-output challenge-feedback-output" style="display:none;"></div>
+    <div class="tool-output challenge-feedback-output" style="display:none;" aria-live="polite"></div>
   `;
 
   const codeEl = card.querySelector(".challenge-code");

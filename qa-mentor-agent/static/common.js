@@ -138,6 +138,24 @@ document.addEventListener("DOMContentLoaded", () => {
   applyProfile();
   applyTheme();
 
+  const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+  const sidebarEl = document.querySelector(".sidebar");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (mobileMenuBtn && sidebarEl && backdrop) {
+    const closeMenu = () => {
+      sidebarEl.classList.remove("mobile-open");
+      backdrop.classList.remove("show");
+    };
+    mobileMenuBtn.addEventListener("click", () => {
+      sidebarEl.classList.add("mobile-open");
+      backdrop.classList.add("show");
+    });
+    backdrop.addEventListener("click", closeMenu);
+    sidebarEl.querySelectorAll(".nav-item").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+  }
+
   const themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) {
     themeBtn.addEventListener("click", () => {
@@ -176,9 +194,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("q")) searchBox.value = params.get("q");
 
+    const updateSearchUrl = (value) => {
+      const url = new URL(window.location.href);
+      if (value) url.searchParams.set("q", value);
+      else url.searchParams.delete("q");
+      window.history.replaceState({}, "", url);
+    };
+
     if (window.filterTopics) {
       searchBox.addEventListener("input", () => {
-        window.filterTopics(searchBox.value.trim());
+        const value = searchBox.value.trim();
+        window.filterTopics(value);
+        updateSearchUrl(value);
       });
     }
 
@@ -188,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.filterTopics) {
         event.preventDefault();
         window.filterTopics(value);
+        updateSearchUrl(value);
       } else if (value) {
         window.location.href = `/?q=${encodeURIComponent(value)}`;
       }

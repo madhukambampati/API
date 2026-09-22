@@ -30,7 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
     quickAskForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const text = quickAskInput.value.trim();
-      if (text) goToChat(text);
+      if (text) {
+        goToChat(text);
+      } else {
+        showToast("Enter a question first.");
+        quickAskInput.focus();
+      }
     });
     quickAskInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && !event.shiftKey) {

@@ -11,13 +11,21 @@
 
 <div id="quiz-tab">
   <div class="quiz-progress">
-    <span id="quiz-progress-text">0 of 0 answered</span>
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <label for="quiz-category-select" class="sr-only">Filter by category</label>
+      <select id="quiz-category-select"></select>
+      <span id="quiz-position-text">Question 1 of 39</span>
+    </div>
     <span class="quiz-score-pill" id="quiz-score-pill">Score: 0/0</span>
   </div>
 
-  <div id="quiz-root"></div>
+  <div id="quiz-root" aria-live="polite"></div>
 
-  <div class="tool-row" style="margin-top: 10px;">
+  <div class="tool-row" style="justify-content: space-between; margin-top: 10px;">
+    <div style="display: flex; gap: 10px;">
+      <button type="button" class="tool-btn secondary" id="quiz-prev-btn">← Previous</button>
+      <button type="button" class="tool-btn" id="quiz-next-btn">Next →</button>
+    </div>
     <button type="button" class="tool-btn secondary" id="reset-practice-btn">Reset practice stats</button>
   </div>
 </div>

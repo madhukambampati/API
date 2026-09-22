@@ -34,6 +34,8 @@
 html,
 body {
   min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -819,6 +821,7 @@ a {
 
 .composer textarea {
   flex: 1;
+  min-width: 0;
   resize: none;
   border: 1px solid var(--border);
   outline: none;
@@ -1463,6 +1466,23 @@ a {
   border-radius: 999px;
 }
 
+#quiz-category-select {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+#quiz-prev-btn:disabled,
+#quiz-next-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .quiz-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1566,6 +1586,7 @@ a {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
+  min-width: 0;
 }
 
 .tool-panel h3 {
@@ -1666,6 +1687,11 @@ a {
   cursor: pointer;
   font-size: 0.8rem;
   flex-shrink: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .cheatsheet-table {
@@ -1890,11 +1916,18 @@ a {
   font-size: 0.85rem;
   font-weight: 600;
   background: var(--surface-alt);
+  color: var(--text);
 }
 
 .theme-option.selected {
   border-color: var(--accent);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--text);
+}
+
+.theme-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .settings-note {
@@ -1942,11 +1975,58 @@ a {
   margin-top: 10px;
 }
 
+/* ---------- Accessibility utilities ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Mobile navigation ---------- */
+
+.mobile-menu-btn {
+  display: none;
+  flex-shrink: 0;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+}
+
+.sidebar-backdrop.show {
+  display: block;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 960px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+
   .sidebar {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: -280px;
+    height: 100vh;
+    z-index: 50;
+    transition: left 0.25s ease;
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
   }
 
   .hero h1 {
@@ -1970,9 +2050,51 @@ a {
 
   .topbar {
     padding: 12px 16px;
+    gap: 8px;
   }
 
   .search-box {
     max-width: none;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .topbar-actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .profile-info,
+  .chevron {
+    display: none;
+  }
+
+  .profile {
+    padding: 4px;
+  }
+
+  .composer {
+    flex-wrap: wrap;
+  }
+
+  .composer textarea {
+    flex-basis: 100%;
+  }
+
+  .composer button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .fake-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fake-field .field-value {
+    white-space: normal;
+    word-break: break-all;
+    max-width: 100%;
   }
 }

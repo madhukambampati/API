@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}SDET Mentor — Page not found{% endblock %}
+{% block content %}
+<div style="max-width: 480px; margin: 60px auto; text-align: center;">
+  <div style="font-size: 3rem; margin-bottom: 10px;">🧭</div>
+  <h1 class="page-title">Page not found</h1>
+  <p class="page-subtitle">The page you're looking for doesn't exist or may have moved.</p>
+  <div class="tool-row" style="justify-content: center; margin-top: 10px;">
+    <a href="{{ url_for('home') }}" class="tool-btn">🏠 Return Home</a>
+    <a href="{{ url_for('chat_page') }}" class="tool-btn secondary">💬 Open Chat</a>
+  </div>
+</div>
+{% endblock %}

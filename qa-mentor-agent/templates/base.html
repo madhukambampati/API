@@ -86,10 +86,14 @@
       </blockquote>
     </aside>
 
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
     <div class="main">
       <header class="topbar">
+        <button type="button" class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Open navigation menu">☰</button>
         <div class="search-box">
-          <span>🔍</span>
+          <label for="topbar-search" class="sr-only">Search topics</label>
+          <span aria-hidden="true">🔍</span>
           <input
             id="topbar-search"
             type="text"

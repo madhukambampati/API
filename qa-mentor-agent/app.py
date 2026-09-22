@@ -267,6 +267,9 @@ def api_status():
     return jsonify({"api_key_configured": client is not None})
 
 
+VALID_CHAT_ROLES = {"user", "assistant"}
+
+
 @app.route("/api/chat", methods=["POST"])
 def chat():
     data = request.get_json(force=True, silent=True) or {}
@@ -275,8 +278,16 @@ def chat():
     if not isinstance(messages, list) or not messages:
         return jsonify({"error": "messages must be a non-empty list"}), 400
 
+    for msg in messages:
+        content_ok = isinstance(msg, dict) and isinstance(msg.get("content"), str) and msg.get("content").strip()
+        role_ok = isinstance(msg, dict) and msg.get("role") in VALID_CHAT_ROLES
+        if not (content_ok and role_ok):
+            return jsonify(
+                {"error": "Each message must have a valid role ('user' or 'assistant') and non-empty content."}
+            ), 400
+
     if client is None:
-        return jsonify({"error": "ANTHROPIC_API_KEY is not configured on the server"}), 500
+        return jsonify({"error": "Chat isn't configured yet. Contact the site administrator."}), 500
 
     try:
         response = client.messages.create(
@@ -286,12 +297,18 @@ def chat():
             messages=messages,
         )
     except anthropic.APIError as exc:
-        return jsonify({"error": str(exc)}), 502
+        app.logger.error("Anthropic API error: %s", exc)
+        return jsonify({"error": "The AI service is temporarily unavailable. Please try again."}), 502
 
     reply_text = "".join(
         block.text for block in response.content if block.type == "text"
     )
     return jsonify({"reply": reply_text})
+
+
+@app.errorhandler(404)
+def not_found(_error):
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":

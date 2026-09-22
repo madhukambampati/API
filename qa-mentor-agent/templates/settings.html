@@ -27,18 +27,17 @@
 
   <div class="settings-panel">
     <h3>Appearance</h3>
-    <div class="theme-options" id="theme-options">
-      <div class="theme-option" data-theme="dark">🌙 Dark</div>
-      <div class="theme-option" data-theme="light">☀️ Light</div>
+    <div class="theme-options" id="theme-options" role="group" aria-label="Theme">
+      <div class="theme-option" data-theme="dark" role="button" tabindex="0" aria-pressed="false">🌙 Dark</div>
+      <div class="theme-option" data-theme="light" role="button" tabindex="0" aria-pressed="false">☀️ Light</div>
     </div>
   </div>
 
   <div class="settings-panel">
-    <h3>Claude API status</h3>
-    <p id="api-status-text">Checking...</p>
+    <h3>Chat service status</h3>
+    <p id="api-status-text" aria-live="polite">Checking...</p>
     <p class="settings-note">
-      The API key is configured server-side via the <code>ANTHROPIC_API_KEY</code>
-      environment variable — it isn't stored or edited here for security.
+      Configured by the site administrator — it isn't stored or edited here for security.
     </p>
   </div>
 
