@@ -1,6 +1,6 @@
-function newsRelativeTime(iso) {
-  if (!iso) return "";
-  return formatRelativeTime(new Date(iso).getTime());
+function newsRelativeTime(unixSeconds) {
+  if (!unixSeconds) return "";
+  return formatRelativeTime(unixSeconds * 1000);
 }
 
 function renderNewsItems(items) {
@@ -19,11 +19,14 @@ function renderNewsItems(items) {
     card.href = item.url;
     card.target = "_blank";
     card.rel = "noopener";
+    const title = (item.title || "").replace(/</g, "&lt;");
     card.innerHTML = `
-      <span class="resource-type">${item.icon} ${item.name}</span>
-      <h3>${item.tag || item.title}</h3>
-      <p>${(item.notes || "No release notes provided.").replace(/</g, "&lt;")}</p>
-      <p class="settings-note" style="margin-top: 8px;">Released ${newsRelativeTime(item.published_at)} · Read full notes →</p>
+      <span class="resource-type">${item.domain}</span>
+      <h3>${title}</h3>
+      <p class="settings-note" style="margin-top: 8px;">
+        ▲ ${item.points ?? 0} points · ${item.comments ?? 0} comments · ${newsRelativeTime(item.time)}
+        · <a href="${item.discussion_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Discussion →</a>
+      </p>
     `;
     grid.appendChild(card);
   });

@@ -42,58 +42,23 @@ def _is_rate_limited(ip):
 def _record_failed_attempt(ip):
     _login_attempts.setdefault(ip, []).append(time.time())
 
-TECH_NEWS_REPOS = [
-    ("Selenium", "SeleniumHQ/selenium", "🧪"),
-    ("Playwright", "microsoft/playwright", "🎭"),
-    ("Cypress", "cypress-io/cypress", "🌲"),
-    ("k6", "grafana/k6", "⚡"),
-    ("Newman (Postman CLI)", "postmanlabs/newman", "📮"),
-    ("Anthropic Python SDK", "anthropics/anthropic-sdk-python", "🤖"),
-    ("OpenAI Python SDK", "openai/openai-python", "🧠"),
-    ("LangChain", "langchain-ai/langchain", "🔗"),
-]
-TECH_NEWS_TTL_SECONDS = 24 * 60 * 60
+HN_API_BASE = "https://hacker-news.firebaseio.com/v0"
+HN_STORY_COUNT = 14
+TECH_NEWS_TTL_SECONDS = 30 * 60
 _tech_news_cache = {"fetched_at": 0, "items": []}
 
 
-def _clean_release_notes(text, limit=220):
-    if not text:
-        return ""
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-    text = re.sub(r"^#{1,6}\s*", "", text, flags=re.MULTILINE)
-    text = text.replace("**", "").replace("__", "").replace("`", "")
-    text = re.sub(r"\s+", " ", text).strip()
-
-    # Some releases (e.g. Cypress) have no real notes, just a bare link to a
-    # hosted changelog page. Once URLs are stripped, if what's left is a
-    # short label like "Changelog:" rather than an actual summary, there's
-    # nothing worth showing - return empty so the UI falls back to a clean
-    # "No release notes provided" message instead of a raw URL.
-    remainder = re.sub(r"https?://\S+", "", text).strip(" :.-")
-    if len(remainder) < 12:
-        return ""
-
-    if len(text) > limit:
-        text = text[:limit].rsplit(" ", 1)[0] + "…"
-    return text
+def _fetch_json(url, timeout=6):
+    req = urllib.request.Request(url, headers={"User-Agent": "techorbit-app"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode())
 
 
-def _fetch_latest_release(owner_repo):
-    url = f"https://api.github.com/repos/{owner_repo}/releases/latest"
-    req = urllib.request.Request(
-        url,
-        headers={"Accept": "application/vnd.github+json", "User-Agent": "sdet-mentor-app"},
-    )
-    with urllib.request.urlopen(req, timeout=6) as resp:
-        data = json.loads(resp.read().decode())
-    return {
-        "tag": data.get("tag_name"),
-        "title": data.get("name") or data.get("tag_name"),
-        "published_at": data.get("published_at"),
-        "url": data.get("html_url"),
-        "notes": _clean_release_notes(data.get("body") or ""),
-    }
+def _domain_from_url(url):
+    if not url:
+        return "news.ycombinator.com"
+    match = re.match(r"https?://(?:www\.)?([^/]+)", url)
+    return match.group(1) if match else url
 
 
 def get_tech_news(force=False):
@@ -102,20 +67,36 @@ def get_tech_news(force=False):
     if not force and is_fresh:
         return _tech_news_cache
 
-    def _fetch_one(entry):
-        display_name, repo, icon = entry
+    try:
+        top_ids = _fetch_json(f"{HN_API_BASE}/topstories.json")[: HN_STORY_COUNT * 2]
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError):
+        return _tech_news_cache
+
+    def _fetch_one(story_id):
         try:
-            release = _fetch_latest_release(repo)
+            item = _fetch_json(f"{HN_API_BASE}/item/{story_id}.json")
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError):
             return None
-        return {"name": display_name, "icon": icon, "repo": repo, **release}
+        if not item or item.get("type") != "story" or not item.get("title"):
+            return None
+        external_url = item.get("url")
+        return {
+            "id": story_id,
+            "title": item.get("title"),
+            "url": external_url or f"https://news.ycombinator.com/item?id={story_id}",
+            "domain": _domain_from_url(external_url),
+            "points": item.get("score", 0),
+            "comments": item.get("descendants", 0),
+            "by": item.get("by", ""),
+            "time": item.get("time", 0),
+            "discussion_url": f"https://news.ycombinator.com/item?id={story_id}",
+        }
 
-    with ThreadPoolExecutor(max_workers=len(TECH_NEWS_REPOS)) as pool:
-        results = pool.map(_fetch_one, TECH_NEWS_REPOS)
-    items = [item for item in results if item]
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        results = pool.map(_fetch_one, top_ids)
+    items = [item for item in results if item][:HN_STORY_COUNT]
 
     if items:
-        items.sort(key=lambda item: item.get("published_at") or "", reverse=True)
         _tech_news_cache["items"] = items
         _tech_news_cache["fetched_at"] = now
 
