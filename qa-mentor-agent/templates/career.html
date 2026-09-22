@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Career{% endblock %}
+{% block content %}
+<h1 class="page-title">💼 Career &amp; Certifications</h1>
+<p class="page-subtitle">Certifications worth having, resume &amp; portfolio checklists, and AI-driven mock interviews.</p>
+
+<div class="section-heading">
+  <div>
+    <h2>🎓 Certifications worth knowing</h2>
+    <p>Not required to get hired, but they signal real knowledge and help structure your learning</p>
+  </div>
+</div>
+<div class="resource-grid" style="margin-bottom: 32px;">
+  <a class="resource-card" href="https://www.istqb.org/certifications/certified-tester-foundation-level" target="_blank" rel="noopener">
+    <span class="resource-type">Entry level</span>
+    <h3>ISTQB Foundation Level (CTFL)</h3>
+    <p>The most widely recognized entry-level testing certification worldwide — a strong first credential.</p>
+  </a>
+  <a class="resource-card" href="https://www.istqb.org/certifications/advanced-level" target="_blank" rel="noopener">
+    <span class="resource-type">Advanced</span>
+    <h3>ISTQB Advanced Level</h3>
+    <p>Test Analyst, Technical Test Analyst, or Test Manager tracks — for experienced testers going deeper.</p>
+  </a>
+  <a class="resource-card" href="https://www.icagile.com/certifications/agile-testing" target="_blank" rel="noopener">
+    <span class="resource-type">Agile</span>
+    <h3>ICAgile Certified Professional — Agile Testing</h3>
+    <p>Focused on testing practices within agile teams.</p>
+  </a>
+  <a class="resource-card" href="https://aws.amazon.com/certification/certified-cloud-practitioner/" target="_blank" rel="noopener">
+    <span class="resource-type">Cloud</span>
+    <h3>AWS Certified Cloud Practitioner</h3>
+    <p>A useful baseline cloud credential for SDETs — most modern test infra runs on AWS/Azure/GCP.</p>
+  </a>
+  <a class="resource-card" href="https://academy.postman.com/" target="_blank" rel="noopener">
+    <span class="resource-type">API testing</span>
+    <h3>Postman API Fundamentals (Postman Academy)</h3>
+    <p>Free, official certification path for API testing with Postman.</p>
+  </a>
+</div>
+
+<div class="section-heading">
+  <div>
+    <h2>🎤 AI Mock Interview</h2>
+    <p>The AI mentor will ask you one question at a time, wait for your answer, then give feedback</p>
+  </div>
+</div>
+<div class="resource-grid" style="margin-bottom: 32px;">
+  <div class="resource-card static">
+    <span class="resource-type">Manual QA</span>
+    <h3>Manual Testing Interview</h3>
+    <p>Test case design, bug reporting, SDLC/STLC fundamentals.</p>
+    <button type="button" class="tool-btn interview-btn" data-track="manual">Start Interview →</button>
+  </div>
+  <div class="resource-card static">
+    <span class="resource-type">SDET</span>
+    <h3>Automation / SDET Interview</h3>
+    <p>Selenium/Playwright, frameworks, API automation, and coding questions.</p>
+    <button type="button" class="tool-btn interview-btn" data-track="sdet">Start Interview →</button>
+  </div>
+  <div class="resource-card static">
+    <span class="resource-type">AI-QA</span>
+    <h3>AI-QA Interview</h3>
+    <p>Testing LLM features, evaluation strategies, and prompt/output quality.</p>
+    <button type="button" class="tool-btn interview-btn" data-track="aiqa">Start Interview →</button>
+  </div>
+</div>
+
+<div class="settings-grid" style="margin-bottom: 20px;">
+  <div class="settings-panel">
+    <h3>📄 Resume checklist</h3>
+    <div class="checklist" id="resume-checklist">
+      <label class="check-item" data-id="resume-1"><input type="checkbox" /> Lead with impact, not duties — "Reduced regression cycle from 3 days to 4 hours" beats "Responsible for regression testing."</label>
+      <label class="check-item" data-id="resume-2"><input type="checkbox" /> Name the actual tools/frameworks you used (Selenium, Playwright, REST Assured, Postman, JMeter, Jira) — recruiters and ATS scan for these.</label>
+      <label class="check-item" data-id="resume-3"><input type="checkbox" /> Quantify wherever possible: % coverage, number of test cases automated, defects caught pre-release.</label>
+      <label class="check-item" data-id="resume-4"><input type="checkbox" /> Include a link to your GitHub/portfolio — automation resumes without code links raise questions.</label>
+      <label class="check-item" data-id="resume-5"><input type="checkbox" /> Keep it to 1-2 pages; cut anything older than ~10 years or irrelevant to QA.</label>
+      <label class="check-item" data-id="resume-6"><input type="checkbox" /> Tailor keywords to the job description — many companies filter resumes with ATS keyword matching.</label>
+      <label class="check-item" data-id="resume-7"><input type="checkbox" /> Proofread. A resume full of typos undercuts your credibility as a "quality" person.</label>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <h3>🗂️ Portfolio checklist &amp; project ideas</h3>
+    <div class="checklist" id="portfolio-checklist">
+      <label class="check-item" data-id="portfolio-1"><input type="checkbox" /> Automate a public demo site end-to-end with Playwright or Selenium, using the Page Object Model.</label>
+      <label class="check-item" data-id="portfolio-2"><input type="checkbox" /> Build a REST API test suite (Postman/REST Assured) against a free public API, wired into GitHub Actions.</label>
+      <label class="check-item" data-id="portfolio-3"><input type="checkbox" /> Write a small LLM evaluation harness — a golden dataset + scoring script for a sample prompt.</label>
+      <label class="check-item" data-id="portfolio-4"><input type="checkbox" /> Add a clear README to every repo: what it tests, how to run it, and a screenshot of a passing run.</label>
+      <label class="check-item" data-id="portfolio-5"><input type="checkbox" /> Pin your 3-4 strongest repos on your GitHub profile so they're the first thing recruiters see.</label>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='career.js') }}"></script>
+{% endblock %}

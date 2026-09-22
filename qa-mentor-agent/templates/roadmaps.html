@@ -4,6 +4,17 @@
 <h1 class="page-title">🗺️ Roadmaps</h1>
 <p class="page-subtitle">Step-by-step learning paths. Click a stage to expand it.</p>
 
+<div class="filter-row">
+  <a href="#qa-foundations" class="filter-chip">🌱 QA Foundations</a>
+  <a href="#manual-to-sdet" class="filter-chip">🗺️ Manual → SDET</a>
+  <a href="#ai-qa-specialist" class="filter-chip">🤖 AI-QA Specialist</a>
+  <a href="#performance-testing" class="filter-chip">⚡ Performance Testing</a>
+  <a href="#security-testing" class="filter-chip">🔒 Security Testing</a>
+  <a href="#mobile-testing" class="filter-chip">📱 Mobile Testing</a>
+  <a href="#framework-architect" class="filter-chip">🏗️ Framework Architect</a>
+  <a href="#devops-for-qa" class="filter-chip">🚀 DevOps for QA</a>
+</div>
+
 <section class="roadmap-track" id="qa-foundations">
   <div class="track-header">
     <span class="track-icon">🌱</span>
@@ -354,6 +365,206 @@
         </ul>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="performance-testing">
+  <div class="track-header">
+    <span class="track-icon">⚡</span>
+    <div>
+      <h2>Performance Testing</h2>
+      <p>Load, stress, and scalability testing for SDETs going deeper</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>1. Performance Testing Fundamentals</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Load, stress, soak, and spike testing types</li><li>Key metrics: response time, throughput, error rate, percentiles</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>2. Learn JMeter</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Thread groups, samplers, listeners</li><li>Assertions and correlation for dynamic values</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>3. Learn k6</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Scripting load tests in JavaScript</li><li>Virtual users, thresholds, local vs. cloud runs</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>4. Analyzing Results</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Reading p50/p90/p99 latency graphs</li><li>Correlating results with APM tools (New Relic, Datadog)</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>5. Performance Testing in CI/CD</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Automating perf tests in a pipeline</li><li>Setting pass/fail thresholds automatically</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>6. Capacity Planning &amp; Reporting</h3><span class="stage-duration">1 week</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Translating results into capacity recommendations</li><li>Writing a clear performance test report</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>7. Build a Performance Test Project</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>End-to-end load test on a public API/app</li><li>Publish results and scripts on GitHub</li></ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="security-testing">
+  <div class="track-header">
+    <span class="track-icon">🔒</span>
+    <div>
+      <h2>Security Testing Basics</h2>
+      <p>Get comfortable finding common vulnerabilities</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>1. AppSec Fundamentals</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>CIA triad (Confidentiality, Integrity, Availability)</li><li>Common attack vectors and why security testing matters for QA</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>2. OWASP Top 10</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Injection, broken auth, XSS, broken access control</li><li>Real-world examples of each</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>3. Manual Security Testing Techniques</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Input validation and auth/session testing</li><li>Exploring requests with browser dev tools</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>4. Burp Suite &amp; PortSwigger Labs</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Intercepting and modifying requests</li><li>Work through the free Web Security Academy labs</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>5. API Security Testing</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Broken object-level authorization (BOLA)</li><li>Rate limiting and JWT vulnerabilities</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>6. Automated Security Scanning</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Intro to OWASP ZAP</li><li>Integrating scans into a CI pipeline</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>7. Reporting &amp; Responsible Disclosure</h3><span class="stage-duration">1 week</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Writing a clear security finding report</li><li>Severity basics (CVSS) and responsible disclosure etiquette</li></ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="mobile-testing">
+  <div class="track-header">
+    <span class="track-icon">📱</span>
+    <div>
+      <h2>Mobile Testing</h2>
+      <p>Manual and automated testing for iOS &amp; Android</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>1. Mobile Testing Fundamentals</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>iOS vs. Android differences</li><li>Device fragmentation, emulators vs. real devices</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>2. Manual Mobile Testing</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Gestures, interruptions (calls/notifications)</li><li>Network conditions and orientation changes</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>3. Appium Basics</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Appium architecture and capabilities</li><li>Locating mobile elements</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>4. Writing Mobile Automation Scripts</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Automate a login/checkout flow with Appium</li><li>Java or Python bindings</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>5. Cloud Device Labs</h3><span class="stage-duration">1 week</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Using BrowserStack or Sauce Labs</li><li>Cross-device and cross-OS-version testing</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>6. Mobile Performance &amp; Battery Testing</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>App startup time</li><li>Memory and battery profiling basics</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>7. CI for Mobile</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Running mobile tests in a pipeline</li><li>Generating a device-matrix report</li></ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="framework-architect">
+  <div class="track-header">
+    <span class="track-icon">🏗️</span>
+    <div>
+      <h2>Automation Framework Architect</h2>
+      <p>For senior SDETs designing frameworks from scratch</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>1. Framework Design Principles</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Maintainability, scalability, reusability</li><li>Choosing a style: POM, screenplay, keyword-driven, BDD</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>2. Layered Architecture</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Separate test data, page/service objects, utilities, and reporting layers</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>3. Configuration &amp; Environment Management</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Managing multiple environments/configs</li><li>Secrets handling</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>4. Parallel Execution &amp; Test Independence</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Thread-safety, avoiding shared state</li><li>Parallel runners (TestNG, pytest-xdist, Playwright workers)</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>5. Reporting &amp; Observability</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Allure/Extent reports</li><li>Screenshots/videos on failure, dashboard integration</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>6. Cross-Team Adoption</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Writing framework docs</li><li>Onboarding engineers, code review standards for tests</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>7. Scaling to Hundreds of Tests</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Test selection/tagging strategies</li><li>Flaky test management, execution time optimization</li></ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="roadmap-track" id="devops-for-qa">
+  <div class="track-header">
+    <span class="track-icon">🚀</span>
+    <div>
+      <h2>DevOps for QA</h2>
+      <p>CI/CD, containers, and infra literacy for testers</p>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>1. CI/CD Fundamentals</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>What CI/CD is and why testers need to understand it</li><li>Typical pipeline stages</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>2. Git &amp; Branching Strategies</h3><span class="stage-duration">1 week</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Trunk-based dev vs. feature branches</li><li>PR-based testing workflows</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>3. GitHub Actions / Jenkins Basics</h3><span class="stage-duration">2-3 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Write your first pipeline that runs tests on every push</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>4. Docker for Testers</h3><span class="stage-duration">2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Containerizing a test environment</li><li>Running tests against a dockerized app</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>5. Test Environments &amp; Infra as Code</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Spinning up ephemeral test environments</li><li>Basic awareness of Terraform/IaC</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>6. Monitoring &amp; Alerting Basics</h3><span class="stage-duration">1 week</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Reading dashboards (Grafana, Datadog)</li><li>Understanding alerts relevant to QA</li></ul>
+    </div></div>
+    <div class="stage"><div class="stage-card">
+      <div class="stage-card-head"><h3>7. Shift-Left in the Pipeline</h3><span class="stage-duration">1-2 weeks</span><span class="stage-toggle">▾</span></div>
+      <ul class="stage-skills"><li>Gating deploys on test results</li><li>Quality gates and canary releases</li></ul>
+    </div></div>
   </div>
 </section>
 {% endblock %}

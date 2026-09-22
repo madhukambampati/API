@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}QA Mentor — Resources{% endblock %}
+{% block content %}
+<h1 class="page-title">📚 Resources</h1>
+<p class="page-subtitle">Hand-picked, free, well-known resources — official docs, courses, and communities — organized by topic.</p>
+
+<div class="filter-row" id="resource-filters">
+  <button type="button" class="filter-chip active" data-filter="all">All</button>
+  <button type="button" class="filter-chip" data-filter="manual">Manual Testing</button>
+  <button type="button" class="filter-chip" data-filter="automation">Automation</button>
+  <button type="button" class="filter-chip" data-filter="api">API Testing</button>
+  <button type="button" class="filter-chip" data-filter="performance">Performance</button>
+  <button type="button" class="filter-chip" data-filter="security">Security</button>
+  <button type="button" class="filter-chip" data-filter="aiqa">AI-QA</button>
+  <button type="button" class="filter-chip" data-filter="sql">SQL &amp; Programming</button>
+  <button type="button" class="filter-chip" data-filter="devops">Git &amp; CI/CD</button>
+  <button type="button" class="filter-chip" data-filter="community">Communities</button>
+  <button type="button" class="filter-chip" data-filter="books">Books</button>
+</div>
+
+<div class="resource-grid" id="resource-grid">
+  <!-- Manual Testing -->
+  <a class="resource-card" data-category="manual" href="https://www.istqb.org/" target="_blank" rel="noopener">
+    <span class="resource-type">Certification body</span>
+    <h3>ISTQB</h3>
+    <p>The official body behind the world's most recognized testing certification. Start with the Foundation Level syllabus.</p>
+  </a>
+  <a class="resource-card" data-category="manual" href="https://glossary.istqb.org/" target="_blank" rel="noopener">
+    <span class="resource-type">Reference</span>
+    <h3>ISTQB Glossary</h3>
+    <p>The standard glossary of testing terms — the industry's shared vocabulary.</p>
+  </a>
+  <a class="resource-card" data-category="manual" href="https://www.guru99.com/software-testing.html" target="_blank" rel="noopener">
+    <span class="resource-type">Tutorials</span>
+    <h3>Guru99 — Software Testing</h3>
+    <p>Free, beginner-friendly tutorials covering manual testing fundamentals end to end.</p>
+  </a>
+  <a class="resource-card" data-category="manual" href="https://www.ministryoftesting.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Community + Content</span>
+    <h3>Ministry of Testing</h3>
+    <p>Articles, free webinars, and a large tester community — one of the best-known QA hubs.</p>
+  </a>
+
+  <!-- Automation -->
+  <a class="resource-card" data-category="automation" href="https://www.selenium.dev/documentation/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Selenium Documentation</h3>
+    <p>The definitive reference for WebDriver, locators, waits, and the Selenium ecosystem.</p>
+  </a>
+  <a class="resource-card" data-category="automation" href="https://testautomationu.applitools.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Free courses</span>
+    <h3>Test Automation University</h3>
+    <p>Free, structured video courses on Selenium, Playwright, Cypress, API testing, and more, by Applitools.</p>
+  </a>
+  <a class="resource-card" data-category="automation" href="https://playwright.dev/docs/intro" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Playwright Documentation</h3>
+    <p>Modern, fast, and thorough docs for Microsoft's cross-browser automation framework.</p>
+  </a>
+  <a class="resource-card" data-category="automation" href="https://docs.cypress.io/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Cypress Documentation</h3>
+    <p>Everything you need for JavaScript-based end-to-end testing with Cypress.</p>
+  </a>
+
+  <!-- API Testing -->
+  <a class="resource-card" data-category="api" href="https://learning.postman.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Postman Learning Center</h3>
+    <p>The standard reference for API testing with Postman — collections, scripting, and CI integration.</p>
+  </a>
+  <a class="resource-card" data-category="api" href="https://rest-assured.io/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>REST Assured</h3>
+    <p>Java DSL for testing REST APIs — the go-to library for Java-based API automation.</p>
+  </a>
+
+  <!-- Performance -->
+  <a class="resource-card" data-category="performance" href="https://jmeter.apache.org/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Apache JMeter</h3>
+    <p>The classic open-source load and performance testing tool.</p>
+  </a>
+  <a class="resource-card" data-category="performance" href="https://k6.io/docs/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>k6</h3>
+    <p>Modern, developer-friendly load testing — scriptable in JavaScript.</p>
+  </a>
+
+  <!-- Security -->
+  <a class="resource-card" data-category="security" href="https://owasp.org/" target="_blank" rel="noopener">
+    <span class="resource-type">Nonprofit / standards</span>
+    <h3>OWASP</h3>
+    <p>The authority on application security — start with the OWASP Top 10.</p>
+  </a>
+  <a class="resource-card" data-category="security" href="https://portswigger.net/web-security" target="_blank" rel="noopener">
+    <span class="resource-type">Free hands-on labs</span>
+    <h3>PortSwigger Web Security Academy</h3>
+    <p>Free, hands-on labs for learning web security testing — excellent for QA moving into security.</p>
+  </a>
+
+  <!-- AI-QA -->
+  <a class="resource-card" data-category="aiqa" href="https://docs.anthropic.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Anthropic Documentation</h3>
+    <p>Docs for building and evaluating features on Claude — useful for understanding what you're testing.</p>
+  </a>
+  <a class="resource-card" data-category="aiqa" href="https://www.promptfoo.dev/" target="_blank" rel="noopener">
+    <span class="resource-type">Open-source tool</span>
+    <h3>promptfoo</h3>
+    <p>An open-source framework for testing and evaluating LLM prompts and outputs.</p>
+  </a>
+  <a class="resource-card" data-category="aiqa" href="https://github.com/confident-ai/deepeval" target="_blank" rel="noopener">
+    <span class="resource-type">Open-source tool</span>
+    <h3>DeepEval</h3>
+    <p>An open-source LLM evaluation framework — golden datasets, metrics, and CI integration.</p>
+  </a>
+
+  <!-- SQL & Programming -->
+  <a class="resource-card" data-category="sql" href="https://sqlzoo.net/" target="_blank" rel="noopener">
+    <span class="resource-type">Interactive practice</span>
+    <h3>SQLZoo</h3>
+    <p>Free, interactive SQL exercises — great for the database verification skills testers need.</p>
+  </a>
+  <a class="resource-card" data-category="sql" href="https://www.freecodecamp.org/" target="_blank" rel="noopener">
+    <span class="resource-type">Free courses</span>
+    <h3>freeCodeCamp</h3>
+    <p>Free, project-based courses covering Python, JavaScript, and programming fundamentals.</p>
+  </a>
+  <a class="resource-card" data-category="sql" href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>The Python Tutorial</h3>
+    <p>The official Python tutorial — a solid foundation for Python-based automation.</p>
+  </a>
+
+  <!-- Git & CI/CD -->
+  <a class="resource-card" data-category="devops" href="https://git-scm.com/doc" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>Git Documentation</h3>
+    <p>The official Git reference and the free "Pro Git" book.</p>
+  </a>
+  <a class="resource-card" data-category="devops" href="https://skills.github.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Free courses</span>
+    <h3>GitHub Skills</h3>
+    <p>Interactive, hands-on courses for Git, GitHub, and GitHub Actions.</p>
+  </a>
+  <a class="resource-card" data-category="devops" href="https://docs.github.com/en/actions" target="_blank" rel="noopener">
+    <span class="resource-type">Official docs</span>
+    <h3>GitHub Actions Documentation</h3>
+    <p>Learn to wire your test suite into CI pipelines.</p>
+  </a>
+
+  <!-- Communities -->
+  <a class="resource-card" data-category="community" href="https://www.ministryoftesting.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Community</span>
+    <h3>Ministry of Testing</h3>
+    <p>Forums, meetups (The Club), and events for testers worldwide.</p>
+  </a>
+  <a class="resource-card" data-category="community" href="https://www.reddit.com/r/QualityAssurance/" target="_blank" rel="noopener">
+    <span class="resource-type">Community</span>
+    <h3>r/QualityAssurance</h3>
+    <p>An active QA-focused subreddit for questions, career advice, and discussion.</p>
+  </a>
+  <a class="resource-card" data-category="community" href="https://stackoverflow.com/" target="_blank" rel="noopener">
+    <span class="resource-type">Q&amp;A</span>
+    <h3>Stack Overflow</h3>
+    <p>For when you're stuck on a specific error — search before you post.</p>
+  </a>
+
+  <!-- Books -->
+  <div class="resource-card static" data-category="books">
+    <span class="resource-type">Book</span>
+    <h3>Agile Testing</h3>
+    <p>By Lisa Crispin &amp; Janet Gregory — the standard reference for testing on agile teams.</p>
+  </div>
+  <div class="resource-card static" data-category="books">
+    <span class="resource-type">Book</span>
+    <h3>How Google Tests Software</h3>
+    <p>By James Whittaker, Jason Arbon &amp; Jeff Carollo — how testing works at scale.</p>
+  </div>
+  <div class="resource-card static" data-category="books">
+    <span class="resource-type">Book</span>
+    <h3>The Art of Software Testing</h3>
+    <p>By Glenford Myers — the classic, foundational text on testing theory.</p>
+  </div>
+  <div class="resource-card static" data-category="books">
+    <span class="resource-type">Book</span>
+    <h3>Explore It!</h3>
+    <p>By Elisabeth Hendrickson — a practical guide to exploratory testing.</p>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='resources.js') }}"></script>
+{% endblock %}

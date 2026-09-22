@@ -55,6 +55,21 @@ def practice():
     return render_template("practice.html", active="practice")
 
 
+@app.route("/resources")
+def resources():
+    return render_template("resources.html", active="resources")
+
+
+@app.route("/glossary")
+def glossary():
+    return render_template("glossary.html", active="glossary")
+
+
+@app.route("/career")
+def career():
+    return render_template("career.html", active="career")
+
+
 @app.route("/tools")
 def tools_page():
     return render_template("tools.html", active="tools")

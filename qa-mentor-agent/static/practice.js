@@ -165,6 +165,331 @@ const QUESTIONS = [
     explanation:
       "A flaky test gives inconsistent results (pass/fail) across runs with no underlying code change — usually caused by timing issues, shared state, or environment instability.",
   },
+  {
+    category: "Performance Testing",
+    question: "What's the difference between load testing and stress testing?",
+    options: [
+      "They are the same thing",
+      "Load testing checks expected traffic; stress testing pushes beyond capacity to find the breaking point",
+      "Load testing only applies to databases",
+      "Stress testing is always done in production",
+    ],
+    correct: 1,
+    explanation:
+      "Load testing verifies behavior under expected/peak load, while stress testing intentionally exceeds capacity to see how and where the system fails.",
+  },
+  {
+    category: "Performance Testing",
+    question: "In performance test results, what does the 'p95 latency' mean?",
+    options: [
+      "The latency exactly 95 users experienced",
+      "95% of requests completed at or below this response time",
+      "The test ran for 95 seconds",
+      "95% of requests failed",
+    ],
+    correct: 1,
+    explanation:
+      "p95 (95th percentile) means 95% of requests were as fast or faster than this value — percentiles give a much better picture than averages, which hide outliers.",
+  },
+  {
+    category: "Performance Testing",
+    question: "What is 'soak testing' used to uncover?",
+    options: [
+      "Typos in the UI",
+      "Memory leaks and gradual degradation under sustained load over time",
+      "Browser compatibility issues",
+      "Whether the app works offline",
+    ],
+    correct: 1,
+    explanation:
+      "Soak (endurance) testing runs a system under load for an extended period to catch issues like memory leaks that only show up over time.",
+  },
+  {
+    category: "Security Testing",
+    question: "What does 'broken access control' (an OWASP Top 10 category) refer to?",
+    options: [
+      "The app crashes on invalid input",
+      "Users can access resources or actions they shouldn't be authorized for",
+      "The website loads slowly",
+      "Passwords are too short",
+    ],
+    correct: 1,
+    explanation:
+      "Broken access control means the system fails to properly restrict what authenticated users are allowed to view or do — e.g. one user viewing another user's private data by changing an ID in the URL.",
+  },
+  {
+    category: "Security Testing",
+    question: "What is SQL injection?",
+    options: [
+      "A performance optimization technique",
+      "Inserting malicious SQL through user input to manipulate or access the database",
+      "A way to speed up database queries",
+      "A type of database backup",
+    ],
+    correct: 1,
+    explanation:
+      "SQL injection exploits unsanitized user input that's concatenated directly into SQL queries, letting an attacker read, modify, or delete data they shouldn't have access to.",
+  },
+  {
+    category: "Security Testing",
+    question: "What does BOLA (Broken Object Level Authorization) mean for APIs?",
+    options: [
+      "The API returns malformed JSON",
+      "A user can access another user's object/resource just by changing an ID in the request",
+      "The API is missing documentation",
+      "The API doesn't support pagination",
+    ],
+    correct: 1,
+    explanation:
+      "BOLA happens when an API checks that a user is authenticated but not that they actually own the specific resource being requested — e.g. GET /orders/1234 returning someone else's order.",
+  },
+  {
+    category: "Security Testing",
+    question: "What is the purpose of a tool like OWASP ZAP or Burp Suite in security testing?",
+    options: [
+      "Generating test data",
+      "Intercepting, inspecting, and manipulating HTTP requests/responses to probe for vulnerabilities",
+      "Writing unit tests",
+      "Managing test case documentation",
+    ],
+    correct: 1,
+    explanation:
+      "These are web proxy tools that sit between your browser and the app, letting you see and modify raw requests — essential for manual security testing and automated scanning.",
+  },
+  {
+    category: "Mobile Testing",
+    question: "What is 'device fragmentation' in mobile testing?",
+    options: [
+      "A phone's screen physically cracking",
+      "The wide variety of devices, OS versions, and screen sizes an app must support",
+      "Splitting an app into microservices",
+      "A type of memory leak",
+    ],
+    correct: 1,
+    explanation:
+      "Device fragmentation refers to the huge number of device models, screen sizes, and OS versions in the real world, which is why mobile testing often uses device labs or cloud device farms.",
+  },
+  {
+    category: "Mobile Testing",
+    question: "What is Appium primarily used for?",
+    options: [
+      "Designing app UI mockups",
+      "Automating tests for native, hybrid, and mobile web apps on iOS and Android",
+      "Publishing apps to the App Store",
+      "Writing backend APIs",
+    ],
+    correct: 1,
+    explanation:
+      "Appium is an open-source automation framework for mobile apps, using the WebDriver protocol to drive iOS and Android apps similarly to how Selenium drives browsers.",
+  },
+  {
+    category: "Mobile Testing",
+    question: "Why test how an app handles an incoming phone call or notification interruption?",
+    options: [
+      "It's not important for mobile testing",
+      "Interruptions can crash the app or corrupt its state if not handled properly, which is unique to mobile",
+      "Only iOS apps need this test",
+      "It only matters for tablets",
+    ],
+    correct: 1,
+    explanation:
+      "Mobile apps can be interrupted by calls, notifications, low battery warnings, or app switching — testing these interruptions catches state-management bugs that desktop/web apps don't face.",
+  },
+  {
+    category: "DevOps for QA",
+    question: "In a CI/CD pipeline, what is a 'quality gate'?",
+    options: [
+      "A physical security checkpoint",
+      "An automated checkpoint that blocks a deployment if tests or quality metrics don't pass",
+      "A manual sign-off required from the CEO",
+      "A firewall rule",
+    ],
+    correct: 1,
+    explanation:
+      "A quality gate is a pipeline stage that automatically stops a release from progressing if criteria like test pass rate, coverage, or security scan results aren't met.",
+  },
+  {
+    category: "DevOps for QA",
+    question: "What is the main benefit of running tests inside a Docker container?",
+    options: [
+      "Tests run faster no matter what",
+      "A consistent, reproducible environment regardless of the host machine",
+      "It removes the need for test data",
+      "It automatically fixes flaky tests",
+    ],
+    correct: 1,
+    explanation:
+      "Containers package the exact OS, dependencies, and configuration the tests need, avoiding 'works on my machine' issues across different environments.",
+  },
+  {
+    category: "DevOps for QA",
+    question: "What does 'shift-left' mean in a CI/CD context?",
+    options: [
+      "Moving your team to a different time zone",
+      "Moving testing activities earlier in the development/pipeline process",
+      "Only testing left-aligned UI elements",
+      "Running tests only at the end of the sprint",
+    ],
+    correct: 1,
+    explanation:
+      "Shift-left means catching issues as early as possible — e.g. running unit tests and linters on every commit rather than waiting for a dedicated QA phase at the end.",
+  },
+  {
+    category: "DevOps for QA",
+    question: "What is a canary release?",
+    options: [
+      "A release that only happens on weekends",
+      "Rolling out a new version to a small subset of users/traffic before a full rollout",
+      "A type of automated test",
+      "A release with no testing at all",
+    ],
+    correct: 1,
+    explanation:
+      "Canary releases gradually expose a new version to a small percentage of real traffic, so problems can be caught and rolled back before affecting everyone.",
+  },
+  {
+    category: "Automation",
+    question: "What is the main advantage of data-driven testing?",
+    options: [
+      "It removes the need for assertions",
+      "The same test logic runs against multiple sets of input/expected data without duplicating code",
+      "It only works with SQL databases",
+      "It guarantees 100% code coverage",
+    ],
+    correct: 1,
+    explanation:
+      "Data-driven testing separates test logic from test data, so you can run the same test scenario (e.g. login) against many different input combinations by just adding more data rows.",
+  },
+  {
+    category: "Automation",
+    question: "Why is thread-safety important when running automated tests in parallel?",
+    options: [
+      "It isn't important, parallel tests are always safe",
+      "Shared state between parallel tests can cause one test to corrupt or interfere with another",
+      "Parallel execution automatically fixes shared state",
+      "It only matters for performance tests",
+    ],
+    correct: 1,
+    explanation:
+      "If tests share mutable state (a static variable, a shared test account, a shared file) running them in parallel can cause race conditions and flaky, hard-to-diagnose failures.",
+  },
+  {
+    category: "Automation",
+    question: "What is a 'mock' used for in automated testing?",
+    options: [
+      "Making fun of bad code",
+      "Replacing a real dependency (API, database) with a controllable fake for isolated testing",
+      "Generating UI screenshots",
+      "Formatting test reports",
+    ],
+    correct: 1,
+    explanation:
+      "Mocking lets you isolate the component under test from real, possibly slow or unreliable, external dependencies by substituting a fake with predictable behavior.",
+  },
+  {
+    category: "AI-QA",
+    question: "Why can't you always use exact string matching to test an LLM's response?",
+    options: [
+      "Exact matching is always fine for LLMs",
+      "LLMs can phrase a correct answer many different valid ways, so exact match is often too strict",
+      "LLMs never produce text output",
+      "String comparison is technically impossible in most languages",
+    ],
+    correct: 1,
+    explanation:
+      "Because LLM outputs are naturally variable in phrasing, testing usually relies on semantic similarity, rubric scoring, or LLM-as-judge rather than requiring an exact string match.",
+  },
+  {
+    category: "AI-QA",
+    question: "What is 'red-teaming' in the context of AI-QA?",
+    options: [
+      "Testing only with a team wearing red shirts",
+      "Deliberately trying to make an AI system produce harmful, biased, or unsafe outputs to find weaknesses",
+      "A performance testing technique",
+      "A code review process for backend APIs",
+    ],
+    correct: 1,
+    explanation:
+      "Red-teaming means adversarially probing an AI system — trying prompts designed to elicit unsafe, biased, or policy-violating outputs — to find and fix weaknesses before real users do.",
+  },
+  {
+    category: "AI-QA",
+    question: "What's a key risk of relying only on an LLM to judge another LLM's output (LLM-as-judge)?",
+    options: [
+      "It's always 100% accurate and needs no validation",
+      "The judge model can have its own biases or blind spots, so its scores should be validated against human judgment",
+      "It's technically impossible to implement",
+      "It only works for math problems",
+    ],
+    correct: 1,
+    explanation:
+      "LLM-as-judge is useful for scaling evaluation, but the judge model isn't infallible — its scoring should be spot-checked against human review to confirm it's actually measuring what you care about.",
+  },
+  {
+    category: "SDET Fundamentals",
+    question: "What is the 'test pyramid' recommending?",
+    options: [
+      "Writing only end-to-end UI tests",
+      "More unit tests at the base, fewer integration tests, and even fewer slow end-to-end/UI tests at the top",
+      "Testing only in production",
+      "Equal numbers of every test type",
+    ],
+    correct: 1,
+    explanation:
+      "The test pyramid favors many fast, cheap unit tests as the foundation, a moderate number of integration tests, and a small number of slower, more brittle end-to-end tests at the top.",
+  },
+  {
+    category: "SDET Fundamentals",
+    question: "What is the Page Object Model's main benefit for framework maintainability?",
+    options: [
+      "It makes tests run faster",
+      "UI locators live in one place per page, so a UI change requires updating one class instead of every test",
+      "It removes the need for assertions",
+      "It automatically generates test cases",
+    ],
+    correct: 1,
+    explanation:
+      "By centralizing each page's locators and actions in a dedicated class, a UI change only requires updating that one Page Object rather than hunting through every test file.",
+  },
+  {
+    category: "SQL for Testers",
+    question: "What does an INNER JOIN return?",
+    options: [
+      "All rows from both tables regardless of a match",
+      "Only rows where there is a matching value in both tables",
+      "Only rows from the left table",
+      "A random sample of rows",
+    ],
+    correct: 1,
+    explanation:
+      "An INNER JOIN returns only the rows where the join condition matches in both tables — non-matching rows from either side are excluded.",
+  },
+  {
+    category: "SQL for Testers",
+    question: "As a tester, why would you run a direct SQL query instead of only checking the UI?",
+    options: [
+      "SQL is always faster to write than a UI check",
+      "To verify the underlying data actually changed correctly, independent of how the UI displays it",
+      "SQL queries replace the need for any UI testing",
+      "It's required by every test framework",
+    ],
+    correct: 1,
+    explanation:
+      "The UI can sometimes mask a data problem (e.g. caching, formatting). Querying the database directly confirms the actual state of the data, which is a valuable independent verification.",
+  },
+  {
+    category: "Career",
+    question: "In a QA/SDET job interview, why is quantifying your resume impact (e.g. '% coverage increased') valuable?",
+    options: [
+      "It's not valuable, interviewers ignore numbers",
+      "It gives concrete evidence of impact rather than a vague list of responsibilities",
+      "It's only useful for management roles",
+      "It replaces the need to explain your approach",
+    ],
+    correct: 1,
+    explanation:
+      "Concrete, quantified outcomes ('reduced regression time from 3 days to 4 hours') are far more persuasive to interviewers than a general statement like 'responsible for testing' — they show measurable impact.",
+  },
 ];
 
 function renderQuestion(index) {

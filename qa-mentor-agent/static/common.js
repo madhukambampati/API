@@ -4,6 +4,8 @@ const HISTORY_KEY = "qa-mentor-history";
 const BOOKMARKS_KEY = "qa-mentor-bookmarks";
 const PRACTICE_KEY = "qa-mentor-practice-stats";
 const TOPICS_KEY = "qa-mentor-topics-viewed";
+const CODING_KEY = "qa-mentor-coding-attempted";
+const STREAK_KEY = "qa-mentor-streak";
 
 function safeGet(key, fallback) {
   try {
@@ -64,6 +66,39 @@ function recordPracticeAnswer(correct) {
   stats.attempted += 1;
   if (correct) stats.correct += 1;
   safeSet(PRACTICE_KEY, stats);
+}
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function getStreak() {
+  return safeGet(STREAK_KEY, { lastDate: null, count: 0 });
+}
+
+function markDailyChallengeDone() {
+  const today = todayStr();
+  const streak = getStreak();
+  if (streak.lastDate === today) return streak;
+
+  const yesterday = new Date(Date.now() - 86400000);
+  const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(
+    yesterday.getDate()
+  ).padStart(2, "0")}`;
+
+  streak.count = streak.lastDate === yStr ? streak.count + 1 : 1;
+  streak.lastDate = today;
+  safeSet(STREAK_KEY, streak);
+  return streak;
+}
+
+function logCodingAttempt(challengeId) {
+  const attempted = safeGet(CODING_KEY, []);
+  if (!attempted.includes(challengeId)) {
+    attempted.push(challengeId);
+    safeSet(CODING_KEY, attempted);
+  }
 }
 
 function formatRelativeTime(ts) {

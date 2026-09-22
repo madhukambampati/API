@@ -33,6 +33,18 @@
   </div>
 </section>
 
+<div class="daily-card" id="daily-card">
+  <div class="daily-card-head">
+    <div>
+      <span class="quiz-tag">📅 Question of the Day</span>
+      <h2 id="daily-question-text">Loading today's challenge...</h2>
+    </div>
+    <div class="streak-pill" id="streak-pill">🔥 0 day streak</div>
+  </div>
+  <div class="quiz-options" id="daily-options"></div>
+  <div class="quiz-explanation" id="daily-explanation"></div>
+</div>
+
 <div class="section-heading">
   <div>
     <h2>🔥 Popular Topics</h2>
@@ -121,5 +133,6 @@
 </div>
 {% endblock %}
 {% block scripts %}
+<script src="{{ url_for('static', filename='daily-challenge.js') }}"></script>
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 {% endblock %}

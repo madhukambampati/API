@@ -9,12 +9,16 @@ This is a proof of concept: a local multi-page Flask app, with all personal data
 
 ## Pages
 
-- **Home** — hero, popular topics grid, quick-ask box
-- **Chat** — the AI mentor, backed by the Claude API
-- **Roadmaps** — 3 real curated learning tracks (QA foundations, Manual → SDET, AI-QA specialist)
-- **Practice** — a 14-question quiz bank with instant feedback and explanations
+- **Home** — hero, daily challenge with a streak counter, popular topics grid, quick-ask box
+- **Chat** — the AI mentor, backed by the Claude API, with voice input
+- **Roadmaps** — 8 curated learning tracks (QA Foundations, Manual → SDET, AI-QA Specialist,
+  Performance Testing, Security Testing, Mobile Testing, Framework Architect, DevOps for QA)
+- **Practice** — a 39-question quiz bank plus 10 hands-on coding challenges reviewed by the AI mentor
+- **Resources** — curated links to real, well-known docs/courses/communities, filterable by topic
+- **Glossary** — a searchable ~85-term QA/SDET/AI-QA dictionary, plus Git/HTTP/CLI/tool-comparison references
+- **Career** — certification guide, resume & portfolio checklists, and 3 AI mock-interview modes
 - **Tools** — test data generator, regex tester, JSON formatter, selector cheat sheet
-- **Progress** — stats read from your local activity
+- **Progress** — stats read from your local activity (chat, practice, coding, streak, bookmarks)
 - **Bookmarks** — chat answers you've starred
 - **History** — questions you've asked, with "ask again"
 - **Settings** — local profile, dark/light theme, API key status check
