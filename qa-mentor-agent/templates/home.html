@@ -1,45 +1,47 @@
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}TechOrbit — Home{% endblock %}
 {% block content %}
 <section class="hero">
-  <div class="hero-blob one"></div>
-  <div class="hero-blob two"></div>
   <span class="hero-badge">🪐 TechOrbit — Every role. Every skill. One learning universe.</span>
-  <h1>SDET <span>Mentor</span></h1>
+  <h1>Learn any tech career, <span>guided by AI</span></h1>
   <p class="lead">
-    Your AI learning companion for QA, SDET &amp; AI-QA. Get instant answers, learn
-    with real examples, practice hands-on, and accelerate your testing career.
-  </p>
-  <p class="settings-note" style="position: relative; z-index: 1; margin: -14px 0 24px;">
-    📍 You're in <strong>SDET Mentor</strong> — TechOrbit's most complete academy today,
-    with dedicated roadmaps, practice questions, and resources. All 7 roles — including
-    Developer and DevOps, each with their own AI mentor mode — already have full profiles
-    in the <a href="{{ url_for('careers_index') }}">Career Explorer</a>; dedicated roadmaps
-    and practice for the rest are next.
+    Pick a role, follow a structured path from beginner to job-ready, practice
+    hands-on, and get unstuck with an AI mentor built for that career — all in
+    one platform.
   </p>
 
-  <form id="quick-ask-form" class="composer" style="max-width: 640px; border-radius: 16px; border: 1px solid var(--border);">
-    <label for="quick-ask-input" class="sr-only">Ask a question</label>
-    <textarea
-      id="quick-ask-input"
-      rows="1"
-      placeholder="Ask anything about testing, automation, or AI-QA..."
-    ></textarea>
-    <button type="submit">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
-        <path d="M3 11.5L20 4L12.5 21L10.5 13.5L3 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
-      </svg>
-      Ask
-    </button>
-  </form>
+  <div class="hero-cta-row">
+    <a href="{{ url_for('careers_index') }}" class="tool-btn">{{ icon("compass") }} Explore Careers</a>
+    <a href="{{ url_for('onboarding') }}" class="tool-btn secondary">{{ icon("sparkles") }} Start Learning</a>
+    <a href="{{ url_for('chat_page') }}" class="tool-btn secondary">{{ icon("message-circle") }} Ask TechOrbit AI</a>
+  </div>
 
-  <div class="hero-stats" style="margin-top: 20px;">
+  <div class="hero-stats">
     <div class="hero-stat"><span class="hero-stat-icon">🎓</span><span class="label">Learn Faster</span></div>
     <div class="hero-stat"><span class="hero-stat-icon">🎯</span><span class="label">Practice Smarter</span></div>
     <div class="hero-stat"><span class="hero-stat-icon">📈</span><span class="label">Build Skills</span></div>
     <div class="hero-stat"><span class="hero-stat-icon">🏆</span><span class="label">Achieve More</span></div>
   </div>
 </section>
+
+<div class="section-heading">
+  <div>
+    <h2>Choose your path</h2>
+    <p>{{ roles|length }} learning paths available today. SDET has the deepest roadmap and practice content so far — more are on the way for the rest.</p>
+  </div>
+  <a href="{{ url_for('careers_index') }}">See all in Career Explorer →</a>
+</div>
+<div class="academy-grid">
+  {% for r in roles %}
+  <a class="academy-card role-accent-{{ r.slug }}" href="{{ url_for('role_detail', slug=r.slug) }}">
+    <div class="role-accent-bar"></div>
+    <span class="role-badge">{{ r.status }}</span>
+    <h3>{{ r.title }}</h3>
+    <p>{{ r.definition[:70] }}{{ "…" if r.definition|length > 70 }}</p>
+  </a>
+  {% endfor %}
+</div>
 
 <div class="daily-card" id="onboarding-prompt-card" style="display: none;">
   <div class="daily-card-head">

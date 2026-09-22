@@ -608,16 +608,22 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 
 .hero {
   position: relative;
-  border-radius: 24px;
+  border-radius: var(--radius-lg, 24px);
   overflow: hidden;
   padding: 40px;
-  background: linear-gradient(135deg, #111a34, #1a1440);
+  background:
+    radial-gradient(ellipse 60% 100% at 15% 0%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(ellipse 60% 100% at 85% 100%, rgba(139, 92, 246, 0.16), transparent 60%),
+    var(--surface);
   border: 1px solid var(--border);
   margin-bottom: 30px;
 }
 
 [data-theme="light"] .hero {
-  background: linear-gradient(135deg, #eef1ff, #e3f6fb);
+  background:
+    radial-gradient(ellipse 60% 100% at 15% 0%, rgba(34, 211, 238, 0.14), transparent 60%),
+    radial-gradient(ellipse 60% 100% at 85% 100%, rgba(139, 92, 246, 0.12), transparent 60%),
+    var(--surface);
 }
 
 .hero-blob {
@@ -718,6 +724,54 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 .hero-stat span.label {
   font-size: 0.84rem;
   font-weight: 600;
+}
+
+.hero-cta-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.academy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.academy-card {
+  display: block;
+  padding: 14px 16px;
+  border-radius: var(--radius-md, 14px);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
+}
+
+.academy-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--role-accent, var(--accent));
+}
+
+.academy-card .role-accent-bar {
+  margin: -14px -16px 10px;
+}
+
+.academy-card h3 {
+  margin: 8px 0 4px;
+  font-size: 0.92rem;
+}
+
+.academy-card p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-faint);
 }
 
 .topic-grid {
@@ -1974,7 +2028,9 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
 }
 
 .tool-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   border: none;
   border-radius: 10px;
   padding: 9px 16px;
@@ -1984,6 +2040,11 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
   font-size: 0.82rem;
   cursor: pointer;
   text-decoration: none;
+}
+
+.tool-btn .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .tool-btn.secondary {
