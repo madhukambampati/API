@@ -1,0 +1,25 @@
+{
+  "name": "entertainment-os",
+  "version": "1.0.0",
+  "description": "Agentic operating system for dining, PDRs, catering, sports & live events, gifting and experiences — with budgets, approvals, expense reports and group splits.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "docs": "node docs/build-handbook.cjs && node docs/build-deck.cjs && python3 docs/build_workbook.py",
+    "demo": "node src/demo.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.128.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "docx": "^9.7.1",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.35.4"
+  }
+}
