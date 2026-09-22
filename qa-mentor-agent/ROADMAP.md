@@ -154,6 +154,18 @@ not a copy fix — see Epic 1.1 and the Resources/Glossary backlog):
       "Changelog:") and returns empty, which triggers the existing
       "No release notes provided" fallback instead of showing a raw
       link fragment.
+- [x] Technology Radar cards were non-interactive `<div>`s with no way
+      to act on what you'd just read, even though each item's JSON
+      already had a `related_roles` field that was never surfaced.
+      Now renders real `<a>` links to each related role's Career
+      Explorer page.
+- [x] Glossary: unlike the Radar, glossary terms are a plain
+      `[term, definition]` list with no structured metadata to link
+      from, so terms were left as-is rather than inventing false
+      associations. Two genuine, unambiguous links were added instead:
+      the "SDET" term links to `/careers/sdet` (exact name match), and
+      the Git Cheat Sheet tab links to the full `/lessons/git-and-github`
+      lesson.
 
 ---
 

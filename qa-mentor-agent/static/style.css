@@ -1358,6 +1358,19 @@ a {
   line-height: 1.5;
 }
 
+.glossary-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.glossary-link:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Roadmaps ---------- */
 
 .roadmap-track {

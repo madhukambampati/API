@@ -144,6 +144,10 @@ const CLI_COMMANDS = [
   ["tail -f <file>", "Follow a file's new output in real time (e.g. a log file)."],
 ];
 
+const GLOSSARY_LINKS = {
+  SDET: { href: "/careers/sdet", label: "SDET role page" },
+};
+
 function renderGlossaryList(filter) {
   const listEl = document.getElementById("glossary-list");
   const q = (filter || "").trim().toLowerCase();
@@ -153,10 +157,13 @@ function renderGlossaryList(filter) {
 
   listEl.innerHTML = filtered.length
     ? filtered
-        .map(
-          ([term, def]) =>
-            `<div class="glossary-item"><h4>${term}</h4><p>${def}</p></div>`
-        )
+        .map(([term, def]) => {
+          const link = GLOSSARY_LINKS[term];
+          const linkHtml = link
+            ? `<a href="${link.href}" class="glossary-link">See the ${link.label} →</a>`
+            : "";
+          return `<div class="glossary-item"><h4>${term}</h4><p>${def}</p>${linkHtml}</div>`;
+        })
         .join("")
     : '<div class="empty-hint">No terms match your search.</div>';
 }

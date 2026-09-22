@@ -294,8 +294,14 @@ RADAR_CATEGORIES = ["Adopt", "Trial", "Assess", "Watch", "Declining", "Emerging"
 @app.route("/radar")
 def tech_radar():
     grouped = {cat: [i for i in RADAR_ITEMS if i["category"] == cat] for cat in RADAR_CATEGORIES}
+    role_titles = {slug: role["title"] for slug, role in ROLES.items()}
     return render_template(
-        "tech_radar.html", grouped=grouped, categories=RADAR_CATEGORIES, active="radar", academy_scoped=False
+        "tech_radar.html",
+        grouped=grouped,
+        categories=RADAR_CATEGORIES,
+        role_titles=role_titles,
+        active="radar",
+        academy_scoped=False,
     )
 
 

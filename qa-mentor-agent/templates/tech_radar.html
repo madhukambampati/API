@@ -22,6 +22,16 @@
     <p>{{ item.what_it_is }}</p>
     <p style="margin-top: 8px;"><strong>Why it matters:</strong> {{ item.why_it_matters }}</p>
     <p style="margin-top: 6px;"><strong>Who should learn it:</strong> {{ item.who_should_learn }}</p>
+    {% if item.related_roles %}
+    <p style="margin-top: 10px; font-size: 0.78rem; color: var(--text-faint);">Relevant for</p>
+    <div class="filter-row" style="margin-top: 4px;">
+      {% for slug in item.related_roles %}
+      {% if role_titles[slug] %}
+      <a href="{{ url_for('role_detail', slug=slug) }}" class="filter-chip">{{ role_titles[slug] }}</a>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
   </div>
   {% endfor %}
 </div>
