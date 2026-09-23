@@ -48,7 +48,7 @@ export const LOCATIONS = {
     'New Brunswick': ['Moncton', 'Saint John', 'Fredericton'],
     'Newfoundland and Labrador': ["St. John's"],
     'Nova Scotia': ['Halifax', 'Sydney'],
-    Ontario: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Hamilton', 'London', 'Waterloo', 'Niagara Falls'],
+    Ontario: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Hamilton', 'London', 'Kitchener', 'Waterloo', 'Niagara Falls'],
     'Prince Edward Island': ['Charlottetown'],
     Quebec: ['Montreal', 'Quebec City', 'Gatineau', 'Laval'],
     Saskatchewan: ['Saskatoon', 'Regina'],
@@ -81,7 +81,7 @@ const METROS = new Set(['Mumbai', 'New Delhi', 'Delhi', 'Bengaluru', 'Hyderabad'
 const TIER2 = new Set(['Ahmedabad', 'Jaipur', 'Kochi', 'Lucknow', 'Chandigarh', 'Indore', 'Goa', 'Panaji', 'Coimbatore', 'Visakhapatnam', 'Bhubaneswar', 'Thane', 'Nagpur', 'Surat', 'Vadodara', 'Mysuru', 'Thiruvananthapuram', 'Guwahati', 'Bhopal', 'Udaipur']);
 
 const CA_BIG = new Set(['Toronto', 'Vancouver', 'Whistler', 'Banff']);
-const CA_MID = new Set(['Montreal', 'Calgary', 'Ottawa', 'Mississauga', 'Victoria', 'Edmonton', 'Quebec City', 'Brampton', 'Surrey', 'Laval', 'Waterloo', 'Hamilton']);
+const CA_MID = new Set(['Montreal', 'Calgary', 'Ottawa', 'Mississauga', 'Victoria', 'Edmonton', 'Quebec City', 'Brampton', 'Surrey', 'Laval', 'Kitchener', 'Waterloo', 'Hamilton']);
 
 // Price multiplier vs the most expensive cities of the edition's home country.
 export function priceTier(loc) {

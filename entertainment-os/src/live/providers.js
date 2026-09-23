@@ -106,7 +106,11 @@ export function overpassFailure(json) {
   return null;
 }
 
-const OVERPASS_DEADLINE_MS = 25000;
+// Serverless hosts (Vercel) don't reliably keep running a "background" promise after the HTTP
+// response is sent, unlike the long-running dev server this deadline was tuned for — so on Vercel
+// the whole live-data fetch has to fit inside ONE request/response, and a 25s wait for a flaky
+// Overpass mirror would make that request (and the client polling for it) look permanently stuck.
+const OVERPASS_DEADLINE_MS = process.env.VERCEL ? 5000 : 25000;
 
 // Tries the mirrors in turn but gives up after OVERPASS_DEADLINE_MS overall; Nominatim covers
 // the gap. A late answer still lands in the cache, so the next refresh gets it instantly.
@@ -387,6 +391,14 @@ export function releaseYearFromSummary(text) {
   return m ? Number(m[1]) : null;
 }
 
+// Wikidata's P31 "instance of film" (Q11424) is sometimes applied to OTT productions that are
+// actually episodic — Wikipedia's own opening line calls those a "web series"/"TV series", never
+// a film, so it doubles as a check the year regex above can't do on its own (its "film"/"movie"
+// requirement means a series summary just doesn't match, silently passing the year check instead).
+export function looksLikeSeries(text) {
+  return /\b(web series|television series|TV series|mini-?series|streaming series)\b/i.test(text || '');
+}
+
 export function normaliseWikiSummary(json) {
   if (!json) return null;
   return { poster: json.thumbnail?.source || json.originalimage?.source || null, summary: json.extract || null };
@@ -435,7 +447,7 @@ async function recentFilms({ countryCode }) {
 
   films = await addSummaries(films);
   const minYear = today.getFullYear() - 1;
-  films = films.filter((f) => (releaseYearFromSummary(f.summary) ?? minYear) >= minYear);
+  films = films.filter((f) => (releaseYearFromSummary(f.summary) ?? minYear) >= minYear && !looksLikeSeries(f.summary));
   const withPosters = films.filter((f) => f.poster);
   return { ok: withPosters.length > 0, error: withPosters.length ? null : 'no posters found', data: withPosters.length >= 6 ? withPosters : films };
 }

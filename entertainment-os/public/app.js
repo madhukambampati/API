@@ -189,6 +189,7 @@ async function loadDiscover() {
     if (key !== locQS()) return; // location changed meanwhile
     ui.discover = d;
     ui.error = null;
+    ui.pendingSince = d.pending ? Date.now() : null;
     pollDiscover(key, d.pending ? 1 : 0);
   } catch (e) {
     ui.error = `Couldn't load movies and events: ${e.message}`;
@@ -203,8 +204,9 @@ function pollDiscover(key, n) {
       const d = await api(`/api/discover?${key}`);
       if (key !== locQS()) return;
       ui.discover = d;
+      if (!d.pending) ui.pendingSince = null;
       if (['discover', 'movies', 'events', 'venues'].includes(ui.tab)) render();
-      pollDiscover(key, d.pending && n < 30 ? n + 1 : 0);
+      pollDiscover(key, d.pending && n < 8 ? n + 1 : 0);
     } catch {
       pollDiscover(key, 0);
     }
@@ -849,7 +851,9 @@ function render() {
   let html;
   if (DISCOVER_VIEWS.includes(ui.tab) && ui.tab !== 'discover' && !ui.discover) html = `<div class="card empty">Loading what's on in ${esc(loc().city)}…</div>`;
   else html = (views[ui.tab] || viewDiscover)();
-  $('#view').innerHTML = (ui.error ? errorBanner() : '') + (ui.discover?.pending && DISCOVER_VIEWS.includes(ui.tab) ? `<div class="note warn small" style="margin-bottom:14px">⏳ Fetching live cinemas, films and events for ${esc(loc().city)} from the free APIs. Results appear as providers respond; unavailable information is left empty.</div>` : '') + html;
+  $('#view').innerHTML = (ui.error ? errorBanner() : '') + (ui.discover?.pending && DISCOVER_VIEWS.includes(ui.tab)
+        ? `<div class="note warn small" style="margin-bottom:14px">⏳ ${ui.pendingSince && Date.now() - ui.pendingSince > 20000 ? `Still trying to reach some sources for ${esc(loc().city)} — showing what's available; this can take a little longer on a fresh server.` : `Fetching live cinemas, films and events for ${esc(loc().city)} from the free APIs. Results appear as providers respond; unavailable information is left empty.`}</div>`
+        : '') + html;
   const inp = $('#chat-input');
   if (inp && typed) inp.value = typed;
   if (inp && focused === 'chat-input') inp.focus();

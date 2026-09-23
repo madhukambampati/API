@@ -13,6 +13,10 @@ import * as live from '../live/index.js';
 import { inr, CURRENCY, convert } from '../money.js';
 import { FX_FALLBACK } from '../live/providers.js';
 
+// See src/app.js for why this is longer on Vercel: a serverless host can't be trusted to keep a
+// "gather more in the background" promise running after the response is sent.
+const LIVE_WAIT_MS = process.env.VERCEL ? 8000 : 3000;
+
 const sessions = new Map();
 const MAX_SESSIONS = 500;
 
@@ -387,7 +391,7 @@ export async function handle({ sessionId, actorId, text, action, location }) {
   let s = sessions.get(sessionId);
   if (!s || s.actorId !== actorId) s = create(actorId, location);
   if (location && s.step === 'idle') s.loc = normaliseLocation(location);
-  await live.ensure(s.loc, { waitMs: 3000 });
+  await live.ensure(s.loc, { waitMs: LIVE_WAIT_MS });
   const out = [];
   try {
     if (action) await onAction(s, action, out);
@@ -456,7 +460,7 @@ async function onText(s, text, out) {
   const city = findCityInText(text, s.loc.country);
   if (city && city.city !== s.loc.city) {
     s.loc = city;
-    await live.ensure(s.loc, { waitMs: 3000 });
+    await live.ensure(s.loc, { waitMs: LIVE_WAIT_MS });
     out.push(say(`📍 Switched to ${locationLabel(s.loc)}.`));
   }
 
