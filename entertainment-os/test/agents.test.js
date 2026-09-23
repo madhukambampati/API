@@ -1,6 +1,6 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { useMemory, load } from '../src/store.js';
+import { useMemory, load, mongoEnabled, hydrateFromMongo } from '../src/store.js';
 import { seed } from '../src/seed.js';
 import { parseRuleBased, parseDate } from '../src/agents/concierge.js';
 import * as orchestrator from '../src/agents/orchestrator.js';
@@ -203,4 +203,10 @@ test('venue prices come from the catalog when a venue is picked', () => {
   const v = vendors('reservations', BLR)[0];
   const b = orchestrator.createBooking({ category: 'reservations', vendorId: v.id, partySize: 2, amount: 1, date: '2026-09-30', funding: 'personal', location: BLR, title: 'Dinner' }, 'u-ananya');
   assert.equal(b.amount, v.perPerson * 2);
+});
+
+test('MongoDB persistence is opt-in via MONGODB_URI and never touched when unset', async () => {
+  assert.equal(mongoEnabled(), false, 'no MONGODB_URI in the test environment');
+  await hydrateFromMongo(); // must resolve immediately, no network attempt, no throw
+  assert.equal(load().people.length > 0, true, 'the in-memory/file store still works normally');
 });

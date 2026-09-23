@@ -110,6 +110,28 @@ as the long-running process it's built for: `npm start` on a host that keeps a p
 (Render, Railway, Fly.io, a VPS, your own machine). Vercel is the fastest way to get a shareable
 URL up; it is not a substitute for that.
 
+### Optional: MongoDB, for real persistence on Vercel
+
+Set `MONGODB_URI` (Vercel → Project → Settings → Environment Variables) and bookings, approvals,
+splits and expense reports survive across Vercel's separate invocations instead of resetting —
+this is the one thing that actually fixes the caveat above, without changing anything else about
+how the app is built (still plain Node, still the same JSON-shaped in-memory store; MongoDB is
+only read once per cold start and written to in the background after each save).
+
+A free cluster takes about five minutes:
+1. Sign up at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas/register) (no credit
+   card needed for the free tier).
+2. Create a cluster on the **M0 Free** tier.
+3. Under **Network Access**, allow access from anywhere (`0.0.0.0/0`) — simplest for a demo; Vercel's
+   serverless functions don't have a fixed IP to allowlist instead.
+4. Under **Database Access**, create a database user with a password.
+5. Click **Connect → Drivers**, copy the connection string (`mongodb+srv://user:pass@.../`).
+6. In Vercel, add it as the `MONGODB_URI` environment variable and redeploy (`vercel --prod`).
+
+Without it, the app works exactly as described above (file-backed, resets between invocations on
+Vercel). A wrong or unreachable `MONGODB_URI` fails fast (3s) and falls back to that same
+behaviour rather than breaking the app.
+
 ## How the agents fit together
 
 ```

@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { load, save, person } from './store.js';
+import { load, save, person, hydrateFromMongo, mongoEnabled } from './store.js';
 import { CATEGORIES, FUNDING, POLICY } from './seed.js';
 import * as orchestrator from './agents/orchestrator.js';
 import * as expense from './agents/expense.js';
@@ -59,7 +59,7 @@ function actor(req) {
 function state(actorId) {
   const d = load();
   return {
-    meta: { ...d.meta, demo: catalog.demoMode(), llm: llmEnabled(), currency: R.currency, symbol: R.symbol, locale: R.locale, defaultLocation: DEFAULT_LOCATION },
+    meta: { ...d.meta, demo: catalog.demoMode(), llm: llmEnabled(), persistent: mongoEnabled(), currency: R.currency, symbol: R.symbol, locale: R.locale, defaultLocation: DEFAULT_LOCATION },
     me: person(actorId),
     categories: CATEGORIES,
     funding: FUNDING,
@@ -236,5 +236,6 @@ export async function handleRequest(req, res) {
 // (CA/IN). Exported so both the long-running dev server and the serverless adapter can await it
 // once before serving requests — on Vercel this runs again on every cold start (see README).
 export const ready = (async () => {
+  await hydrateFromMongo();
   if (catalog.demoMode() && (!load().bookings.length || !load().seatBookings || load().meta?.currency !== R.currency)) await loadDemo();
 })();
