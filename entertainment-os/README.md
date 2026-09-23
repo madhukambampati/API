@@ -61,6 +61,35 @@ Responses are cached in `data/live-cache.json` (weather 1 h, places 7 days), so 
 
 With `ANTHROPIC_API_KEY` set and `npm install` run (it installs the optional `@anthropic-ai/sdk`), the Concierge agent uses Claude (`claude-opus-5`, structured JSON output, with server-side refusal fallbacks turned on) to turn free text into a booking draft. Examples: "3 tickets for Orbit 9 IMAX tomorrow evening", "Stand-up comedy with friends this weekend, split", "Client dinner for 6 in Pune tomorrow". Without a key it uses the built-in rule engine. Either way, **budget, policy and approval decisions are always made by deterministic code**. You can set `EOS_MODEL` to use a different model, or `EOS_DISABLE_LLM=1` to turn Claude off.
 
+## Deploying to Vercel
+
+```sh
+npm i -g vercel
+cd entertainment-os
+vercel login
+vercel --prod
+```
+
+That's it — `vercel.json` and `api/index.js` are already set up, and no environment variables are
+required (the app detects Vercel and stores its data under `/tmp` automatically). Live data (real
+cinemas, films, fixtures) works there since Vercel has normal internet access, unlike this
+sandbox.
+
+**Read this before treating it as more than a demo/preview link.** This app is designed to run as
+one long-running process (`npm start`) that keeps chat sessions, the live-data cache and bookings
+in memory, backed by a JSON file. Vercel runs it instead as a stateless serverless function: no
+persistent disk (data resets on every cold start) and no shared memory between concurrent
+invocations. In practice that means:
+
+- Browsing (movies, theatres, events, the concierge chat within one exchange) works fine.
+- A booking, approval or split made in one request may not be there on a later request if it
+  lands on a different function instance, and demo data can reset itself unpredictably.
+
+For the real thing — actual persistence, chat sessions that survive, one consistent store — run it
+as the long-running process it's built for: `npm start` on a host that keeps a process alive
+(Render, Railway, Fly.io, a VPS, your own machine). Vercel is the fastest way to get a shareable
+URL up; it is not a substitute for that.
+
 ## How the agents fit together
 
 ```

@@ -5,7 +5,9 @@ import { fileURLToPath } from 'node:url';
 import { seed } from './seed.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const DB_PATH = process.env.EOS_DB || path.join(here, '..', 'data', 'db.json');
+// On Vercel (or any read-only-filesystem host) there's no writable 'data/' dir — fall back to
+// /tmp. That still resets between cold starts / separate instances; see README's Vercel section.
+const DB_PATH = process.env.EOS_DB || (process.env.VERCEL ? '/tmp/eos-db.json' : path.join(here, '..', 'data', 'db.json'));
 
 let db = null;
 let memoryOnly = false;

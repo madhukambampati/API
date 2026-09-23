@@ -5,7 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const CACHE_PATH = process.env.EOS_CACHE || path.join(here, '..', '..', 'data', 'live-cache.json');
+// Same /tmp fallback as store.js, for the same reason (Vercel's filesystem is read-only outside /tmp).
+const CACHE_PATH = process.env.EOS_CACHE || (process.env.VERCEL ? '/tmp/eos-live-cache.json' : path.join(here, '..', '..', 'data', 'live-cache.json'));
 const USER_AGENT = 'EntertainmentOS-demo/1.0 (+https://github.com/madhukambampati/API)';
 
 let cache = null;
