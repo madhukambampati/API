@@ -106,7 +106,19 @@ export function overpassFailure(json) {
   return null;
 }
 
-async function overpass(q, timeout) {
+const OVERPASS_DEADLINE_MS = 25000;
+
+// Tries the mirrors in turn but gives up after OVERPASS_DEADLINE_MS overall; Nominatim covers
+// the gap. A late answer still lands in the cache, so the next refresh gets it instantly.
+function overpass(q, timeout) {
+  let timer;
+  const deadline = new Promise((r) => {
+    timer = setTimeout(() => r({ ok: false, error: `no answer within ${OVERPASS_DEADLINE_MS / 1000}s` }), OVERPASS_DEADLINE_MS);
+  });
+  return Promise.race([overpassMirrors(q, timeout), deadline]).finally(() => clearTimeout(timer));
+}
+
+async function overpassMirrors(q, timeout) {
   const errors = [];
   for (const url of OVERPASS_MIRRORS) {
     const r = await getJSON(url, { method: 'POST', body: `data=${enc(q)}`, headers: { 'content-type': 'application/x-www-form-urlencoded', accept: '*/*' }, ttl: 7 * 86400, timeout, key: `overpass ${q}`, accept: (d) => !overpassFailure(d) });
@@ -185,8 +197,8 @@ async function nominatimPlaces(center, kinds) {
 export async function places(center) {
   const kinds = PLACE_SETS.map(([k]) => k);
   const [cin, rest, nom] = await Promise.all([
-    overpass(overpassQuery(center, ['cinema']), 20000),
-    overpass(overpassQuery(center, kinds.filter((k) => k !== 'cinema')), 30000),
+    overpass(overpassQuery(center, ['cinema']), 12000),
+    overpass(overpassQuery(center, kinds.filter((k) => k !== 'cinema')), 20000),
     nominatimPlaces(center, NOMINATIM_PLACES.map(([k]) => k)),
   ]);
   const data = { ...nom.data, ...(rest.ok ? normaliseOsm(rest.data, center) : {}) };
