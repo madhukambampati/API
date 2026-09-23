@@ -142,7 +142,11 @@ export function movies(loc) {
   const local = STATE_LANGUAGES[loc.state] || [];
   const list = liveMovies(loc) || MOVIES.map((m) => ({ ...m, source: 'sample' }));
   const rank = (m) => (local.includes(m.language) ? 0 : !m.language || m.language === 'Hindi' || m.language === 'English' ? 1 : 2);
-  return list.map((m) => ({ ...m, local: local.includes(m.language) })).sort((a, b) => rank(a) - rank(b));
+  // A tie among non-local, non-English/Hindi films (Tamil, Telugu, Malayalam, etc.) is broken by
+  // title rather than pushed as a block below every English film — real listings interleave them.
+  return list
+    .map((m) => ({ ...m, local: local.includes(m.language) }))
+    .sort((a, b) => rank(a) - rank(b) || a.title.localeCompare(b.title));
 }
 
 export function findMovie(id, loc) {
@@ -171,7 +175,7 @@ export function cinemas(loc) {
 
 // Not every film plays at every cinema (about 70% do), but every film plays somewhere.
 function playsAt(movie, list) {
-  if (list.every((c) => c.source === 'sample')) return list; // the three demo theatres show everything
+  if (list.length <= 3) return list; // too few real theatres in this city to simulate scarcity
   const picked = list.filter((cin) => hash(`${movie.id}|${cin.id}`) % 100 < 70);
   return picked.length ? picked : list.slice(0, 1);
 }
@@ -185,8 +189,9 @@ export function showtimes(movieId, date, loc) {
       const formats = movie.formats.filter((f) => cin.formats.includes(f));
       if (!formats.length) return null;
       const r = rng(`${movieId}|${cin.id}|${date}`);
-      const slots = SHOW_SLOTS.filter(() => r() > 0.35).slice(0, 4);
-      if (!slots.length) slots.push(SHOW_SLOTS[3]);
+      let slots = SHOW_SLOTS.filter(() => r() > 0.35);
+      if (slots.length < 2) slots = [...new Set([...slots, SHOW_SLOTS[1], SHOW_SLOTS[3]])];
+      slots = slots.slice(0, 4);
       const shows = slots.map((time, i) => {
         const format = formats[i % formats.length];
         return { key: `${movieId}|${cin.id}|${date}|${time}|${format}`, time, format, price: price(FORMAT_PRICE[format][0], loc, FORMAT_PRICE[format][1]) };

@@ -12,6 +12,7 @@ const { seed, POLICY } = await import('../src/seed.js');
 const { ACTIVE_LOCATIONS, DEFAULT_LOCATION, findCityInText } = await import('../src/locations.js');
 const { inr, convert } = await import('../src/money.js');
 const catalog = await import('../src/catalog.js');
+const live = await import('../src/live/index.js');
 const P = await import('../src/live/providers.js');
 const orchestrator = await import('../src/agents/orchestrator.js');
 const chat = await import('../src/agents/chat.js');
@@ -155,4 +156,40 @@ test('Nominatim place search backs up Overpass; Overpass "busy" replies count as
   assert.match(P.overpassFailure({ elements: [], remark: 'runtime error: Query timed out in "query" at line 1 after 26 seconds.' }), /timed out/);
   assert.equal(P.overpassFailure({ elements: [] }), null, 'an empty answer without an error is genuine');
   assert.equal(P.overpassFailure({ remark: 'x' }), 'unexpected response');
+});
+
+test('a real theatre never looks empty: with 3 or fewer real cinemas every movie shows, and every cinema gets at least 2 showtimes', () => {
+  const loc = { country: 'Canada', state: 'Ontario', city: 'Kitchener' };
+  // Fake a single real theatre so we can see the "few real cinemas" path deterministically.
+  live.set(loc, { movies: [], sports: [], ticketmaster: [], holidays: [], places: { cinema: [{ osmId: 'way-1', name: 'Apollo Cinema', distanceKm: 0.3, address: '141 Ontario St N' }] }, sources: [] });
+  const list = catalog.cinemas(loc);
+  assert.equal(list.length, 1);
+  for (const m of catalog.MOVIES) {
+    const shows = catalog.showtimes(m.id, '2026-09-25', loc);
+    assert.equal(shows.length, 1, `${m.title} should be showing at the only real cinema`);
+    assert.ok(shows[0].shows.length >= 2, `${m.title} should have at least 2 showtimes, got ${shows[0].shows.length}`);
+  }
+  live.clear();
+});
+
+test('Wikidata: diaspora-language films are queried and merged in for non-India editions', () => {
+  const q = P.wikidataFilmsQuery({ countryCode: 'CA', from: '2026-08-09', to: '2026-10-03', langQids: P.DIASPORA_LANGUAGE_QIDS });
+  assert.match(q, /VALUES \?wantedLang \{ wd:Q1568 wd:Q58635 wd:Q5885 wd:Q8097 wd:Q36236 wd:Q33673 wd:Q9610 \}/);
+  assert.match(q, /\?film wdt:P364 \?wantedLang \./);
+  const plain = P.wikidataFilmsQuery({ countryCode: 'CA', from: '2026-08-09', to: '2026-10-03' });
+  assert.doesNotMatch(plain, /wantedLang/);
+});
+
+test('movies(): Telugu/Tamil films are interleaved by title, not dumped after every English one', () => {
+  live.set(TOR, {
+    movies: [
+      { id: 'wd-1', title: 'Zeta', language: 'English', source: 'x' },
+      { id: 'wd-2', title: 'Alpha Talkies', language: 'Telugu', source: 'x' },
+      { id: 'wd-3', title: 'Kabali Returns', language: 'Tamil', source: 'x' },
+    ],
+    sports: [], ticketmaster: [], holidays: [], places: {}, sources: [], moviesSource: 'test',
+  });
+  const titles = catalog.movies(TOR).map((m) => m.title);
+  assert.deepEqual(titles, ['Zeta', 'Alpha Talkies', 'Kabali Returns']);
+  live.clear();
 });

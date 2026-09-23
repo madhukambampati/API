@@ -328,13 +328,21 @@ export function normaliseItunes(json) {
 }
 
 // Recent theatrical releases from Wikidata (no key), with posters from Wikipedia page summaries.
-export function wikidataFilmsQuery({ countryCode, from, to, firstBy = shiftDays(from, -365) }) {
+// Languages with a large diaspora audience outside their home country — a Wikidata popularity
+// ranking by total (worldwide) sitelinks buries these under Hollywood films, so cities with a
+// South Asian diaspora (much of Canada, the UK, the US, Singapore, the UAE) never saw them.
+// Wikidata QIDs: Hindi, Punjabi, Tamil, Telugu, Malayalam, Kannada, Bengali.
+export const DIASPORA_LANGUAGE_QIDS = ['Q1568', 'Q58635', 'Q5885', 'Q8097', 'Q36236', 'Q33673', 'Q9610'];
+
+export function wikidataFilmsQuery({ countryCode, from, to, firstBy = shiftDays(from, -365), langQids = null }) {
   const origin = countryCode === 'IN' ? '?film wdt:P495 wd:Q668 .' : '';
+  const langFilter = langQids ? `VALUES ?wantedLang { ${langQids.map((q) => `wd:${q}`).join(' ')} } ?film wdt:P364 ?wantedLang .` : '';
   return `SELECT ?film ?filmLabel ?date ?article ?links ?langLabel ?genreLabel WHERE {
   ?film wdt:P31 wd:Q11424 ; wdt:P577 ?date ; wikibase:sitelinks ?links .
   FILTER(?date >= "${from}T00:00:00Z"^^xsd:dateTime && ?date <= "${to}T00:00:00Z"^^xsd:dateTime)
   FILTER NOT EXISTS { ?film wdt:P577 ?earlier . FILTER(?earlier < "${firstBy}T00:00:00Z"^^xsd:dateTime) }
   ${origin}
+  ${langFilter}
   ?article schema:about ?film ; schema:isPartOf <https://en.wikipedia.org/> .
   OPTIONAL { ?film wdt:P364 ?lang . }
   OPTIONAL { ?film wdt:P136 ?genre . }
@@ -384,16 +392,15 @@ export function normaliseWikiSummary(json) {
   return { poster: json.thumbnail?.source || json.originalimage?.source || null, summary: json.extract || null };
 }
 
-async function recentFilms({ countryCode }) {
-  const today = new Date();
-  const iso = (d) => d.toISOString().slice(0, 10);
-  const from = iso(new Date(today.getTime() - 45 * 86400000));
-  const to = iso(new Date(today.getTime() + 10 * 86400000));
-  const q = wikidataFilmsQuery({ countryCode, from, to });
-  const r = await getJSON(`https://query.wikidata.org/sparql?format=json&query=${enc(q)}`, { ttl: 12 * 3600, timeout: 30000, headers: { accept: 'application/sparql-results+json' }, key: `wikidata films v2 ${countryCode} ${from}` });
-  if (!r.ok) return { ok: false, error: r.error, data: [] };
-  const films = normaliseWikidataFilms(r.data).slice(0, 18);
-  // Posters: Wikipedia page summaries, four at a time.
+async function wikidataQuery({ countryCode, from, to, langQids, cacheKey }) {
+  const q = wikidataFilmsQuery({ countryCode, from, to, langQids });
+  const r = await getJSON(`https://query.wikidata.org/sparql?format=json&query=${enc(q)}`, { ttl: 12 * 3600, timeout: 30000, headers: { accept: 'application/sparql-results+json' }, key: `wikidata films v2 ${cacheKey}` });
+  return r.ok ? { ok: true, films: normaliseWikidataFilms(r.data) } : { ok: false, error: r.error, films: [] };
+}
+
+// Wikipedia page summaries, four at a time: gives us a poster, a summary, and (via
+// releaseYearFromSummary) a second opinion on the release year.
+async function addSummaries(films) {
   for (let i = 0; i < films.length; i += 4) {
     await Promise.all(
       films.slice(i, i + 4).map(async (f) => {
@@ -404,10 +411,31 @@ async function recentFilms({ countryCode }) {
       }),
     );
   }
+  return films;
+}
+
+async function recentFilms({ countryCode }) {
+  const today = new Date();
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const from = iso(new Date(today.getTime() - 45 * 86400000));
+  const to = iso(new Date(today.getTime() + 10 * 86400000));
+
+  const main = await wikidataQuery({ countryCode, from, to, langQids: null, cacheKey: `${countryCode} ${from}` });
+  if (!main.ok) return { ok: false, error: main.error, data: [] };
+  let films = main.films.slice(0, 18);
+
+  // A worldwide-popularity ranking buries diaspora-language films under Hollywood ones, so for
+  // editions outside India ask for them separately and merge in whatever the main query missed.
+  if (countryCode !== 'IN') {
+    const diaspora = await wikidataQuery({ countryCode, from, to, langQids: DIASPORA_LANGUAGE_QIDS, cacheKey: `diaspora ${from}` });
+    const have = new Set(films.map((f) => f.id));
+    const extra = diaspora.films.filter((f) => !have.has(f.id)).slice(0, 8);
+    films = [...films, ...extra];
+  }
+
+  films = await addSummaries(films);
   const minYear = today.getFullYear() - 1;
-  const current = films.filter((f) => (releaseYearFromSummary(f.summary) ?? minYear) >= minYear);
-  films.length = 0;
-  films.push(...current);
+  films = films.filter((f) => (releaseYearFromSummary(f.summary) ?? minYear) >= minYear);
   const withPosters = films.filter((f) => f.poster);
   return { ok: withPosters.length > 0, error: withPosters.length ? null : 'no posters found', data: withPosters.length >= 6 ? withPosters : films };
 }
