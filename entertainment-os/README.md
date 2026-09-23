@@ -1,5 +1,11 @@
 # Entertainment OS
 
+The default website now shows sourced public information only. It does not generate fallback movies, events, ticket prices, cinema formats or showtimes. Venue pricing is left unpublished unless a provider supplies it; cinema and venue websites are linked when available. A film entry is metadata, not evidence that a local cinema is screening it. Sports fixtures are nearby only when the provider city or a mapped venue confirms the location.
+
+Employee budgets, booking, payment and concierge simulations are available only with `EOS_DEMO=1 npm start`. The default server rejects simulated booking/payment workflow requests. Ticketmaster still requires `TICKETMASTER_API_KEY` for its event coverage.
+
+The feature overview below describes the optional demo edition.
+
 One agentic operating system for **movies, events near you (music, sports, tech, comedy, theatre, food), dining, private dining & events (PDRs), catering, gifting & merch, and experiences**. It covers:
 
 - **Chat concierge (opening screen)**: say *"I'm planning to go for a movie today, can you check the theatres?"* and the agents list the theatres near you. Pick one to see its films and showtimes, and the agent preselects the best seats. It asks who pays, then opens the payment page (UPI / card / netbanking in India; card, wallet or Interac in Canada) and issues the ticket. Events and other requests work the same way.
@@ -54,6 +60,8 @@ When the machine running the app has internet access, the app uses these free pu
 TMDB_API_KEY=... TICKETMASTER_API_KEY=... npm start   # both optional
 EOS_OFFLINE=1 npm start                               # never call the network
 ```
+
+Results appear progressively as each provider responds. The open page checks for updates every minute (every four seconds during initial loading); failed sources are retried after three minutes and successful bundles after thirty minutes. These are periodically refreshed public listings, not a real-time ticket inventory feed. The Live data card shows when the server last checked the bundle.
 
 Responses are cached in `data/live-cache.json` (weather 1 h, places 7 days), so the services are used politely. The **Live data** card on the home page shows which sources are connected. Showtimes, seat maps and payments are always simulated: no free API publishes them, and the payment gateway (`src/agents/payment.js`) is a demo that never moves money or asks for card numbers.
 

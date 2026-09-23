@@ -1,2 +1,4 @@
 node_modules
 data/db.json
+
+data/live-cache.json

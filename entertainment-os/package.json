@@ -1,12 +1,12 @@
 {
   "name": "entertainment-os",
   "version": "1.0.0",
-  "description": "Agentic operating system for dining, PDRs, catering, sports & live events, gifting and experiences — with budgets, approvals, expense reports and group splits.",
+  "description": "Agentic operating system for dining, PDRs, catering, sports & live events, gifting and experiences \u2014 with budgets, approvals, expense reports and group splits.",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "EOS_REGION=IN node --test test/agents.test.js test/live.test.js && EOS_REGION=CA node --test test/canada.test.js",
+    "test": "EOS_DEMO=1 EOS_REGION=IN node --test test/agents.test.js test/live.test.js && EOS_DEMO=1 EOS_REGION=CA node --test test/canada.test.js && EOS_DEMO=0 node --test test/real-data.test.js",
     "docs": "node docs/build-handbook.cjs && node docs/build-deck.cjs && python3 docs/build_workbook.py",
     "demo": "node src/demo.js",
     "check-live": "node scripts/check-live.mjs",

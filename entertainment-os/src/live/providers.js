@@ -491,6 +491,7 @@ export function normaliseSportsDb(json) {
     city: e.strCity || null,
     country: e.strCountry || null,
     timestamp: e.strTimestamp ? `${e.strTimestamp.replace(' ', 'T').replace(/Z?$/, '')}Z` : e.dateEvent ? `${e.dateEvent}T${(e.strTime || '19:00:00').slice(0, 8)}Z` : null,
+    timeKnown: Boolean(e.strTimestamp || e.strTime),
     image: e.strThumb || e.strPoster || null,
   }));
 }
@@ -517,8 +518,9 @@ export function normaliseTicketmaster(json) {
       title: e.name,
       type,
       date: e.dates?.start?.localDate || null,
-      time: (e.dates?.start?.localTime || '19:00:00').slice(0, 5),
+      time: e.dates?.start?.localTime?.slice(0, 5) || null,
       venue: v.name || null,
+      city: v.city?.name || null,
       pos: v.location ? { lat: Number(v.location.latitude), lon: Number(v.location.longitude) } : null,
       price: pr ? { min: pr.min, max: pr.max, currency: pr.currency } : null,
       url: e.url || null,

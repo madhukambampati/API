@@ -189,12 +189,14 @@ async function loadDiscover() {
     if (key !== locQS()) return; // location changed meanwhile
     ui.discover = d;
     ui.error = null;
-    if (d.pending) pollDiscover(key, 1);
+    pollDiscover(key, d.pending ? 1 : 0);
   } catch (e) {
     ui.error = `Couldn't load movies and events: ${e.message}`;
+    pollDiscover(key, 0);
   }
 }
 function pollDiscover(key, n) {
+  clearTimeout(discoverPoll);
   discoverPoll = setTimeout(async () => {
     if (key !== locQS()) return;
     try {
@@ -202,12 +204,11 @@ function pollDiscover(key, n) {
       if (key !== locQS()) return;
       ui.discover = d;
       if (['discover', 'movies', 'events', 'venues'].includes(ui.tab)) render();
-      if (d.pending && n < 30) pollDiscover(key, n + 1);
-      else if (!d.pending) toast(`Live data loaded for ${locLabel()}`);
+      pollDiscover(key, d.pending && n < 30 ? n + 1 : 0);
     } catch {
-      if (n < 30) pollDiscover(key, n + 1);
+      pollDiscover(key, 0);
     }
-  }, 4000);
+  }, n ? 4000 : 60000);
 }
 
 // ---------- helpers ----------
@@ -232,20 +233,29 @@ const localMoney = (n) => {
   if (!r(c.currency) || !r(company)) return '';
   return ` ≈ ${c.symbol}${((n / r(company)) * r(c.currency)).toFixed(2)}`;
 };
-const srcTag = (src) => (!src ? '' : src === 'sample' ? '<span class="src sample" title="Demo data">sample</span>' : `<span class="src live" title="${esc(src)}">live · ${esc(src.split(' (')[0])}</span>`);
+const isDemo = () => Boolean(ui.state?.meta?.demo);
+const safeLink = (url, label) => {
+  try { const u = new URL(url); if (!['https:', 'http:'].includes(u.protocol)) return '';
+    return `<a class="btn sm" href="${esc(u.href)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
+  } catch { return ''; }
+};
+const srcTag = (src) => (!src ? '' : src === 'sample' ? '<span class="src sample" title="Demo data">sample</span>' : `<span class="src live" title="${esc(src)}">source · ${esc(src.split(' (')[0])}</span>`);
 const weatherFor = (date) => ui.discover?.weather?.days?.find((d) => d.date === date);
 const dateBlock = (d) => `<div class="date-block"><div class="d">${dt(d).getDate()}</div><div class="m">${dt(d).toLocaleDateString(LOCALE(), { month: 'short' })}</div></div>`;
 const evRow = (e) => {
-  const w = weatherFor(e.date);
-  return `<button class="ev" data-event="${esc(e.id)}">${dateBlock(e.date)}<div><div class="t">${esc(e.title)}</div><div class="small muted">${esc(fmtDate(e.date))} · ${esc(hhmm(e.time))} · ${esc(e.venue)}${e.distanceKm != null ? ` · ${esc(e.distanceKm)} km` : ''}${e.league ? ` · ${esc(e.league)}` : ''}</div><div style="margin-top:4px"><span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span> ${srcTag(e.source)}${w ? ` <span class="small muted">${w.emoji} ${w.max}°</span>` : ''}${e.interested ? ` <span class="small muted">${e.interested.toLocaleString('en-IN')} interested</span>` : ''}</div></div><div class="price"><span class="small muted">from${e.priceEstimated ? ' (est.)' : ''}</span><br>${money(e.tiers[0].price)}<div class="small muted">${esc(localMoney(e.tiers[0].price))}</div></div></button>`;
+  const w = e.local ? weatherFor(e.date) : null;
+  return `<button class="ev" data-event="${esc(e.id)}">${dateBlock(e.date)}<div><div class="t">${esc(e.title)}</div><div class="small muted">${esc(fmtDate(e.date))} · ${e.time ? esc(hhmm(e.time)) : 'Time not published'} · ${esc(e.venue)}${e.distanceKm != null ? ` · ${esc(e.distanceKm)} km` : ''}${e.league ? ` · ${esc(e.league)}` : ''}</div><div style="margin-top:4px"><span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span> ${srcTag(e.source)}${w ? ` <span class="small muted">${w.emoji} ${w.max}°</span>` : ''}${e.interested ? ` <span class="small muted">${e.interested.toLocaleString('en-IN')} interested</span>` : ''}</div></div><div class="price">${!isDemo() ? (e.priceRange ? `${esc(e.priceRange.currency)} ${esc(e.priceRange.min)}–${esc(e.priceRange.max)}<br><small>Published range</small>` : 'Price not published') : `<span class="small muted">from${e.priceEstimated ? ' (est.)' : ''}</span><br>${money(e.tiers[0].price)}`}</div></button>`;
 };
 
 // ---------- views ----------
 function renderShell() {
   const s = ui.state;
-  $('#company').textContent = `${s.meta.company}`;
+  $('#company').textContent = isDemo() ? `${s.meta.company} · Demo` : 'Public listings & forecasts';
+  $('#actor').parentElement.hidden = !isDemo();
+  $('#ask-form').hidden = !isDemo();
+  if (!isDemo() && !['discover', 'movies', 'events', 'venues'].includes(ui.tab)) ui.tab = 'discover';
   const inbox = s.inbox.bookings.length + s.inbox.reports.length;
-  $('#nav').innerHTML = NAV.map((n) => (n === 'sep' ? '<div class="sep"></div>' : `<button data-tab="${n[0]}" class="${ui.tab === n[0] ? 'active' : ''}">${icon(n[2])}<span>${n[1]}</span>${n[0] === 'approvals' && inbox ? `<span class="badge">${inbox}</span>` : ''}</button>`)).join('');
+  $('#nav').innerHTML = NAV.filter((n) => isDemo() || ['discover', 'movies', 'events', 'venues'].includes(n[0])).map((n) => (n === 'sep' ? '<div class="sep"></div>' : `<button data-tab="${n[0]}" class="${ui.tab === n[0] ? 'active' : ''}">${icon(n[2])}<span>${n[1]}</span>${n[0] === 'approvals' && inbox ? `<span class="badge">${inbox}</span>` : ''}</button>`)).join('');
   $('#actor').innerHTML = s.people.filter((p) => p.employee).map((p) => `<option value="${p.id}" ${p.id === ui.actor ? 'selected' : ''}>${esc(p.name)} — ${esc(p.title)}</option>`).join('');
   $('#loc-btn').innerHTML = `${icon('pin')}<span><b>${esc(loc().city)}</b> <span class="muted">${esc([loc().state, loc().country].filter(Boolean).join(', '))}</span></span>`;
 }
@@ -266,7 +276,7 @@ function viewDiscover() {
   return `
   <div class="discover">
     <div>
-      <section class="chat" id="chat">
+      ${isDemo() ? `<section class="chat" id="chat">
         <header class="chat-head">
           <span class="bot-av">${icon('bot')}</span>
           <div><b>Concierge</b><div class="small muted">Agents online · ${esc(loc().city)} · movies, events, dining & more</div></div>
@@ -278,16 +288,16 @@ function viewDiscover() {
           <input id="chat-input" placeholder="Try: I'm planning to go for a movie today, can you check the theatres?" autocomplete="off" ${ui.chat.busy ? 'disabled' : ''} />
           <button class="btn primary" ${ui.chat.busy ? 'disabled' : ''}>Send</button>
         </form>
-      </section>
+      </section>` : `<section class="card section"><h1>Discover ${esc(loc().city)}</h1><p>Explore sourced film information, mapped places and published events. Cinema schedules and ticket availability must be confirmed with the provider.</p></section>`}
       <div class="cat-rail">${Object.entries(s.categories).map(([id, c]) => `<button class="cat" data-cat="${id}"><span class="ic">${icon(c.icon)}</span><b>${esc(c.label)}</b></button>`).join('')}</div>
       <section class="section">
-        <div class="section-head"><h2>${D.moviesSource?.startsWith('TMDB') ? 'Now playing' : 'Popular movies'} in ${esc(loc().city)}</h2><span class="row">${srcTag(D.movies[0]?.source)}<button class="btn sm ghost" data-tab="movies">All movies →</button></span></div>
-        <div class="shelf">${waiting ? '<div class="muted">Loading films…</div>' : D.movies.map((m) => poster(m)).join('')}</div>
+        <div class="section-head"><h2>Film discovery · ${esc(loc().country)}</h2><span class="row">${srcTag(D.movies[0]?.source)}<button class="btn sm ghost" data-tab="movies">All movies →</button></span></div>
+        <div class="shelf">${waiting ? '<div class="muted">Loading films…</div>' : D.movies.map((m) => poster(m)).join('') || '<p>No film information is currently available.</p>'}</div>
       </section>
       <section class="section">
         <div class="section-head"><h2>Happening near you</h2><button class="btn sm ghost" data-tab="events">All events →</button></div>
         <div class="chips" style="margin-bottom:12px">${types.map(([k, l]) => `<button class="chip ${ui.eventType === k ? 'on' : ''}" data-etype="${k}">${esc(l)}</button>`).join('')}</div>
-        <div class="ev-list">${waiting ? '<div class="card empty">Loading events…</div>' : evs.map(evRow).join('') || '<div class="card empty">No events of this type nearby in the next few weeks.</div>'}</div>
+        <div class="ev-list">${waiting ? '<div class="card empty">Loading events…</div>' : evs.map(evRow).join('') || '<div class="card empty">No verified listings are available for this category. This does not mean no events are taking place.</div>'}</div>
       </section>
     </div>
     <aside class="rail">
@@ -296,21 +306,22 @@ function viewDiscover() {
           ? `<div class="card"><h3>Weather in ${esc(loc().city)}</h3><div class="wx">${w.map((d) => `<div title="${esc(d.label)}${d.rain != null ? ` · ${d.rain}% rain` : ''}"><span class="small muted">${esc(dt(d.date).toLocaleDateString('en-IN', { weekday: 'short' }))}</span><span class="e">${d.emoji}</span><b>${d.max}°</b><span class="small muted">${d.min}°</span></div>`).join('')}</div><p class="small muted" style="margin:6px 0 0">Open-Meteo forecast · ${esc(D.weather.timezone || '')}</p></div>`
           : ''
       }
-      <div class="card"><h3>Your month</h3>
+      ${isDemo() ? `<div class="card"><h3>Your month · demo</h3>
         <div class="stat-line"><span>Personal budget</span><b>${money(me.personalMonthly)}</b></div>
         <div class="stat-line"><span>Out of pocket so far</span><b>${money(mySpend?.outOfPocket || 0)}</b></div>
         <div class="stat-line"><span>Wellbeing allowance left</span><b>${money(me.stipendBalance)}</b></div>
         <div class="stat-line"><span>Groups: ${owed >= 0 ? 'you get back' : 'you owe'}</span><b class="${owed >= 0 ? 'pos' : 'neg'}">${money(Math.abs(owed))}</b></div>
         <div class="stat-line"><span>Waiting on you</span><b>${s.inbox.bookings.length + s.inbox.reports.length}</b></div>
-      </div>
+      </div>` : ''}
       ${
         D.holidays.length
           ? `<div class="card"><h3>Upcoming holidays</h3>${D.holidays.slice(0, 4).map((h) => `<div class="stat-line"><span>${esc(h.name)}${h.regional ? ' <span class="small muted">(regional)</span>' : ''}</span><span class="small muted">${esc(fmtDate(h.date))}</span></div>`).join('')}<p class="small muted" style="margin:6px 0 0">Good dates for a long-weekend outing.</p></div>`
           : ''
       }
       <div class="card"><h3>Live data <span class="small muted">${D.sources.length ? `(${liveCount}/${D.sources.length} connected)` : ''}</span></h3>
-        ${!D.sources.length ? `<p class="small muted" style="margin:0">${D.pending || !ui.discover ? '⏳ Connecting to OpenStreetMap, Open-Meteo, Wikidata, TheSportsDB…' : 'No live sources answered — showing sample data.'}</p>` : ''}
-        ${D.sources.map((x) => `<div class="stat-line"><span>${esc(x.name)}</span><span class="small ${x.ok ? 'pos' : 'muted'}" title="${esc(x.error || '')}">${x.ok ? '● live' : x.optional ? 'optional key' : '○ sample'}</span></div>`).join('')}
+        ${!D.sources.length ? `<p class="small muted" style="margin:0">${D.pending || !ui.discover ? '⏳ Connecting to OpenStreetMap, Open-Meteo, Wikidata, TheSportsDB…' : 'Sources are unavailable. Please check again later.'}</p>` : ''}
+        ${D.sources.map((x) => `<div class="stat-line"><span>${esc(x.name)}</span><span class="small ${x.ok ? 'pos' : 'muted'}" title="${esc(x.error || '')}">${x.ok ? '● available' : x.optional ? 'optional key' : '○ unavailable'}</span></div>`).join('')}
+        <p class="small muted">${D.updatedAt ? `Checked ${esc(new Date(D.updatedAt).toLocaleTimeString())}. ` : ''}Refreshes automatically; provider cache times apply. Showtimes, seats and payments are not available here.</p>
         ${D.fx && D.fx.rates?.CAD ? `<p class="small muted" style="margin:6px 0 0">C$1 = ₹${(1 / D.fx.rates.CAD).toFixed(2)}${D.fx.approx ? ' (approx.)' : ` (ECB, ${esc(D.fx.date || '')})`}</p>` : ''}
       </div>
     </aside>
@@ -331,7 +342,7 @@ function viewMovies() {
   const list = D.movies.filter((m) => ui.movieLang === 'all' || m.language === ui.movieLang);
   const days = Array.from({ length: 7 }, (_, i) => addDays(todayISO(), i));
   let detail = '';
-  if (ui.movie) {
+  if (ui.movie && D.movies.some((m) => m.id === ui.movie)) {
     const m = D.movies.find((x) => x.id === ui.movie);
     detail = `<div class="card section" id="movie-detail">
       <div class="movie-head"><div>${poster(m, 'disabled')}</div><div>
@@ -340,15 +351,16 @@ function viewMovies() {
       </div></div>
       ${
         ui.showtimes
-          ? upcoming(ui.showtimes).map((c) => `<div class="cinema"><div class="row"><b>${esc(c.cinema.name)}</b><span class="small muted">${c.cinema.distanceKm != null ? `${esc(c.cinema.distanceKm)} km` : ''}${c.cinema.address ? ` · ${esc(c.cinema.address)}` : ''} ${srcTag(c.cinema.source)}</span></div><div class="times">${c.shows.map((sh) => `<button class="time" data-show="${esc(sh.key)}">${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div>`).join('') || '<p class="muted">No shows on this date.</p>'
+          ? upcoming(ui.showtimes).map((c) => `<div class="cinema"><div class="row"><b>${esc(c.cinema.name)}</b><span class="small muted">${c.cinema.distanceKm != null ? `${esc(c.cinema.distanceKm)} km` : ''}${c.cinema.address ? ` · ${esc(c.cinema.address)}` : ''} ${srcTag(c.cinema.source)}</span></div><div class="times">${c.shows.map((sh) => `<button class="time" data-show="${esc(sh.key)}">${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div>`).join('') || '<p class="muted">Verified showtimes are unavailable. Check the cinema website for films, schedules and prices.</p>'
           : '<p class="muted">Loading showtimes…</p>'
       }
     </div>`;
   }
-  return `<div class="section-head"><h1>Movies in ${esc(loc().city)}</h1><span class="muted">Pick a film, a show and your seats — the agents handle the rest. Showtimes, seats and prices are simulated.</span></div>
+  return `<div class="section-head"><h1>Film discovery</h1><span class="muted">Film metadata from the named sources. A listing does not confirm a screening in this city.</span></div>
     ${detail}
     <div class="chips section">${langs.map((l) => `<button class="chip ${ui.movieLang === l ? 'on' : ''}" data-lang="${esc(l)}">${l === 'all' ? 'All languages' : esc(l)}</button>`).join('')}</div>
-    <div class="movie-grid">${list.map((m) => poster(m)).join('')}</div>`;
+    <div class="movie-grid">${list.map((m) => poster(m)).join('') || '<p>No verified film information available.</p>'}</div>
+    <section class="card section"><h2>Mapped cinemas near ${esc(loc().city)}</h2><p class="muted">OpenStreetMap listings; opening hours and screenings are not verified.</p>${(D.cinemas || []).map((c) => `<div class="venue"><div><b>${esc(c.name)}</b><p>${esc(c.address || 'Address not published')}${c.distanceKm != null ? ` · ${esc(c.distanceKm)} km` : ''}</p></div>${safeLink(c.website, 'Cinema website')}</div>`).join('') || '<p>No mapped cinemas available.</p>'}</section>`;
 }
 
 function viewEvents() {
@@ -357,10 +369,10 @@ function viewEvents() {
   const evs = D.events.filter((e) => ui.eventType === 'all' || e.type === ui.eventType);
   return `<div class="section-head"><h1>Events near ${esc(loc().city)}</h1><span class="muted">Music, sports, tech, comedy, theatre and food — next 6 weeks.</span></div>
     <div class="chips section">${types.map(([k, l]) => `<button class="chip ${ui.eventType === k ? 'on' : ''}" data-etype="${k}">${esc(l)}</button>`).join('')}</div>
-    <div class="ev-list">${evs.map(evRow).join('') || '<div class="card empty">No events of this type nearby. Try another category or city.</div>'}</div>
+    <div class="ev-list">${evs.map(evRow).join('') || '<div class="card empty">No verified listings available. Try another category or city; event coverage depends on the connected sources.</div>'}</div>
     ${
       D.elsewhere?.length
-        ? `<section class="section" style="margin-top:26px"><div class="section-head"><h2>Live fixtures elsewhere in ${esc(loc().country)}</h2><span class="muted small">From TheSportsDB</span></div><div class="ev-list">${D.elsewhere.filter((e) => ui.eventType === 'all' || e.type === ui.eventType).map(evRow).join('')}</div></section>`
+        ? `<section class="section" style="margin-top:26px"><div class="section-head"><h2>Other fixtures · location not confirmed nearby</h2><span class="muted small">From TheSportsDB</span></div><div class="ev-list">${D.elsewhere.filter((e) => ui.eventType === 'all' || e.type === ui.eventType).map(evRow).join('')}</div></section>`
         : ''
     }`;
 }
@@ -374,9 +386,9 @@ function viewVenues() {
     <div class="chips section">${cats.map((c) => `<button class="chip ${ui.venueCat === c ? 'on' : ''}" data-vcat="${c}">${esc(s.categories[c].label)}</button>`).join('')}</div>
     <div class="card">${list
       .map(
-        (v) => `<div class="venue"><span class="ic">${icon(s.categories[ui.venueCat].icon)}</span><div><b>${esc(v.vendor)}</b> ${srcTag(v.source === 'suggestion' ? null : v.source)}<div class="small muted">${esc(v.note)} · ~${money(v.perPerson)}${esc(localMoney(v.perPerson))} per ${unit}${v.estimated ? ' (estimated)' : ''}</div></div><button class="btn sm primary" data-venue="${esc(v.id)}">Book</button></div>`,
+        (v) => `<div class="venue"><span class="ic">${icon(s.categories[ui.venueCat].icon)}</span><div><b>${esc(v.vendor)}</b> ${srcTag(v.source === 'suggestion' ? null : v.source)}<div class="small muted">${esc(v.note)} · ${v.perPerson == null ? 'Price and availability not published' : `~${money(v.perPerson)} per ${unit} (estimated)`}</div></div>${isDemo() ? `<button class="btn sm primary" data-venue="${esc(v.id)}">Book</button>` : safeLink(v.website, 'Venue website')}</div>`,
       )
-      .join('')}</div>`;
+      .join('') || '<p>No verified places available for this category.</p>'}</div>`;
 }
 
 function bookingRows(list) {
@@ -616,12 +628,17 @@ async function openSeats(showKey) {
 
 function openEvent(id) {
   const e = ui.discover.events.find((x) => x.id === id) || ui.discover.elsewhere?.find((x) => x.id === id);
+  if (!isDemo()) {
+    $('#drawer-body').innerHTML = `<h2>${esc(e.title)}</h2><p>${esc(fmtDate(e.date))} · ${e.time ? esc(hhmm(e.time)) : 'Time not published'}</p><p>${esc(e.venue)}</p><p>Source: ${esc(e.source)}. Ticket availability is not verified here.</p>${safeLink(e.url, 'Official event page')}`;
+    $('#drawer').hidden = false;
+    return;
+  }
   let tier = e.tiers[0].name;
   let qty = 2;
   const draw = () => {
     const t = e.tiers.find((x) => x.name === tier);
     $('#drawer-body').innerHTML = `<span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span><h2 style="margin:8px 0 4px">${esc(e.title)}</h2>
-      <p class="muted">${esc(fmtDate(e.date))} · ${esc(hhmm(e.time))}<br>${esc(e.venue)}${e.distanceKm != null ? ` · ${esc(e.distanceKm)} km away` : ''}${e.interested ? ` · ${e.interested.toLocaleString('en-IN')} interested` : ''}${e.league ? ` · ${esc(e.league)}` : ''} ${srcTag(e.source)}</p>
+      <p class="muted">${esc(fmtDate(e.date))} · ${e.time ? esc(hhmm(e.time)) : 'Time not published'}<br>${esc(e.venue)}${e.distanceKm != null ? ` · ${esc(e.distanceKm)} km away` : ''}${e.interested ? ` · ${e.interested.toLocaleString('en-IN')} interested` : ''}${e.league ? ` · ${esc(e.league)}` : ''} ${srcTag(e.source)}</p>
       <h3 style="margin:18px 0 10px">Choose tickets</h3>
       ${e.tiers.map((x) => `<div class="tier ${x.name === tier ? 'on' : ''}" data-tier="${esc(x.name)}"><span>${esc(x.name)}</span><b>${money(x.price)}<span class="small muted">${esc(localMoney(x.price))}</span></b></div>`).join('')}
       ${e.priceEstimated ? '<p class="small muted">Prices are estimates — the organiser hasn’t published them.</p>' : ''}${e.url ? `<p class="small"><a href="${esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a></p>` : ''}
@@ -738,7 +755,7 @@ function renderCard(c, idx) {
   }
   if (c.type === 'events') {
     return `<div class="ccard">${c.events
-      .map((e) => `<button class="crow" ${act({ type: 'pickEvent', eventId: e.id }, e.title)}>${dateBlock(e.date)}<div><b>${esc(e.title)}</b><div class="small muted">${esc(fmtDate(e.date))} · ${esc(hhmm(e.time))} · ${esc(e.venue)}${e.league ? ` · ${esc(e.league)}` : ''}</div><div class="small"><span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span> from ${money(e.from)}${e.priceEstimated ? ' (est.)' : ''}${esc(localMoney(e.from))} ${srcTag(e.source)}</div></div><span class="go">›</span></button>`)
+      .map((e) => `<button class="crow" ${act({ type: 'pickEvent', eventId: e.id }, e.title)}>${dateBlock(e.date)}<div><b>${esc(e.title)}</b><div class="small muted">${esc(fmtDate(e.date))} · ${e.time ? esc(hhmm(e.time)) : 'Time not published'} · ${esc(e.venue)}${e.league ? ` · ${esc(e.league)}` : ''}</div><div class="small"><span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span> from ${money(e.from)}${e.priceEstimated ? ' (est.)' : ''}${esc(localMoney(e.from))} ${srcTag(e.source)}</div></div><span class="go">›</span></button>`)
       .join('')}</div>`;
   }
   if (c.type === 'review' || c.type === 'payment') {
@@ -832,7 +849,7 @@ function render() {
   let html;
   if (DISCOVER_VIEWS.includes(ui.tab) && ui.tab !== 'discover' && !ui.discover) html = `<div class="card empty">Loading what's on in ${esc(loc().city)}…</div>`;
   else html = (views[ui.tab] || viewDiscover)();
-  $('#view').innerHTML = (ui.error ? errorBanner() : '') + (ui.discover?.pending && DISCOVER_VIEWS.includes(ui.tab) ? `<div class="note warn small" style="margin-bottom:14px">⏳ Fetching live cinemas, films and events for ${esc(loc().city)} from the free APIs. Sample data is shown until it arrives (the first time can take up to a minute).</div>` : '') + html;
+  $('#view').innerHTML = (ui.error ? errorBanner() : '') + (ui.discover?.pending && DISCOVER_VIEWS.includes(ui.tab) ? `<div class="note warn small" style="margin-bottom:14px">⏳ Fetching live cinemas, films and events for ${esc(loc().city)} from the free APIs. Results appear as providers respond; unavailable information is left empty.</div>` : '') + html;
   const inp = $('#chat-input');
   if (inp && typed) inp.value = typed;
   if (inp && focused === 'chat-input') inp.focus();
@@ -1004,7 +1021,7 @@ $('#actor').addEventListener('change', async (e) => {
   ui.state = await api('/api/state');
   ui.discover = null;
   render();
-  chatSend({});
+  if (isDemo()) chatSend({});
   await loadDiscover();
   render();
 });
@@ -1018,7 +1035,7 @@ async function boot() {
     ui.locations = await api('/api/locations');
     ui.state = await api('/api/state');
     render(); // draw straight away; movies/events fill in when ready
-    chatSend({});
+    if (isDemo()) chatSend({});
     await loadDiscover();
     render();
   } catch (e) {

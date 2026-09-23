@@ -23,46 +23,45 @@ export function clear() {
   bundles.clear();
 }
 
-async function gather(loc) {
+// Publish each provider as it finishes; weather and films need not wait for places.
+export async function gather(loc, providers = P, publish = () => {}) {
   const today = new Date().toISOString().slice(0, 10);
   const meta = COUNTRY_META[loc.country];
-  const sources = [];
-  const track = (r) => {
-    sources.push({ name: r.source, ok: r.ok, error: r.error || null, optional: Boolean(r.optional) });
+  const bundle = { at: Date.now(), coords: null, countryCode: meta?.code || null,
+    currency: meta?.currency || null, places: {}, cinemasOk: false, weather: null,
+    fx: null, holidays: [], movies: [], moviesSource: null, sports: [], ticketmaster: [], sources: [] };
+  const run = async (name, task, assign) => {
+    let r;
+    try { r = await task(); }
+    catch (err) { r = { source: name, ok: false, error: err.message }; }
+    assign(r);
+    bundle.sources.push({ name: r.source || name, ok: Boolean(r.ok), error: r.error || null, optional: Boolean(r.optional) });
+    bundle.at = Date.now();
+    publish({ ...bundle, sources: [...bundle.sources] });
     return r;
   };
-
-  const geo = track(await P.geocode(loc));
-  const coords = geo.data ? { lat: geo.data.lat, lon: geo.data.lon } : null;
-  const countryCode = meta?.code || geo.data?.countryCode || null;
-
-  const [places, weather, fx, holidays, movies, sports, tm] = await Promise.all([
-    coords ? P.places(coords) : Promise.resolve({ source: 'OpenStreetMap places', ok: false, error: 'no coordinates', data: {} }),
-    coords ? P.weather(coords) : Promise.resolve({ source: 'Open-Meteo', ok: false, error: 'no coordinates', data: null }),
-    P.fx(),
-    P.holidays({ countryCode, state: loc.state, from: today }),
-    P.movies({ countryCode }),
-    P.sports({ countryCode }),
-    coords ? P.ticketmaster(coords) : Promise.resolve({ source: 'Ticketmaster', ok: false, error: 'no coordinates', data: [], optional: true }),
+  const geo = run('OpenStreetMap Nominatim', () => providers.geocode(loc), (r) => {
+    bundle.coords = r.data ? { lat: r.data.lat, lon: r.data.lon } : null;
+    bundle.countryCode ||= r.data?.countryCode || null;
+  });
+  await Promise.all([
+    run('Frankfurter (ECB)', () => providers.fx(), (r) => { bundle.fx = r.data || null; }),
+    geo.then(async () => {
+      const cc = { countryCode: bundle.countryCode };
+      const coords = bundle.coords;
+      await Promise.all([
+        run('OpenStreetMap places', () => coords ? providers.places(coords) : { ok: false, error: 'no coordinates' }, (r) => {
+          bundle.places = r.data || {}; bundle.cinemasOk = Boolean(r.cinemasOk);
+        }),
+        run('Open-Meteo', () => coords ? providers.weather(coords) : { ok: false, error: 'no coordinates' }, (r) => { bundle.weather = r.data || null; }),
+        run('Nager.Date', () => providers.holidays({ ...cc, state: loc.state, from: today }), (r) => { bundle.holidays = r.data || []; }),
+        run('Movies', () => providers.movies(cc), (r) => { bundle.movies = r.data || []; bundle.moviesSource = r.ok ? r.source : null; }),
+        run('TheSportsDB', () => providers.sports(cc), (r) => { bundle.sports = r.data || []; }),
+        run('Ticketmaster', () => coords ? providers.ticketmaster(coords) : { ok: false, error: 'no coordinates', optional: true }, (r) => { bundle.ticketmaster = r.data || []; }),
+      ]);
+    }),
   ]);
-  [places, weather, fx, holidays, movies, sports, tm].forEach(track);
-
-  return {
-    at: Date.now(),
-    coords,
-    countryCode,
-    currency: meta?.currency || null,
-    places: places.data || {},
-    cinemasOk: Boolean(places.cinemasOk),
-    weather: weather.data,
-    fx: fx.data,
-    holidays: holidays.data || [],
-    movies: movies.data || [],
-    moviesSource: movies.ok ? movies.source : null,
-    sports: sports.data || [],
-    ticketmaster: tm.data || [],
-    sources,
-  };
+  return bundle;
 }
 
 export function status(loc) {
@@ -74,7 +73,7 @@ function refresh(loc) {
   const key = locKey(loc);
   if (inflight.has(key)) return inflight.get(key);
   const t0 = Date.now();
-  const p = gather(loc)
+  const p = gather(loc, P, (b) => bundles.set(key, b))
     .catch((err) => ({ at: Date.now(), places: {}, movies: [], sports: [], ticketmaster: [], holidays: [], sources: [{ name: 'live data', ok: false, error: err.message }] }))
     .then((b) => {
       bundles.set(key, b);
@@ -99,9 +98,12 @@ function refresh(loc) {
 export async function ensure(loc, { waitMs = Infinity } = {}) {
   const key = locKey(loc);
   const have = bundles.get(key);
-  if (have && Date.now() - have.at < (have.cinemasOk === false ? RETRY_MS : FRESH_MS)) return have;
+  if (have && !inflight.has(key) && Date.now() - have.at < (have.sources?.some((s) => !s.ok && !s.optional) || have.cinemasOk === false ? RETRY_MS : FRESH_MS)) return have;
   const p = refresh(loc);
   if (have) return have;
   if (waitMs === Infinity) return p;
-  return Promise.race([p, new Promise((r) => setTimeout(() => r(bundles.get(key) || null), waitMs))]);
+  let timer;
+  try {
+    return await Promise.race([p, new Promise((r) => { timer = setTimeout(() => r(bundles.get(key) || null), waitMs); })]);
+  } finally { clearTimeout(timer); }
 }
