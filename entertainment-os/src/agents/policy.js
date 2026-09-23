@@ -1,4 +1,5 @@
 // Policy agent: decides who must approve a booking, in order.
+import { inr } from '../money.js';
 import { load, person, dept } from '../store.js';
 import { POLICY } from '../seed.js';
 
@@ -43,12 +44,12 @@ export function approvalChain(draft, budgetResult) {
   const d = dept(requester.dept);
 
   if (amt > POLICY.autoApproveLimit || overCap || overBudget) {
-    steps.push(step('manager', 'Manager', notSelf(requester.managerId, requester.id), `Spend $${amt.toLocaleString()} > $${POLICY.autoApproveLimit} auto-approve limit`));
+    steps.push(step('manager', 'Manager', notSelf(requester.managerId, requester.id), `Spend ${inr(amt)} > ${inr(POLICY.autoApproveLimit)} auto-approve limit`));
   }
   if (amt > POLICY.managerLimit || overCap) {
     const head = notSelf(d.headId, requester.id);
     if (!steps.some((s) => s.approverId === head)) {
-      steps.push(step('dept_head', 'Department head', head, overCap ? `$${Math.round(perHead)}/attendee exceeds $${cap} policy cap` : `Spend > $${POLICY.managerLimit.toLocaleString()}`));
+      steps.push(step('dept_head', 'Department head', head, overCap ? `${inr(Math.round(perHead))}/attendee exceeds ${inr(cap)} policy cap` : `Spend > ${inr(POLICY.managerLimit)}`));
     }
   }
   if (draft.clientFacing && POLICY.complianceCategories.includes(draft.category)) {
@@ -57,11 +58,11 @@ export function approvalChain(draft, budgetResult) {
   if (amt > POLICY.deptHeadLimit || overBudget) {
     const fin = notSelf(roleHolder('finance').id, requester.id);
     if (!steps.some((s) => s.approverId === fin)) {
-      steps.push(step('finance', 'Finance (CFO)', fin, overBudget ? 'Exceeds department budget' : `Spend > $${POLICY.deptHeadLimit.toLocaleString()}`));
+      steps.push(step('finance', 'Finance (CFO)', fin, overBudget ? 'Exceeds department budget' : `Spend > ${inr(POLICY.deptHeadLimit)}`));
     }
   }
 
-  if (!steps.length) reasons.push(`Within $${POLICY.autoApproveLimit} auto-approve limit and budget — approved by the Policy agent.`);
+  if (!steps.length) reasons.push(`Within ${inr(POLICY.autoApproveLimit)} auto-approve limit and budget — approved by the Policy agent.`);
   else reasons.push(`${steps.length} approval step(s): ${steps.map((s) => s.role).join(' → ')}.`);
   return { steps, reasons, autoApproved: steps.length === 0 };
 }

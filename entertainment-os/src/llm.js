@@ -20,21 +20,22 @@ const INTENT_SCHEMA = {
   additionalProperties: false,
   required: ['category', 'title', 'partySize', 'date', 'funding', 'purpose', 'budget', 'groupType', 'clientFacing'],
   properties: {
-    category: { type: 'string', enum: ['reservations', 'pdr', 'catering', 'sports', 'gifting', 'experiences'] },
+    category: { type: 'string', enum: ['movies', 'events', 'reservations', 'pdr', 'catering', 'gifting', 'experiences'] },
     title: { type: 'string', description: 'Short booking title, e.g. "Client dinner for 4"' },
     partySize: { type: 'integer', description: 'Number of attendees or gift recipients' },
     date: { type: 'string', description: 'ISO date YYYY-MM-DD' },
     funding: { type: 'string', enum: ['corporate', 'reimbursable', 'personal', 'shared'] },
     purpose: { type: 'string', enum: ['business', 'morale', 'wellbeing', 'personal'] },
-    budget: { type: ['number', 'null'], description: 'Explicit spend cap in USD if the user named one' },
+    budget: { type: ['number', 'null'], description: 'Explicit spend cap in Indian rupees (INR) if the user named one' },
     groupType: { type: ['string', 'null'], enum: ['family', 'friends', null] },
     clientFacing: { type: 'boolean' },
   },
 };
 
-const SYSTEM = `You are the Concierge agent inside an entertainment operating system for a company.
+const SYSTEM = `You are the Concierge agent inside an entertainment operating system for a company in India.
+Categories: movies (cinema tickets), events (concerts, sports matches, tech conferences, comedy, theatre, food festivals), reservations (restaurant tables), pdr (private dining rooms/banquets), catering, gifting, experiences (offsites, walks, classes).
 Turn a person's free-text request into a structured booking intent.
-Funding rules: client or team work -> corporate. "I'll pay and expense it" / "reimburse" -> reimbursable.
+Funding rules: client or team work -> corporate. A movie or concert for yourself -> personal. "I'll pay and expense it" / "reimburse" -> reimbursable.
 "with my family" or "with friends" and sharing costs -> shared (set groupType). Paying for yourself only -> personal.
 Purpose: client entertainment -> business; team celebrations/offsites -> morale; personal wellbeing/leisure -> wellbeing or personal.
 Resolve relative dates against today's date given in the request.`;

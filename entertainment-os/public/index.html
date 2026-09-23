@@ -5,29 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Entertainment OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo">E</span>
-      <div>
-        <div class="brand-name">Entertainment OS</div>
-        <div class="brand-sub" id="company"></div>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+        <div>
+          <div class="brand-name">Entertainment OS</div>
+          <div class="brand-sub" id="company"></div>
+        </div>
       </div>
+      <nav class="nav" id="nav"></nav>
+      <label class="actor">
+        <span>Acting as</span>
+        <select id="actor"></select>
+      </label>
+    </aside>
+    <div class="main">
+      <header class="top">
+        <button class="loc-btn" id="loc-btn" type="button" aria-label="Change location"></button>
+        <form class="ask" id="ask-form">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="ask" placeholder="Ask the concierge: “2 tickets for Orbit 9 IMAX tonight”" autocomplete="off" />
+          <button class="btn primary sm">Plan it</button>
+        </form>
+      </header>
+      <main id="view"></main>
     </div>
-    <nav class="tabs" id="tabs"></nav>
-    <label class="actor">
-      <span>Acting as</span>
-      <select id="actor"></select>
-    </label>
-  </header>
-  <main id="view"></main>
+  </div>
   <aside class="drawer" id="drawer" hidden>
-    <button class="drawer-close" id="drawer-close" aria-label="Close">×</button>
+    <button class="drawer-close" data-close="drawer" aria-label="Close">×</button>
     <div id="drawer-body"></div>
   </aside>
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="drawer-close" data-close="modal" aria-label="Close">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
   <div class="toast" id="toast" hidden></div>
   <script type="module" src="/app.js"></script>
 </body>

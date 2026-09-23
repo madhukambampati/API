@@ -1,12 +1,13 @@
 // Split agent: Splitwise-style shared ledger for family and friends groups.
-// All maths is done in integer cents so shares always add up exactly.
+// All maths is done in whole paise so shares always add up exactly.
+import { inr } from '../money.js';
 import { load, nextId, person, log } from '../store.js';
 
-const cents = (n) => Math.round(n * 100);
-const dollars = (c) => Math.round(c) / 100;
+const cents = (n) => Math.round(n * 100); // rupees → paise
+const dollars = (c) => Math.round(c) / 100; // paise → rupees
 
 // method: 'equal' | 'exact' | 'percent' | 'shares'
-// weights: { personId: number } — exact dollars, percentages, or share units.
+// weights: { personId: number } — exact rupees, percentages, or share units.
 export function computeShares(amount, members, method = 'equal', weights = {}) {
   const total = cents(amount);
   if (!members.length) throw new Error('Split needs at least one member');
@@ -14,7 +15,7 @@ export function computeShares(amount, members, method = 'equal', weights = {}) {
   if (method === 'equal') raw = members.map(() => 1);
   else if (method === 'exact') {
     const sum = members.reduce((s, m) => s + cents(weights[m] || 0), 0);
-    if (sum !== total) throw new Error(`Exact amounts add up to $${dollars(sum)}, expected $${dollars(total)}`);
+    if (sum !== total) throw new Error(`Exact amounts add up to ${inr(dollars(sum))}, expected ${inr(dollars(total))}`);
     return members.map((m) => ({ personId: m, amount: dollars(cents(weights[m] || 0)) }));
   } else if (method === 'percent') {
     const sum = members.reduce((s, m) => s + Number(weights[m] || 0), 0);
@@ -28,7 +29,7 @@ export function computeShares(amount, members, method = 'equal', weights = {}) {
   if (units <= 0) throw new Error('Split weights must be positive');
   const base = raw.map((x) => Math.floor((total * x) / units));
   let remainder = total - base.reduce((s, x) => s + x, 0);
-  // Hand out leftover cents one at a time, largest weight first.
+  // Hand out leftover paise one at a time, largest weight first.
   const order = raw.map((x, i) => i).sort((a, b) => raw[b] - raw[a]);
   for (let k = 0; remainder > 0; k = (k + 1) % order.length, remainder--) base[order[k]] += 1;
   return members.map((m, i) => ({ personId: m, amount: dollars(base[i]) }));
@@ -54,7 +55,7 @@ export function addExpense({ groupId, paidBy, amount, description, method = 'equ
     createdAt: new Date().toISOString(),
   };
   d.groupExpenses.push(expense);
-  log('Split agent', `${person(paidBy).name} paid $${expense.amount} for "${description}" — split ${method} across ${participants.length} in ${group.name}.`, expense.id);
+  log('Split agent', `${person(paidBy).name} paid ${inr(expense.amount)} for "${description}" — split ${method} across ${participants.length} in ${group.name}.`, expense.id);
   return expense;
 }
 
@@ -63,7 +64,7 @@ export function settle({ groupId, from, to, amount }) {
   if (from === to) throw new Error('Cannot settle with yourself');
   const s = { id: nextId('settlement', 'SET'), groupId, from, to, amount: dollars(cents(amount)), at: new Date().toISOString() };
   d.settlements.push(s);
-  log('Split agent', `${person(from).name} paid ${person(to).name} $${s.amount} to settle up.`, s.id);
+  log('Split agent', `${person(from).name} paid ${person(to).name} ${inr(s.amount)} to settle up.`, s.id);
   return s;
 }
 

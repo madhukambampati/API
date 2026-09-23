@@ -1,9 +1,12 @@
 // Orchestrator: runs every booking through the agent pipeline
 //   Concierge → Budget → Policy → (Approvals) → Booking → Split / Expense
 // and applies approval decisions for bookings and expense reports.
+import { inr } from '../money.js';
 import { load, save, nextId, person, log } from '../store.js';
 import { CATEGORIES } from '../seed.js';
 import * as concierge from './concierge.js';
+import { normaliseLocation, locationLabel } from '../locations.js';
+import { vendors } from '../catalog.js';
 import * as budget from './budget.js';
 import * as policy from './policy.js';
 import * as split from './split.js';
@@ -18,43 +21,68 @@ function trace(b, agent, message) {
 
 export async function plan(text, requesterId, opts) {
   const draft = await concierge.plan(text, requesterId, opts);
-  // Preview what the downstream agents will do before the user commits.
+  return { draft, ...review(draft) };
+}
+
+// What the Budget and Policy agents will decide, without committing anything.
+function review(draft) {
   const budgetResult = budget.check(draft);
   const chain = policy.approvalChain(draft, budgetResult);
   return {
-    draft,
     budget: budgetResult,
     approvals: chain.steps.map((s) => ({ ...s, approverName: person(s.approverId).name })),
     policyNotes: chain.reasons,
   };
 }
 
-export function createBooking(input, actorId) {
+// Preview a draft built in the UI (e.g. seats picked on the seat map).
+export function preview(input, actorId) {
+  const draft = normaliseDraft(input, actorId);
+  return { draft, ...review(draft) };
+}
+
+function normaliseDraft(input, actorId) {
   const d = load();
   const requester = person(actorId);
   if (!requester?.employee) throw new Error('Only employees can create bookings');
-  if (!CATEGORIES[input.category]) throw new Error(`Unknown category ${input.category}`);
-  const amount = Math.round(Number(input.amount) * 100) / 100;
-  if (!(amount > 0)) throw new Error('Amount must be positive');
-
-  const draft = {
-    ...input,
-    amount,
-    partySize: Math.max(1, Number(input.partySize) || 1),
-    requestedBy: actorId,
-    attendees: input.attendees?.length ? input.attendees : [actorId],
-  };
+  let draft = { ...input, requestedBy: actorId, location: normaliseLocation(input.location || requester.home) };
+  if (draft.details) draft = concierge.verifyTickets(draft);
+  if (!CATEGORIES[draft.category]) throw new Error(`Unknown category ${draft.category}`);
+  draft.partySize = Math.max(1, Number(draft.partySize) || 1);
+  if (draft.vendorId) {
+    // Venue picked from the catalog: price it server-side.
+    const v = vendors(draft.category, draft.location).find((x) => x.id === draft.vendorId);
+    if (!v) throw new Error('That venue is not available in this city');
+    draft.vendor = v.vendor;
+    draft.amount = v.perPerson * draft.partySize;
+  }
+  draft.amount = Math.round(Number(draft.amount) * 100) / 100;
+  if (!(draft.amount > 0)) throw new Error('Amount must be positive');
+  if (!draft.date || !/^\d{4}-\d{2}-\d{2}$/.test(draft.date)) throw new Error('Pick a valid date');
+  draft.attendees = input.attendees?.length ? input.attendees : [actorId];
   if (draft.funding === 'shared') {
     const group = d.groups.find((g) => g.id === draft.groupId);
     if (!group || !group.members.includes(actorId)) throw new Error('Shared bookings need a group you belong to');
     draft.attendees = input.splitMembers?.length ? input.splitMembers : group.members;
+  } else {
+    draft.groupId = null;
+    draft.attendees = [actorId];
   }
+  return draft;
+}
+
+export function createBooking(input, actorId) {
+  const d = load();
+  const requester = person(actorId);
+  const draft = normaliseDraft(input, actorId);
+  const amount = draft.amount;
 
   const b = {
     id: nextId('booking', 'BK'),
     category: draft.category,
     categoryLabel: CATEGORIES[draft.category].label,
     title: draft.title,
+    request: typeof input.request === 'string' ? input.request.slice(0, 300) : null,
     vendor: draft.vendor,
     date: draft.date,
     partySize: draft.partySize,
@@ -66,6 +94,8 @@ export function createBooking(input, actorId) {
     costCenterDept: draft.funding === 'corporate' ? requester.dept : null,
     groupId: draft.groupId || null,
     attendees: draft.attendees,
+    location: draft.location,
+    details: draft.details || null,
     split: draft.funding === 'shared' ? { method: input.splitMethod || 'equal', weights: input.splitWeights || {} } : null,
     status: 'pending_approval',
     approvals: [],
@@ -75,7 +105,11 @@ export function createBooking(input, actorId) {
     trace: [],
   };
   d.bookings.unshift(b);
-  trace(b, 'Concierge agent', `${requester.name} requested "${b.title}" — ${b.vendor}, ${b.partySize} guest(s), $${amount.toLocaleString()}, ${b.date}.`);
+  if (b.details?.kind === 'movie') {
+    // Hold the seats straight away so nobody else can pick them.
+    d.seatBookings[b.details.showKey] = [...(d.seatBookings[b.details.showKey] || []), ...b.details.seats];
+  }
+  trace(b, 'Concierge agent', `${requester.name} requested "${b.title}" — ${b.vendor}, ${locationLabel(b.location)}, ${b.partySize} guest(s), ${inr(amount)}, ${b.date}.`);
   for (const r of input.reasoning || []) b.trace.push({ at: now(), agent: 'Concierge agent', message: r });
 
   b.budget = budget.check(draft, { excludeId: b.id });
@@ -100,7 +134,8 @@ export function createBooking(input, actorId) {
 function confirm(b) {
   b.status = 'confirmed';
   b.confirmation = `${b.category.slice(0, 3).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-  trace(b, 'Booking agent', `Confirmed with ${b.vendor} — confirmation ${b.confirmation}. Calendar invites sent to ${b.attendees.length} attendee(s).`);
+  const what = b.details?.kind === 'movie' ? ` ${b.date} ${b.details.time}, seats ${b.details.seats.join(', ')} — m-tickets sent` : b.details?.kind === 'event' ? ` ${b.details.qty} × ${b.details.tier} e-tickets sent` : ' Calendar invites sent';
+  trace(b, 'Booking agent', `Confirmed with ${b.vendor} — confirmation ${b.confirmation}.${what} to ${b.attendees.length} attendee(s).`);
   if (b.funding === 'shared') {
     const e = split.addExpense({
       groupId: b.groupId,
@@ -113,7 +148,7 @@ function confirm(b) {
       date: b.date,
       bookingId: b.id,
     });
-    trace(b, 'Split agent', `Added to group ledger (${e.id}); each share: ${e.shares.map((s) => `${person(s.personId).name} $${s.amount}`).join(', ')}.`);
+    trace(b, 'Split agent', `Added to group ledger (${e.id}); each share: ${e.shares.map((s) => `${person(s.personId).name} ${inr(s.amount)}`).join(', ')}.`);
   }
   if (b.funding === 'reimbursable') {
     trace(b, 'Expense agent', 'Paid personally — receipt captured. Ready to claim on an expense report.');
@@ -137,6 +172,7 @@ function applyDecision(item, kind, actorId, decision, note) {
   log('Approval agent', msg, item.id);
   if (decision === 'reject') {
     item.status = 'rejected';
+    if (kind === 'booking') releaseSeats(item);
     return;
   }
   const next = item.approvals[stepIdx + 1];
@@ -179,11 +215,19 @@ export function cancelBooking(id, actorId) {
   const claimed = load().reports.some((r) => r.status !== 'rejected' && r.bookingIds.includes(id));
   if (claimed) throw new Error('Booking is on an expense report — withdraw the report first');
   b.status = 'cancelled';
+  releaseSeats(b);
   const d = load();
   d.groupExpenses = d.groupExpenses.filter((e) => e.bookingId !== id);
   trace(b, 'Booking agent', `${person(actorId).name} cancelled the booking; vendor notified and any group split removed.`);
   save();
   return b;
+}
+
+function releaseSeats(b) {
+  if (b.details?.kind !== 'movie') return;
+  const d = load();
+  const held = d.seatBookings[b.details.showKey] || [];
+  d.seatBookings[b.details.showKey] = held.filter((x) => !b.details.seats.includes(x));
 }
 
 export function pendingFor(actorId) {

@@ -1,5 +1,6 @@
 // Expense agent: builds expense reports for personally-paid bookings and routes
 // them to Finance, HR or Benefits depending on purpose.
+import { inr } from '../money.js';
 import { load, nextId, person, log } from '../store.js';
 import { POLICY } from '../seed.js';
 import { reportChain } from './policy.js';
@@ -39,7 +40,7 @@ export function createReport({ ownerId, bookingIds, purpose, submit = false, not
     const bal = person(ownerId).stipendBalance ?? 0;
     if (total > bal) {
       claimable = bal;
-      warnings.push(`Stipend balance is $${bal}; $${round(total - bal)} will not be reimbursed.`);
+      warnings.push(`Allowance balance is ${inr(bal)}; ${inr(round(total - bal))} will not be reimbursed.`);
     }
   }
   const report = {
@@ -58,10 +59,10 @@ export function createReport({ ownerId, bookingIds, purpose, submit = false, not
     approvals: [],
     createdAt: new Date().toISOString(),
     submittedAt: null,
-    trace: [{ at: new Date().toISOString(), agent: 'Expense agent', message: `Drafted report with ${lines.length} line(s) totalling $${total}; receipts attached.` }],
+    trace: [{ at: new Date().toISOString(), agent: 'Expense agent', message: `Drafted report with ${lines.length} line(s) totalling ${inr(total)}; receipts attached.` }],
   };
   d.reports.unshift(report);
-  log('Expense agent', `Drafted ${report.id} for ${person(ownerId).name} — $${total}.`, report.id);
+  log('Expense agent', `Drafted ${report.id} for ${person(ownerId).name} — ${inr(total)}.`, report.id);
   if (submit) submitReport(report.id, ownerId);
   return report;
 }
@@ -77,7 +78,7 @@ export function submitReport(reportId, actorId) {
   r.status = 'submitted';
   r.submittedAt = new Date().toISOString();
   r.trace.push({ at: r.submittedAt, agent: 'Policy agent', message: `Routed to ${routeTo}: ${steps.map((s) => `${s.role} (${person(s.approverId).name})`).join(' → ')}.` });
-  log('Expense agent', `${person(actorId).name} submitted ${r.id} ($${r.total}) → ${routeTo}.`, r.id);
+  log('Expense agent', `${person(actorId).name} submitted ${r.id} (${inr(r.total)}) → ${routeTo}.`, r.id);
   return r;
 }
 
@@ -86,6 +87,6 @@ export function markReimbursed(r) {
   const owner = person(r.ownerId);
   if (r.purpose === 'wellbeing') owner.stipendBalance = round((owner.stipendBalance ?? 0) - r.claimable);
   r.reimbursedAt = new Date().toISOString();
-  r.trace.push({ at: r.reimbursedAt, agent: 'Expense agent', message: `Reimbursed $${r.claimable} to ${owner.name} via next payroll.` });
-  log('Expense agent', `${r.id} reimbursed — $${r.claimable} to ${owner.name}.`, r.id);
+  r.trace.push({ at: r.reimbursedAt, agent: 'Expense agent', message: `Reimbursed ${inr(r.claimable)} to ${owner.name} via next payroll.` });
+  log('Expense agent', `${r.id} reimbursed — ${inr(r.claimable)} to ${owner.name}.`, r.id);
 }

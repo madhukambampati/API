@@ -11,6 +11,8 @@ import * as split from './src/agents/split.js';
 import * as insights from './src/insights.js';
 import { loadDemo } from './src/demo.js';
 import { llmEnabled } from './src/llm.js';
+import { LOCATIONS, normaliseLocation, locationLabel } from './src/locations.js';
+import * as catalog from './src/catalog.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(here, 'public');
@@ -61,9 +63,41 @@ function state(actorId) {
   };
 }
 
+function locFrom(url) {
+  return normaliseLocation({ country: url.searchParams.get('country'), state: url.searchParams.get('state'), city: url.searchParams.get('city') });
+}
+
 const routes = [
   ['GET', /^\/api\/state$/, (req) => state(actor(req))],
-  ['POST', /^\/api\/agent\/plan$/, async (req, body) => orchestrator.plan(String(body.text || ''), actor(req))],
+  ['POST', /^\/api\/agent\/plan$/, async (req, body) => orchestrator.plan(String(body.text || '').slice(0, 500), actor(req), { location: body.location })],
+  ['POST', /^\/api\/agent\/preview$/, (req, body) => orchestrator.preview(body, actor(req))],
+  ['GET', /^\/api\/locations$/, () => LOCATIONS],
+  [
+    'GET',
+    /^\/api\/discover$/,
+    (req, body, m, url) => {
+      actor(req);
+      const loc = locFrom(url);
+      return { location: loc, label: locationLabel(loc), movies: catalog.movies(loc), events: catalog.events(loc, { type: url.searchParams.get('type') || 'all' }), eventTypes: catalog.EVENT_TYPES, venues: Object.fromEntries(['reservations', 'pdr', 'catering', 'gifting', 'experiences'].map((c) => [c, catalog.vendors(c, loc)])) };
+    },
+  ],
+  [
+    'GET',
+    /^\/api\/showtimes$/,
+    (req, body, m, url) => {
+      actor(req);
+      return catalog.showtimes(url.searchParams.get('movie'), url.searchParams.get('date'), locFrom(url));
+    },
+  ],
+  [
+    'GET',
+    /^\/api\/seats$/,
+    (req, body, m, url) => {
+      actor(req);
+      const key = url.searchParams.get('show') || '';
+      return { key, show: catalog.parseShowKey(key), ...catalog.seatMap(key, load().seatBookings?.[key] || []) };
+    },
+  ],
   ['POST', /^\/api\/bookings$/, (req, body) => orchestrator.createBooking(body, actor(req))],
   ['POST', /^\/api\/bookings\/([\w-]+)\/cancel$/, (req, body, m) => orchestrator.cancelBooking(m[1], actor(req))],
   ['POST', /^\/api\/decisions\/([\w-]+)$/, (req, body, m) => orchestrator.decide(m[1], actor(req), body.decision, body.note)],
@@ -129,7 +163,7 @@ const server = http.createServer(async (req, res) => {
     if (!route) return send(res, 404, { error: 'Not found' });
     try {
       const body = req.method === 'POST' ? await readBody(req) : {};
-      const result = await route[2](req, body, url.pathname.match(route[1]));
+      const result = await route[2](req, body, url.pathname.match(route[1]), url);
       return send(res, 200, result);
     } catch (err) {
       return send(res, err.status || 400, { error: err.message });
@@ -144,7 +178,8 @@ const server = http.createServer(async (req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 
-if (!load().bookings.length) await loadDemo();
+// Seed on first run, or when the saved data predates the India/movies/events schema.
+if (!load().bookings.length || !load().seatBookings) await loadDemo();
 
 server.listen(PORT, () => {
   console.log(`Entertainment OS running on http://localhost:${PORT}  (Claude intake: ${llmEnabled() ? 'on' : 'off — rule engine'})`);

@@ -1,13 +1,14 @@
-// Demo organisation: people, cost centers, policies, groups and a vendor catalog.
-// Everything the agents reason over lives here so the flow is reproducible.
+// Demo organisation (India): people, cost centers, policies and groups.
+// Amounts are in INR. Venues, movies and events come from catalog.js.
 
 export const CATEGORIES = {
-  reservations: { label: 'Reservations', icon: 'utensils', example: 'Client dinner for 4 · tonight' },
-  pdr: { label: 'Private dining & events', icon: 'glass', example: 'Private room for 30 · Aug 5' },
-  catering: { label: 'Catering', icon: 'cloche', example: 'Offsite lunch · 120 people' },
-  sports: { label: 'Sports & live events', icon: 'ticket', example: 'Suite at the Warriors game' },
-  gifting: { label: 'Gifting & merch', icon: 'gift', example: 'Holiday gifts · 40 clients' },
-  experiences: { label: 'Experiences', icon: 'star', example: 'Team offsite · Napa' },
+  movies: { label: 'Movies', icon: 'film', blurb: 'Tickets, seats & showtimes' },
+  events: { label: 'Events & live', icon: 'ticket', blurb: 'Music, sports, tech, comedy' },
+  reservations: { label: 'Dining', icon: 'utensils', blurb: 'Tables for clients, teams, family' },
+  pdr: { label: 'Private dining', icon: 'glass', blurb: 'PDRs & banquet halls' },
+  catering: { label: 'Catering', icon: 'cloche', blurb: 'Office & offsite food' },
+  gifting: { label: 'Gifting & merch', icon: 'gift', blurb: 'Diwali hampers, swag' },
+  experiences: { label: 'Experiences', icon: 'compass', blurb: 'Offsites, walks, classes' },
 };
 
 export const FUNDING = {
@@ -17,65 +18,59 @@ export const FUNDING = {
   shared: 'Shared with family / friends (split)',
 };
 
-// Approval matrix used by the Policy agent. Thresholds are per booking total (USD).
+// Approval matrix used by the Policy agent. Thresholds are per booking total (INR).
 export const POLICY = {
-  autoApproveLimit: 250,
-  managerLimit: 2500,
-  deptHeadLimit: 10000,
+  currency: 'INR',
+  autoApproveLimit: 20000,
+  managerLimit: 200000,
+  deptHeadLimit: 800000,
   // Above deptHeadLimit, Finance (CFO) signs off as well.
-  perAttendeeCap: { reservations: 150, pdr: 175, catering: 60, sports: 600, gifting: 100, experiences: 900 },
-  complianceCategories: ['sports', 'gifting'], // client gifts & tickets need gift/entertainment review
+  perAttendeeCap: { movies: 1000, events: 25000, reservations: 4000, pdr: 5000, catering: 1500, gifting: 5000, experiences: 40000 },
+  complianceCategories: ['events', 'gifting'], // client tickets & gifts need gift/entertainment review
   expenseRouting: {
-    // Where a personally-paid expense report is sent.
     business: { team: 'Finance', label: 'Business / client entertainment' },
     morale: { team: 'HR', label: 'Team morale, celebrations & offsites' },
-    wellbeing: { team: 'Benefits', label: 'Lifestyle & wellbeing stipend' },
+    wellbeing: { team: 'Benefits', label: 'Lifestyle & wellbeing allowance' },
   },
   reportSlaDays: 5,
 };
 
+const BLR = { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
+const BOM = { country: 'India', state: 'Maharashtra', city: 'Mumbai' };
+const HYD = { country: 'India', state: 'Telangana', city: 'Hyderabad' };
+const DEL = { country: 'India', state: 'Delhi', city: 'New Delhi' };
+
 export function seed() {
   return {
-    meta: { company: 'Northwind Partners', currency: 'USD', period: '2026-Q3', seededAt: new Date().toISOString() },
+    meta: { company: 'Northwind India Pvt. Ltd.', currency: 'INR', period: 'FY27 Q2 (Jul–Sep 2026)', seededAt: new Date().toISOString() },
     people: [
-      { id: 'u-maya', name: 'Maya Chen', title: 'Account Executive', dept: 'sales', managerId: 'u-raj', employee: true, personalMonthly: 600, stipendBalance: 1200 },
-      { id: 'u-raj', name: 'Raj Patel', title: 'Sales Director', dept: 'sales', managerId: 'u-elena', employee: true, personalMonthly: 800, stipendBalance: 1500 },
-      { id: 'u-elena', name: 'Elena Brooks', title: 'VP Sales (Dept Head)', dept: 'sales', managerId: 'u-sam', employee: true, personalMonthly: 1000, stipendBalance: 1500 },
-      { id: 'u-leo', name: 'Leo Martins', title: 'Product Manager', dept: 'product', managerId: 'u-ana', employee: true, personalMonthly: 500, stipendBalance: 1200 },
-      { id: 'u-ana', name: 'Ana Ruiz', title: 'Head of Product (Dept Head)', dept: 'product', managerId: 'u-sam', employee: true, personalMonthly: 900, stipendBalance: 1500 },
-      { id: 'u-sam', name: 'Sam Okafor', title: 'CFO (Finance)', dept: 'finance', managerId: null, employee: true, personalMonthly: 1000, stipendBalance: 1500, roles: ['finance'] },
-      { id: 'u-kim', name: 'Kim Nguyen', title: 'HR Business Partner', dept: 'people', managerId: 'u-sam', employee: true, personalMonthly: 500, stipendBalance: 1200, roles: ['hr'] },
-      { id: 'u-omar', name: 'Omar Haddad', title: 'Benefits Lead', dept: 'people', managerId: 'u-sam', employee: true, personalMonthly: 500, stipendBalance: 1200, roles: ['benefits'] },
-      { id: 'u-ivy', name: 'Ivy Walsh', title: 'Compliance Officer', dept: 'finance', managerId: 'u-sam', employee: true, personalMonthly: 500, stipendBalance: 1200, roles: ['compliance'] },
+      { id: 'u-ananya', name: 'Ananya Iyer', title: 'Account Executive', dept: 'sales', managerId: 'u-rahul', employee: true, personalMonthly: 25000, stipendBalance: 60000, home: BLR },
+      { id: 'u-rahul', name: 'Rahul Mehta', title: 'Sales Director', dept: 'sales', managerId: 'u-priya', employee: true, personalMonthly: 35000, stipendBalance: 60000, home: BOM },
+      { id: 'u-priya', name: 'Priya Sharma', title: 'VP Sales (Dept Head)', dept: 'sales', managerId: 'u-vikram', employee: true, personalMonthly: 50000, stipendBalance: 75000, home: BOM },
+      { id: 'u-arjun', name: 'Arjun Reddy', title: 'Product Manager', dept: 'product', managerId: 'u-kavya', employee: true, personalMonthly: 25000, stipendBalance: 60000, home: HYD },
+      { id: 'u-kavya', name: 'Kavya Nair', title: 'Head of Product (Dept Head)', dept: 'product', managerId: 'u-vikram', employee: true, personalMonthly: 40000, stipendBalance: 75000, home: BLR },
+      { id: 'u-vikram', name: 'Vikram Singh', title: 'CFO (Finance)', dept: 'finance', managerId: null, employee: true, personalMonthly: 50000, stipendBalance: 75000, home: DEL, roles: ['finance'] },
+      { id: 'u-neha', name: 'Neha Gupta', title: 'HR Business Partner', dept: 'people', managerId: 'u-vikram', employee: true, personalMonthly: 25000, stipendBalance: 60000, home: BLR, roles: ['hr'] },
+      { id: 'u-farhan', name: 'Farhan Qureshi', title: 'Benefits Lead', dept: 'people', managerId: 'u-vikram', employee: true, personalMonthly: 25000, stipendBalance: 60000, home: HYD, roles: ['benefits'] },
+      { id: 'u-meera', name: 'Meera Joshi', title: 'Compliance Officer', dept: 'finance', managerId: 'u-vikram', employee: true, personalMonthly: 25000, stipendBalance: 60000, home: BOM, roles: ['compliance'] },
       // Family & friends — not employees, but they share costs through groups.
-      { id: 'f-daniel', name: 'Daniel Chen', title: 'Family (Maya\'s partner)', employee: false },
-      { id: 'f-lucy', name: 'Lucy Chen', title: 'Family (Maya\'s sister)', employee: false },
-      { id: 'f-priya', name: 'Priya Shah', title: 'Friend', employee: false },
-      { id: 'f-tom', name: 'Tom Becker', title: 'Friend', employee: false },
+      { id: 'f-rohan', name: 'Rohan Iyer', title: 'Family (Ananya’s husband)', employee: false },
+      { id: 'f-diya', name: 'Diya Iyer', title: 'Family (Ananya’s sister)', employee: false },
+      { id: 'f-sneha', name: 'Sneha Kapoor', title: 'Friend', employee: false },
+      { id: 'f-karthik', name: 'Karthik Rao', title: 'Friend', employee: false },
     ],
     departments: [
-      { id: 'sales', name: 'Sales', costCenter: 'CC-4100', headId: 'u-elena', quarterlyBudget: 60000 },
-      { id: 'product', name: 'Product', costCenter: 'CC-5200', headId: 'u-ana', quarterlyBudget: 25000 },
-      { id: 'people', name: 'People (HR & Benefits)', costCenter: 'CC-7100', headId: 'u-kim', quarterlyBudget: 40000 },
-      { id: 'finance', name: 'Finance', costCenter: 'CC-9000', headId: 'u-sam', quarterlyBudget: 15000 },
+      { id: 'sales', name: 'Sales', costCenter: 'CC-4100', headId: 'u-priya', quarterlyBudget: 6000000 },
+      { id: 'product', name: 'Product', costCenter: 'CC-5200', headId: 'u-kavya', quarterlyBudget: 2000000 },
+      { id: 'people', name: 'People (HR & Benefits)', costCenter: 'CC-7100', headId: 'u-neha', quarterlyBudget: 3000000 },
+      { id: 'finance', name: 'Finance', costCenter: 'CC-9000', headId: 'u-vikram', quarterlyBudget: 1000000 },
     ],
     groups: [
-      { id: 'g-family', name: 'Chen family', type: 'family', members: ['u-maya', 'f-daniel', 'f-lucy'] },
-      { id: 'g-friends', name: 'Weekend crew', type: 'friends', members: ['u-maya', 'u-leo', 'f-priya', 'f-tom'] },
-    ],
-    catalog: [
-      { id: 'v-1', category: 'reservations', vendor: 'Quince', city: 'San Francisco', perPerson: 140 },
-      { id: 'v-2', category: 'reservations', vendor: 'State Bird Provisions', city: 'San Francisco', perPerson: 85 },
-      { id: 'v-3', category: 'pdr', vendor: 'The Morris — Private Room', city: 'San Francisco', perPerson: 150 },
-      { id: 'v-4', category: 'catering', vendor: 'Bi-Rite Catering', city: 'San Francisco', perPerson: 38 },
-      { id: 'v-5', category: 'sports', vendor: 'Chase Center — Warriors Suite', city: 'San Francisco', perPerson: 550 },
-      { id: 'v-6', category: 'sports', vendor: 'Oracle Park — Giants Club Seats', city: 'San Francisco', perPerson: 180 },
-      { id: 'v-7', category: 'gifting', vendor: 'Goldbelly Gift Boxes', city: 'Online', perPerson: 85 },
-      { id: 'v-8', category: 'gifting', vendor: 'Branded Merch Co.', city: 'Online', perPerson: 45 },
-      { id: 'v-9', category: 'experiences', vendor: 'Napa Valley Wine Retreat', city: 'Napa', perPerson: 450 },
-      { id: 'v-10', category: 'experiences', vendor: 'Alcatraz Night Tour', city: 'San Francisco', perPerson: 65 },
+      { id: 'g-family', name: 'Iyer family', type: 'family', members: ['u-ananya', 'f-rohan', 'f-diya'] },
+      { id: 'g-friends', name: 'Weekend gang', type: 'friends', members: ['u-ananya', 'u-arjun', 'f-sneha', 'f-karthik'] },
     ],
     bookings: [],
+    seatBookings: {},
     groupExpenses: [],
     settlements: [],
     reports: [],
