@@ -23,6 +23,22 @@ const REQUESTS = [
 ];
 
 export async function loadDemo({ now = new Date() } = {}) {
+  // Demo mode is off by default (see catalog.js's demoMode), but this dataset can only be built
+  // while it's on — it plans requests like "Frostbound IMAX Friday evening" against the catalog's
+  // demo theatres/films, which real-data-only mode deliberately returns empty for. Set only here
+  // (never at module load — merely importing loadDemo, e.g. for the reset-demo-data route, must
+  // not flip demo mode on for the whole process) and only restored if this call changed it, so a
+  // caller that explicitly asked for strict mode isn't overridden by an unrelated import.
+  const hadEosDemo = process.env.EOS_DEMO;
+  if (hadEosDemo === undefined) process.env.EOS_DEMO = '1';
+  try {
+    return await loadDemoData(now);
+  } finally {
+    if (hadEosDemo === undefined) delete process.env.EOS_DEMO;
+  }
+}
+
+async function loadDemoData(now) {
   reset(seed());
   const created = [];
   for (const [who, text] of REQUESTS) {

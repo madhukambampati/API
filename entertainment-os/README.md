@@ -35,20 +35,24 @@ The server has no dependencies (Node 18+). Use **Acting as** in the sidebar to s
 
 ### Two modes
 
-By default the app runs in **demo mode** — the chat concierge, booking, seat selection, simulated
-payment, budgets, approvals, expense reports and splits all work, as described below. Cinemas,
-films and events come from the free APIs when reachable; anything unavailable falls back to
-labelled sample data so the flow never dead-ends.
+By default the app runs in **real-data-only mode**: it shows only what a provider actually
+published — a real cinema's name, address and a link to its own website; real films (as metadata,
+not proof a nearby theatre is screening them); sports fixtures only when the venue or provider city
+confirms they're local; unpublished prices left blank rather than estimated. There is no chat
+concierge, no booking, no seats, no payment, and no invented movie/theatre pairing anywhere —
+because no free API publishes which films a specific real theatre is actually showing (that's
+exactly the data theatre chains sell access to through their own booking systems). Every write
+endpoint (bookings, payments, reports, groups) returns `409` in this mode. See
+`test/real-data.test.js`.
 
-Set `EOS_DEMO=0` for a stricter **listings-only** mode: no chat, no booking, no invented fallback
-data at all. It shows only what a provider actually published — real cinemas and films with no
-formats/showtimes attached, sports fixtures only when the venue or provider city confirms they're
-local, and unpublished prices left blank rather than estimated. Every write endpoint (bookings,
-payments, reports, groups) returns `409` in this mode. This is the right choice if you want to
-embed the "what's on nearby" data feed on its own, with no simulated transactions anywhere near it.
+Set `EOS_DEMO=1` for the **demo edition** instead: the chat concierge, booking, seat selection,
+simulated payment, budgets, approvals, expense reports and splits all work, as described below —
+this is the agentic-OS demo this app was built to showcase. Cinemas, films and events still come
+from the free APIs when reachable; showtimes, seat maps and prices are always simulated on top of
+them (a real theatre, an invented showing), and it's labelled as such throughout the UI.
 
 ```sh
-EOS_DEMO=0 npm start     # listings-only; see test/real-data.test.js
+EOS_DEMO=1 npm start     # the full agentic-OS demo (chat, booking, payment, approvals, splits)
 ```
 
 ### Live data (free, no sign-up)
@@ -94,6 +98,11 @@ That's it — `vercel.json` and `api/index.js` are already set up, and no enviro
 required (the app detects Vercel and stores its data under `/tmp` automatically). Live data (real
 cinemas, films, fixtures) works there since Vercel has normal internet access, unlike this
 sandbox.
+
+With no environment variables set, this deploys in **real-data-only mode** (see "Two modes"
+above): real theatres with a link to their own website, no invented showtimes or bookings. Add
+`EOS_DEMO=1` as an environment variable (Project → Settings → Environment Variables, then
+redeploy) for the chat/booking/payment demo instead.
 
 **Read this before treating it as more than a demo/preview link.** This app is designed to run as
 one long-running process (`npm start`) that keeps chat sessions, the live-data cache and bookings

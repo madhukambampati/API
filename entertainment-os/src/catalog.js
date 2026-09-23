@@ -9,10 +9,13 @@ import { REGION } from './region.js';
 import { CURRENCY, convert } from './money.js';
 import { SPORT_TIERS, FX_FALLBACK, distanceKm } from './live/providers.js';
 
-// Demo mode (chat concierge, simulated booking/seats/payment, budgets & approvals — the whole
-// point of this app) is the default. Set EOS_DEMO=0 for the stricter "verified listings only, no
-// booking" mode instead (see test/real-data.test.js and README's "Deploying" section).
-export const demoMode = () => process.env.EOS_DEMO !== '0';
+// Real-data-only is the default: only what a provider actually published (a real theatre's name,
+// address and website; real films; real fixtures) is shown, with no invented movie/theatre
+// pairings, showtimes or prices anywhere — see test/real-data.test.js. Set EOS_DEMO=1 to switch on
+// the chat concierge and the simulated booking/seats/payment/approvals demo instead (README's
+// "Two modes" section); loadDemo() (npm run demo, doc generation) always needs that mode and sets
+// it itself.
+export const demoMode = () => process.env.EOS_DEMO === '1';
 
 // ---------- helpers ----------
 function hash(str) {

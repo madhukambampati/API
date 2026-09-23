@@ -3,6 +3,7 @@
 process.env.EOS_REGION = process.env.EOS_DOCS_REGION || 'IN';
 process.env.EOS_DISABLE_LLM = '1';
 process.env.EOS_OFFLINE = '1';
+process.env.EOS_DEMO = '1'; // the docs describe the demo edition; real-data-only mode is off by default
 
 const { useMemory } = await import('../src/store.js');
 const { loadDemo } = await import('../src/demo.js');
