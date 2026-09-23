@@ -340,7 +340,7 @@ function viewMovies() {
       </div></div>
       ${
         ui.showtimes
-          ? upcoming(ui.showtimes).map((c) => `<div class="cinema"><div class="row"><b>${esc(c.cinema.name)}</b><span class="small muted">${esc(c.cinema.distanceKm)} km</span></div><div class="times">${c.shows.map((sh) => `<button class="time" data-show="${esc(sh.key)}">${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div>`).join('') || '<p class="muted">No shows on this date.</p>'
+          ? upcoming(ui.showtimes).map((c) => `<div class="cinema"><div class="row"><b>${esc(c.cinema.name)}</b><span class="small muted">${c.cinema.distanceKm != null ? `${esc(c.cinema.distanceKm)} km` : ''}${c.cinema.address ? ` · ${esc(c.cinema.address)}` : ''} ${srcTag(c.cinema.source)}</span></div><div class="times">${c.shows.map((sh) => `<button class="time" data-show="${esc(sh.key)}">${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div>`).join('') || '<p class="muted">No shows on this date.</p>'
           : '<p class="muted">Loading showtimes…</p>'
       }
     </div>`;

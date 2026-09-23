@@ -38,7 +38,7 @@ export async function geocode(loc) {
 
 // ---------- 2. Real places: OpenStreetMap Overpass ----------
 const PLACE_SETS = [
-  ['cinema', 'nwr["amenity"="cinema"]', 15000, 25],
+  ['cinema', 'nwr["amenity"="cinema"]["name"]', 30000, 40],
   ['restaurant', 'nwr["amenity"="restaurant"]["name"]', 4000, 60],
   ['theatre', 'nwr["amenity"~"^(theatre|arts_centre)$"]["name"]', 15000, 20],
   ['stadium', 'nwr["leisure"="stadium"]["name"]', 25000, 15],
@@ -49,8 +49,9 @@ const PLACE_SETS = [
   ['attraction', 'nwr["tourism"~"^(attraction|museum|gallery)$"]["name"]', 20000, 25],
 ];
 
-export function overpassQuery({ lat, lon }) {
-  const parts = PLACE_SETS.map(([k, sel, radius, limit]) => `(${sel}(around:${radius},${lat},${lon});)->.${k};.${k} out center tags ${limit};`);
+export function overpassQuery({ lat, lon }, only) {
+  const sets = only ? PLACE_SETS.filter(([k]) => only.includes(k)) : PLACE_SETS;
+  const parts = sets.map(([k, sel, radius, limit]) => `(${sel}(around:${radius},${lat},${lon});)->.${k};.${k} out center tags ${limit};`);
   return `[out:json][timeout:25];${parts.join('')}`;
 }
 
@@ -95,19 +96,28 @@ export function normaliseOsm(json, center) {
   return out;
 }
 
-export async function places(center) {
-  const q = overpassQuery(center);
-  const mirrors = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+const OVERPASS_MIRRORS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
+
+async function overpass(q) {
   let last;
-  for (const url of mirrors) {
+  for (const url of OVERPASS_MIRRORS) {
     last = await getJSON(url, { method: 'POST', body: `data=${enc(q)}`, headers: { 'content-type': 'application/x-www-form-urlencoded' }, ttl: 7 * 86400, timeout: 30000, key: `overpass ${q}` });
-    if (last.ok) {
-      const data = normaliseOsm(last.data, center);
-      const n = Object.values(data).reduce((t, l) => t + l.length, 0);
-      return { source: 'OpenStreetMap Overpass', ok: n > 0, error: n ? null : 'no places found', data, count: n };
-    }
+    if (last.ok && Array.isArray(last.data?.elements)) return last;
   }
-  return { source: 'OpenStreetMap Overpass', ok: false, error: last?.error, data: {} };
+  return { ok: false, error: last?.error || 'no answer' };
+}
+
+// Cinemas are asked for on their own (small query, answers fast) so a slow or failed
+// "everything else" query never replaces real theatres with sample ones.
+export async function places(center) {
+  const [cin, rest] = await Promise.all([
+    overpass(overpassQuery(center, ['cinema'])),
+    overpass(overpassQuery(center, PLACE_SETS.map(([k]) => k).filter((k) => k !== 'cinema'))),
+  ]);
+  const data = { ...(rest.ok ? normaliseOsm(rest.data, center) : {}), ...(cin.ok ? normaliseOsm(cin.data, center) : {}) };
+  const n = Object.values(data).reduce((t, l) => t + l.length, 0);
+  const error = !cin.ok ? `cinemas: ${cin.error}` : !rest.ok ? `other places: ${rest.error}` : n ? null : 'no places found';
+  return { source: 'OpenStreetMap Overpass', ok: n > 0, error, data, count: n, cinemasOk: cin.ok };
 }
 
 // ---------- 3. Weather: Open-Meteo ----------
@@ -226,11 +236,12 @@ export function normaliseItunes(json) {
 }
 
 // Recent theatrical releases from Wikidata (no key), with posters from Wikipedia page summaries.
-export function wikidataFilmsQuery({ countryCode, from, to }) {
+export function wikidataFilmsQuery({ countryCode, from, to, firstBy = shiftDays(from, -365) }) {
   const origin = countryCode === 'IN' ? '?film wdt:P495 wd:Q668 .' : '';
   return `SELECT ?film ?filmLabel ?date ?article ?links ?langLabel ?genreLabel WHERE {
   ?film wdt:P31 wd:Q11424 ; wdt:P577 ?date ; wikibase:sitelinks ?links .
   FILTER(?date >= "${from}T00:00:00Z"^^xsd:dateTime && ?date <= "${to}T00:00:00Z"^^xsd:dateTime)
+  FILTER NOT EXISTS { ?film wdt:P577 ?earlier . FILTER(?earlier < "${firstBy}T00:00:00Z"^^xsd:dateTime) }
   ${origin}
   ?article schema:about ?film ; schema:isPartOf <https://en.wikipedia.org/> .
   OPTIONAL { ?film wdt:P364 ?lang . }
@@ -267,6 +278,15 @@ export function normaliseWikidataFilms(json) {
     }));
 }
 
+const shiftDays = (iso, days) => new Date(Date.parse(iso) + days * 86400000).toISOString().slice(0, 10);
+
+// Wikipedia opens film articles with "X is a 1986 American action film…": use it as a second
+// guard against old films that only have a recent re-release date on Wikidata.
+export function releaseYearFromSummary(text) {
+  const m = /\b(?:is|was) an? (\d{4}) (?:[A-Za-z-]+ ){0,6}(?:film|movie)/.exec(text || '');
+  return m ? Number(m[1]) : null;
+}
+
 export function normaliseWikiSummary(json) {
   if (!json) return null;
   return { poster: json.thumbnail?.source || json.originalimage?.source || null, summary: json.extract || null };
@@ -278,7 +298,7 @@ async function recentFilms({ countryCode }) {
   const from = iso(new Date(today.getTime() - 45 * 86400000));
   const to = iso(new Date(today.getTime() + 10 * 86400000));
   const q = wikidataFilmsQuery({ countryCode, from, to });
-  const r = await getJSON(`https://query.wikidata.org/sparql?format=json&query=${enc(q)}`, { ttl: 12 * 3600, timeout: 30000, headers: { accept: 'application/sparql-results+json' }, key: `wikidata films ${countryCode} ${from}` });
+  const r = await getJSON(`https://query.wikidata.org/sparql?format=json&query=${enc(q)}`, { ttl: 12 * 3600, timeout: 30000, headers: { accept: 'application/sparql-results+json' }, key: `wikidata films v2 ${countryCode} ${from}` });
   if (!r.ok) return { ok: false, error: r.error, data: [] };
   const films = normaliseWikidataFilms(r.data).slice(0, 18);
   // Posters: Wikipedia page summaries, four at a time.
@@ -292,6 +312,10 @@ async function recentFilms({ countryCode }) {
       }),
     );
   }
+  const minYear = today.getFullYear() - 1;
+  const current = films.filter((f) => (releaseYearFromSummary(f.summary) ?? minYear) >= minYear);
+  films.length = 0;
+  films.push(...current);
   const withPosters = films.filter((f) => f.poster);
   return { ok: withPosters.length > 0, error: withPosters.length ? null : 'no posters found', data: withPosters.length >= 6 ? withPosters : films };
 }

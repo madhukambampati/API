@@ -6,6 +6,7 @@ import * as P from './providers.js';
 const bundles = new Map(); // locKey -> bundle
 const inflight = new Map(); // locKey -> Promise<bundle>
 const FRESH_MS = 30 * 60 * 1000;
+const RETRY_MS = 3 * 60 * 1000; // try again sooner when real cinemas couldn't be fetched
 
 export const locKey = (loc) => [loc.country, loc.state, loc.city].map((x) => String(x || '').trim().toLowerCase()).join('|');
 
@@ -52,6 +53,7 @@ async function gather(loc) {
     countryCode,
     currency: meta?.currency || null,
     places: places.data || {},
+    cinemasOk: Boolean(places.cinemasOk),
     weather: weather.data,
     fx: fx.data,
     holidays: holidays.data || [],
@@ -96,7 +98,7 @@ function refresh(loc) {
 export async function ensure(loc, { waitMs = Infinity } = {}) {
   const key = locKey(loc);
   const have = bundles.get(key);
-  if (have && Date.now() - have.at < FRESH_MS) return have;
+  if (have && Date.now() - have.at < (have.cinemasOk === false ? RETRY_MS : FRESH_MS)) return have;
   const p = refresh(loc);
   if (have) return have;
   if (waitMs === Infinity) return p;

@@ -118,3 +118,19 @@ test('chat: hockey games near me', async () => {
   assert.equal(card.type, 'events');
   assert.ok(card.events.every((e) => e.type === 'sports'));
 });
+
+test('without live map data, theatres are clearly labelled demo theatres, never real-sounding names', () => {
+  const list = catalog.cinemas({ country: 'Canada', state: 'Ontario', city: 'Kitchener' });
+  assert.ok(list.every((c) => c.source === 'sample' && /Demo Theatre .* \(sample\)/.test(c.name) && c.distanceKm == null));
+});
+
+test('cinemas get their own Overpass query; old films with re-release dates are filtered out', () => {
+  const q = P.overpassQuery({ lat: 43.45, lon: -80.49 }, ['cinema']);
+  assert.match(q, /amenity"="cinema"/);
+  assert.doesNotMatch(q, /restaurant/);
+  assert.match(P.overpassQuery({ lat: 43.45, lon: -80.49 }), /restaurant/);
+  assert.match(P.wikidataFilmsQuery({ countryCode: 'CA', from: '2026-08-09', to: '2026-10-03' }), /FILTER NOT EXISTS \{ \?film wdt:P577 \?earlier . FILTER\(\?earlier < "2025-08-09/);
+  assert.equal(P.releaseYearFromSummary('Cobra is a 1986 American action film directed by George P. Cosmatos'), 1986);
+  assert.equal(P.releaseYearFromSummary('Frostbound is a 2026 Canadian science fiction thriller film.'), 2026);
+  assert.equal(P.releaseYearFromSummary('A film.'), null);
+});

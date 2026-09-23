@@ -223,7 +223,9 @@ test('chat: shared family movie splits the bill; team outing goes to the company
   r = await tap(id, { type: 'changeDate', date: new Date(Date.now() + 86400000).toISOString().slice(0, 10) });
   const s2 = r.messages.at(-1).card.movies[0].shows[0];
   r = await tap(id, { type: 'pickShow', showKey: s2.key });
-  r = await tap(id, { type: 'confirmSeats', seats: r.messages.at(-1).card.suggested.length ? r.messages.at(-1).card.suggested : ['A1'] });
+  const seatCard = r.messages.at(-1).card;
+  const free = seatCard.rows.flatMap((row) => row.seats).filter((x) => !x.sold).map((x) => x.id);
+  r = await tap(id, { type: 'confirmSeats', seats: seatCard.suggested.length ? seatCard.suggested : free.slice(0, seatCard.count) });
   assert.equal(r.step, 'corporate');
   r = await tap(id, { type: 'corporate' });
   const corp = load().bookings.find((x) => x.id === r.messages.at(-1).card.booking.id);

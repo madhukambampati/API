@@ -159,16 +159,19 @@ export function cinemas(loc) {
       return { id: `cin-osm-${pl.osmId}`, name: pl.name, formats, distanceKm: pl.distanceKm, address: pl.address, source: 'OpenStreetMap' };
     });
   }
+  // No real theatres (map data unavailable): obviously-fake demo theatres, never names that
+  // could be mistaken for a real cinema.
   const c = loc.city;
   return [
-    { id: `cin-${slug(c)}-starlight`, name: `Starlight Multiplex — ${c} Central`, formats: ['2D', '3D', 'IMAX'], distanceKm: 3.2, source: 'sample' },
-    { id: `cin-${slug(c)}-galaxy`, name: `Galaxy Cinemas — ${c} Mall`, formats: ['2D', 'Recliner'], distanceKm: 5.8, source: 'sample' },
-    { id: `cin-${slug(c)}-royal`, name: `Royal Screens ${c}`, formats: ['2D', '3D'], distanceKm: 8.1, source: 'sample' },
+    { id: `cin-${slug(c)}-demo-a`, name: `Demo Theatre A (sample) — ${c}`, formats: ['2D', '3D', 'IMAX'], distanceKm: null, source: 'sample' },
+    { id: `cin-${slug(c)}-demo-b`, name: `Demo Theatre B (sample) — ${c}`, formats: ['2D', 'Recliner'], distanceKm: null, source: 'sample' },
+    { id: `cin-${slug(c)}-demo-c`, name: `Demo Theatre C (sample) — ${c}`, formats: ['2D', '3D'], distanceKm: null, source: 'sample' },
   ];
 }
 
 // Not every film plays at every cinema (about 70% do), but every film plays somewhere.
 function playsAt(movie, list) {
+  if (list.every((c) => c.source === 'sample')) return list; // the three demo theatres show everything
   const picked = list.filter((cin) => hash(`${movie.id}|${cin.id}`) % 100 < 70);
   return picked.length ? picked : list.slice(0, 1);
 }

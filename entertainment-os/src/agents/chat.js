@@ -42,7 +42,7 @@ function sourceNote(loc) {
   const b = live.get(loc);
   const real = cinemas(loc)[0]?.source === 'OpenStreetMap';
   const mv = b?.moviesSource;
-  return [real ? 'Theatres are real places from OpenStreetMap' : 'Theatres are sample data (live map data unavailable)', mv ? `films from ${mv}` : 'films are sample data', 'showtimes, seat maps and prices are simulated'].join('; ') + '.';
+  return [real ? 'Theatres are real places from OpenStreetMap' : `I couldn't get the real theatres in ${loc.city} from OpenStreetMap just now, so these are demo theatres (ask again in a few minutes)`, mv ? `films from ${mv}` : 'films are sample data', 'showtimes, seat maps and prices are simulated'].join('; ') + '.';
 }
 
 function wantsTime(t) {
@@ -74,7 +74,7 @@ function readFunding(t, s) {
 }
 
 // Match a theatre the user named ("PVR Orion", "Galaxy"), ignoring generic words and the city.
-const GENERIC = new Set(['cinema', 'cinemas', 'multiplex', 'theatre', 'theater', 'theatres', 'screens', 'screen', 'mall', 'central', 'movie', 'movies', 'the', 'and', 'city', 'plaza', 'centre', 'center']);
+const GENERIC = new Set(['cinema', 'cinemas', 'multiplex', 'theatre', 'theater', 'theatres', 'screens', 'screen', 'mall', 'central', 'movie', 'movies', 'the', 'and', 'city', 'plaza', 'centre', 'center', 'demo', 'sample']);
 function cinemaByName(s, t) {
   const cityWords = s.loc.city.toLowerCase().split(/\s+/);
   return cinemas(s.loc).find((c) =>

@@ -14,6 +14,8 @@ const b = await live.ensure(loc);
 for (const s of b.sources) console.log(`${s.ok ? '✅' : s.optional ? '➖' : '❌'}  ${s.name}${s.ok ? '' : `  — ${s.error}`}`);
 const places = Object.fromEntries(Object.entries(b.places || {}).map(([k, v]) => [k, v.length]));
 console.log(`\nPlaces found: ${JSON.stringify(places)}`);
+const cins = b.places?.cinema || [];
+console.log(cins.length ? `Cinemas (OpenStreetMap):\n${cins.slice(0, 8).map((c) => `  - ${c.name}${c.distanceKm != null ? ` · ${c.distanceKm} km` : ''}${c.address ? ` · ${c.address}` : ''}`).join('\n')}` : 'Cinemas: none found — the app will show clearly-marked demo theatres.');
 console.log(`Films: ${b.movies.length} (${b.moviesSource || 'none'}), with posters: ${b.movies.filter((m) => m.poster).length}`);
 b.movies.slice(0, 5).forEach((m) => console.log(`   • ${m.title}${m.poster ? '' : '  (no poster)'}`));
 console.log(`Sports fixtures: ${b.sports.length}; Ticketmaster events: ${b.ticketmaster.length}; holidays: ${b.holidays.length}; weather days: ${b.weather?.days?.length || 0}`);
