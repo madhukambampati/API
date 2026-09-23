@@ -11,6 +11,7 @@ import { findCityInText, LOCATIONS } from '../src/locations.js';
 import { parseAmount, inr } from '../src/money.js';
 
 process.env.EOS_DISABLE_LLM = '1';
+process.env.EOS_OFFLINE = '1';
 const NOW = new Date('2026-09-22T09:00:00Z'); // a Tuesday
 const BLR = { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
 

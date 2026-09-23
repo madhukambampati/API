@@ -13,6 +13,9 @@ import { loadDemo } from './src/demo.js';
 import { llmEnabled } from './src/llm.js';
 import { LOCATIONS, normaliseLocation, locationLabel } from './src/locations.js';
 import * as catalog from './src/catalog.js';
+import * as live from './src/live/index.js';
+import * as chat from './src/agents/chat.js';
+import { COUNTRY_META } from './src/locations.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(here, 'public');
@@ -69,24 +72,52 @@ function locFrom(url) {
 
 const routes = [
   ['GET', /^\/api\/state$/, (req) => state(actor(req))],
-  ['POST', /^\/api\/agent\/plan$/, async (req, body) => orchestrator.plan(String(body.text || '').slice(0, 500), actor(req), { location: body.location })],
-  ['POST', /^\/api\/agent\/preview$/, (req, body) => orchestrator.preview(body, actor(req))],
+  ['POST', /^\/api\/agent\/plan$/, async (req, body) => {
+    const who = actor(req);
+    await live.ensure(normaliseLocation(body.location || person(who).home));
+    return orchestrator.plan(String(body.text || '').slice(0, 500), who, { location: body.location });
+  }],
+  ['POST', /^\/api\/agent\/preview$/, async (req, body) => {
+    const who = actor(req);
+    await live.ensure(normaliseLocation(body.location || person(who).home));
+    return orchestrator.preview(body, who);
+  }],
+  ['POST', /^\/api\/chat$/, async (req, body) => chat.handle({ sessionId: body.sessionId, actorId: actor(req), text: body.text, action: body.action, location: body.location })],
   ['GET', /^\/api\/locations$/, () => LOCATIONS],
   [
     'GET',
     /^\/api\/discover$/,
-    (req, body, m, url) => {
+    async (req, body, m, url) => {
       actor(req);
       const loc = locFrom(url);
-      return { location: loc, label: locationLabel(loc), movies: catalog.movies(loc), events: catalog.events(loc, { type: url.searchParams.get('type') || 'all' }), eventTypes: catalog.EVENT_TYPES, venues: Object.fromEntries(['reservations', 'pdr', 'catering', 'gifting', 'experiences'].map((c) => [c, catalog.vendors(c, loc)])) };
+      const b = await live.ensure(loc);
+      const all = catalog.events(loc, { type: url.searchParams.get('type') || 'all' });
+      return {
+        location: loc,
+        label: locationLabel(loc),
+        movies: catalog.movies(loc),
+        moviesSource: b.moviesSource || null,
+        cinemas: catalog.cinemas(loc),
+        events: all.filter((e) => e.local !== false),
+        elsewhere: all.filter((e) => e.local === false).slice(0, 12),
+        eventTypes: catalog.EVENT_TYPES,
+        venues: Object.fromEntries(['reservations', 'pdr', 'catering', 'gifting', 'experiences'].map((c) => [c, catalog.vendors(c, loc)])),
+        weather: b.weather || null,
+        holidays: b.holidays || [],
+        fx: b.fx || null,
+        currency: COUNTRY_META[loc.country] || null,
+        sources: b.sources || [],
+      };
     },
   ],
   [
     'GET',
     /^\/api\/showtimes$/,
-    (req, body, m, url) => {
+    async (req, body, m, url) => {
       actor(req);
-      return catalog.showtimes(url.searchParams.get('movie'), url.searchParams.get('date'), locFrom(url));
+      const loc = locFrom(url);
+      await live.ensure(loc);
+      return catalog.showtimes(url.searchParams.get('movie'), url.searchParams.get('date'), loc);
     },
   ],
   [
@@ -98,7 +129,11 @@ const routes = [
       return { key, show: catalog.parseShowKey(key), ...catalog.seatMap(key, load().seatBookings?.[key] || []) };
     },
   ],
-  ['POST', /^\/api\/bookings$/, (req, body) => orchestrator.createBooking(body, actor(req))],
+  ['POST', /^\/api\/bookings$/, async (req, body) => {
+    const who = actor(req);
+    await live.ensure(normaliseLocation(body.location || person(who).home));
+    return orchestrator.createBooking(body, who);
+  }],
   ['POST', /^\/api\/bookings\/([\w-]+)\/cancel$/, (req, body, m) => orchestrator.cancelBooking(m[1], actor(req))],
   ['POST', /^\/api\/decisions\/([\w-]+)$/, (req, body, m) => orchestrator.decide(m[1], actor(req), body.decision, body.note)],
   [

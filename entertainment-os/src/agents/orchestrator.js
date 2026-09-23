@@ -71,7 +71,7 @@ function normaliseDraft(input, actorId) {
   return draft;
 }
 
-export function createBooking(input, actorId) {
+export function createBooking(input, actorId, { payment = null } = {}) {
   const d = load();
   const requester = person(actorId);
   const draft = normaliseDraft(input, actorId);
@@ -105,6 +105,10 @@ export function createBooking(input, actorId) {
     trace: [],
   };
   d.bookings.unshift(b);
+  if (payment) {
+    b.payment = payment;
+    trace(b, 'Payment agent', `${payment.label} — ${inr(payment.amount)} ${payment.status} (ref ${payment.ref}).${payment.demo ? ' Demo payment: no real money moved.' : ''}`);
+  }
   if (b.details?.kind === 'movie') {
     // Hold the seats straight away so nobody else can pick them.
     d.seatBookings[b.details.showKey] = [...(d.seatBookings[b.details.showKey] || []), ...b.details.seats];

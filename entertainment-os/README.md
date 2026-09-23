@@ -1,8 +1,10 @@
 # Entertainment OS
 
-One agentic operating system, built for **India** (amounts in ₹), for **movies, events near you (music, sports, tech, comedy, theatre, food), dining, private dining & events (PDRs), catering, gifting & merch, and experiences**. It covers:
+One agentic operating system, built for **India and Canada** (amounts in ₹, with C$ shown alongside), for **movies, events near you (music, sports, tech, comedy, theatre, food), dining, private dining & events (PDRs), catering, gifting & merch, and experiences**. It covers:
 
-- **Location**: a Country → State → City picker covering all 36 Indian states and union territories, 100 Indian cities and a few other countries. Every level has an **Other** option so any place can be typed in. Movies, cinemas, events and venues follow the chosen city.
+- **Chat concierge (opening screen)**: say *"I'm planning to go for a movie today, can you check the theatres?"* and the agents list the theatres near you. Pick one to see its films and showtimes, and the agent preselects the best seats. It asks who pays, then opens the payment page (UPI / card / netbanking in India; card, wallet or Interac in Canada) and issues the ticket. Events and other requests work the same way.
+- **Live data from free public APIs**: real cinemas, restaurants and venues from OpenStreetMap, films from the iTunes chart (or TMDB), sports fixtures from TheSportsDB, weather from Open-Meteo, exchange rates from Frankfurter and holidays from Nager.Date. Anything unavailable falls back to labelled sample data.
+- **Location**: a Country → State → City picker covering all 36 Indian states and union territories (100 cities), all 13 Canadian provinces and territories (35 cities), and a few other countries. Every level has an **Other** option so any place can be typed in. Movies, cinemas, events and venues follow the chosen city.
 - **Movies**: films ranked with the state's language first, showtimes by cinema and format (2D / 3D / IMAX / Recliner), and a seat map. Seats are held on booking and released if the booking is cancelled or rejected.
 - **Events near you**: the next six weeks of events in the city, filtered by type, with ticket tiers and quantities.
 - **Who booked it**: requester, department and cost center on every booking.
@@ -21,6 +23,29 @@ npm test             # agent test suite
 ```
 
 The server has no dependencies (Node 18+). Use **Acting as** in the sidebar to switch between requester, manager, department head, Compliance, Finance, HR and Benefits. Demo data can be reset from **Agent activity → Reset demo data**.
+
+### Live data (free, no sign-up)
+
+When the machine running the app has internet access, the app uses these free public APIs:
+
+| Data | Source | Key |
+|---|---|---|
+| City coordinates | OpenStreetMap Nominatim | none |
+| Cinemas, restaurants, stadiums, theatres, venues, caterers, gift shops, attractions | OpenStreetMap Overpass | none |
+| Films and posters | Apple iTunes movie chart (country store) | none |
+| Films actually in cinemas | TMDB `now_playing` | optional free key: `TMDB_API_KEY` |
+| Sports fixtures (IPL, ISL, NHL, NBA, MLB, MLS, CFL, …) | TheSportsDB | none (public key) |
+| Concerts & shows with prices | Ticketmaster Discovery | optional free key: `TICKETMASTER_API_KEY` |
+| Weather (16 days) | Open-Meteo | none |
+| Exchange rates | Frankfurter (ECB) | none |
+| Public holidays | Nager.Date (India: built-in list) | none |
+
+```sh
+TMDB_API_KEY=... TICKETMASTER_API_KEY=... npm start   # both optional
+EOS_OFFLINE=1 npm start                               # never call the network
+```
+
+Responses are cached in `data/live-cache.json` (weather 1 h, places 7 days), so the services are used politely. The **Live data** card on the home page shows which sources are connected. Showtimes, seat maps and payments are always simulated: no free API publishes them, and the payment gateway (`src/agents/payment.js`) is a demo that never moves money or asks for card numbers.
 
 ### Optional: Claude-powered intake
 
@@ -42,6 +67,9 @@ location + request ─► Concierge ─► Budget ─► Policy ─► Approval 
 | Approval / Booking | `src/agents/orchestrator.js` | Runs the pipeline, applies decisions, confirms and cancels bookings |
 | Split | `src/agents/split.js` | Shares to the paisa, balances, debt simplification |
 | Expense | `src/agents/expense.js` | Builds, submits and reimburses expense reports |
+| Payment | `src/agents/payment.js` | Simulated gateway: validates UPI / card / netbanking / Interac, issues a payment reference |
+| Chat | `src/agents/chat.js` | Conversation state machine: theatres → films → seats → who pays → payment → ticket, plus events and proposals |
+| Live data | `src/live/` | Free-API providers, response normalisers, cache and offline fallback |
 
 Policy thresholds (₹), caps and routing are in `src/seed.js` (`POLICY`). Locations are in `src/locations.js`. Movies, cinemas, showtimes, seat maps, events and venues are generated per city in `src/catalog.js`. All names there are fictional demo data.
 
@@ -51,7 +79,7 @@ Policy thresholds (₹), caps and routing are in `src/seed.js` (`POLICY`). Locat
 |---|---|
 | `docs/Entertainment-OS-Handbook.docx` | Handbook for employees and approvers: location picker, movies, events, funding types, agent pipeline, roles, budgets, approval matrix (₹), expense reports, splitting, worked examples, FAQ |
 | `docs/Entertainment-OS-Workbook.xlsx` | Operations workbook (₹): policy inputs, bookings (city, seats/tickets, approval chain as a live formula), budgets, spend by person, expense reports, group ledger and balances, split calculator, locations, catalog, and the flow |
-| `docs/Entertainment-OS-Overview.pptx` | 13-slide overview deck: categories, location picker, movies & events, agent pipeline, approvals, expenses, splits, demo numbers |
+| `docs/Entertainment-OS-Overview.pptx` | 14-slide overview deck: categories, location picker, movies & events, chat concierge & live data, agent pipeline, approvals, expenses, splits, demo numbers |
 
 Regenerate them with `npm install && npm run docs`. The generators run the real agent pipeline on the demo requests, so the documents always match the code.
 
@@ -63,9 +91,10 @@ All calls send `x-user: <employee id>`.
 |---|---|---|
 | GET | `/api/state` | Everything the UI needs for the acting user |
 | GET | `/api/locations` | Country → state → city list |
-| GET | `/api/discover?country&state&city` | Movies, events and venues for a location |
+| GET | `/api/discover?country&state&city` | Movies, cinemas, events, venues, weather, holidays, FX and live-source status for a location |
 | GET | `/api/showtimes?movie&date&country&state&city` | Shows by cinema, with format and price |
 | GET | `/api/seats?show=<key>` | Seat map for a show (sold seats included) |
+| POST | `/api/chat` | `{sessionId?, text? , action?, location}`: talk to the chat concierge; returns agent messages with cards (theatres, films, seats, payment, ticket) |
 | POST | `/api/agent/plan` | `{text, location}`: draft plus budget and approval preview |
 | POST | `/api/agent/preview` | Budget and approval preview for a draft built in the UI (seats, tickets, venue) |
 | POST | `/api/bookings` | Create a booking from a (possibly edited) draft |

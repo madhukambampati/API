@@ -4,7 +4,7 @@ import { load, person } from '../store.js';
 import { CATEGORIES } from '../seed.js';
 import { parseWithClaude } from '../llm.js';
 import { findCityInText, normaliseLocation, DEFAULT_LOCATION, locationLabel } from '../locations.js';
-import { vendors, movies, showtimes, seatMap, bestSeats, events, findEvent, parseShowKey, cinemas, MOVIES, EVENT_TYPES } from '../catalog.js';
+import { vendors, movies, showtimes, seatMap, bestSeats, events, findEvent, findMovie, parseShowKey, cinemas, MOVIES, EVENT_TYPES } from '../catalog.js';
 import { inr, parseAmount } from '../money.js';
 
 const KEYWORDS = [
@@ -51,9 +51,9 @@ export function parseDate(text, now = new Date()) {
   return { date: plus(7), explicit: false };
 }
 
-export function parseRuleBased(text, now = new Date()) {
+export function parseRuleBased(text, now = new Date(), movieList = MOVIES) {
   const t = text.toLowerCase();
-  const titleHit = MOVIES.find((m) => t.includes(m.title.toLowerCase().split(':')[0]));
+  const titleHit = movieList.find((m) => m.title && m.title.length > 2 && t.includes(m.title.toLowerCase().split(':')[0].trim()));
   const category = titleHit ? 'movies' : (KEYWORDS.find(([, re]) => re.test(text)) || ['reservations'])[0];
   const sizeMatch =
     t.match(/\b(\d+)\s*(?:tickets?|seats?|people|guests|clients|pax|attendees|recipients|of us|friends|folks|passes)\b/) || t.match(/\b(?:for|x)\s*(\d+)\b(?!\s*(?:am|pm|:))/);
@@ -103,7 +103,7 @@ const inWindow = (time, tod) => {
 
 function planMovie(intent, loc, reasoning) {
   const list = movies(loc);
-  const movie = MOVIES.find((m) => m.id === intent.movieId) || (intent.format ? list.find((m) => m.formats.includes(intent.format)) : null) || list[0];
+  const movie = (intent.movieId && findMovie(intent.movieId, loc)) || (intent.format ? list.find((m) => m.formats.includes(intent.format)) : null) || list[0];
   const n = Math.max(1, intent.partySize);
   // Collect shows for the next week, then relax the wishes one at a time:
   // format + time of day → format → time of day → anything.
@@ -135,7 +135,7 @@ function planMovie(intent, loc, reasoning) {
 }
 
 function planEvent(intent, loc, reasoning, now) {
-  const all = events(loc, { now, days: 60 });
+  const all = events(loc, { now, days: 60 }).filter((e) => e.local !== false);
   let pool = intent.eventType ? all.filter((e) => e.type === intent.eventType) : all;
   const text = intent.title.toLowerCase();
   const titleHit = all.find((e) => {
@@ -177,7 +177,7 @@ export async function plan(text, requesterId, { now = new Date(), useLLM = true,
   const requester = person(requesterId);
   if (!requester) throw new Error(`Unknown requester ${requesterId}`);
   const reasoning = [];
-  const mentioned = findCityInText(text);
+  const mentioned = findCityInText(text, (location || requester.home || DEFAULT_LOCATION).country);
   const loc = normaliseLocation(mentioned || location || requester.home || DEFAULT_LOCATION);
   reasoning.push(mentioned ? `Location taken from your request: ${locationLabel(loc)}.` : `Using your selected location: ${locationLabel(loc)}.`);
 
@@ -185,12 +185,12 @@ export async function plan(text, requesterId, { now = new Date(), useLLM = true,
   if (useLLM) {
     const ai = await parseWithClaude(text, iso(now));
     if (ai) {
-      intent = { ...parseRuleBased(text, now), ...ai, dateExplicit: true };
+      intent = { ...parseRuleBased(text, now, movies(loc)), ...ai, dateExplicit: true };
       reasoning.push('Understood your request with Claude (structured output).');
     }
   }
   if (!intent) {
-    intent = parseRuleBased(text, now);
+    intent = parseRuleBased(text, now, movies(loc));
     reasoning.push('Understood your request with the built-in rule engine.');
   }
 
@@ -267,7 +267,7 @@ export function verifyTickets(draft, now = new Date()) {
       if (!byId.has(s)) throw new Error(`Seat ${s} does not exist`);
       if (byId.get(s).sold) throw new Error(`Seat ${s} was just taken — pick another`);
     }
-    const movie = MOVIES.find((m) => m.id === movieId);
+    const movie = findMovie(movieId, loc);
     const cinema = cinemas(loc).find((c) => c.id === cinemaId);
     return {
       ...draft,

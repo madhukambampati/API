@@ -97,7 +97,7 @@ const shadow = () => ({ type: 'outer', color: '000000', blur: 8, offset: 2, angl
   {
     const s = pres.addSlide();
     title(s, 'Pick your city: Country → State → City', 'Movies, cinemas, events and venues all follow the location you choose.');
-    const boxes = [['Country', 'India'], ['State / region', 'Karnataka'], ['City', 'Bengaluru']];
+    const boxes = [['Country', 'India · Canada · …'], ['State / region', 'Karnataka · Ontario'], ['City', 'Bengaluru · Toronto']];
     for (let i = 0; i < boxes.length; i++) {
       const x = M + i * 4.1;
       s.addText(boxes[i][0].toUpperCase(), { x, y: 1.95, w: 3.6, h: 0.3, fontFace: BODY, fontSize: 11, bold: true, color: C.muted, charSpacing: 1, margin: 0, isTextBox: true });
@@ -105,7 +105,7 @@ const shadow = () => ({ type: 'outer', color: '000000', blur: 8, offset: 2, angl
       s.addText([{ text: boxes[i][1], options: { color: C.ink } }, { text: '   ▾', options: { color: C.muted } }], { x: x + 0.2, y: 2.3, w: 3.2, h: 0.7, fontFace: BODY, fontSize: 16, valign: 'middle', margin: 0, isTextBox: true });
       if (i < 2) s.addText('→', { x: x + 3.6, y: 2.3, w: 0.5, h: 0.7, fontFace: BODY, fontSize: 22, color: C.brand, align: 'center', valign: 'middle', margin: 0, isTextBox: true });
     }
-    const stats = [[String(data.locationCounts.indiaStates), 'Indian states & union territories'], [String(data.locationCounts.indiaCities), 'Indian cities built in'], [String(data.locationCounts.countries - 1), 'other countries for travel']];
+    const stats = [[String(data.locationCounts.indiaStates), 'Indian states & union territories'], [String(data.locationCounts.indiaCities), 'Indian cities built in'], [String(Object.values(data.locations.Canada).flat().length), 'Canadian cities in 13 provinces & territories']];
     stats.forEach(([v, l], i) => {
       const x = M + i * 2.75;
       s.addText(v, { x, y: 3.55, w: 2.5, h: 0.9, fontFace: HEAD, fontSize: 48, bold: true, color: C.violet, margin: 0, isTextBox: true });
@@ -119,7 +119,7 @@ const shadow = () => ({ type: 'outer', color: '000000', blur: 8, offset: 2, angl
         { text: 'Every dropdown has an Other option with a text box', options: { bullet: true, breakLine: true } },
         { text: 'Typed-in places still get cinemas, events and venues', options: { bullet: true, breakLine: true } },
         { text: '"Dinner in Pune" in a request overrides the picker', options: { bullet: true, breakLine: true } },
-        { text: 'Prices scale by city tier; abroad is shown in ₹', options: { bullet: true } },
+        { text: 'Abroad, ₹ prices also show the local currency (C$)', options: { bullet: true } },
       ],
       { x: cx + 0.3, y: 4.3, w: W - M - cx - 0.6, h: 2.3, fontFace: BODY, fontSize: 13, color: C.ink, paraSpaceAfter: 6, valign: 'top', margin: 0, isTextBox: true },
     );
@@ -138,6 +138,44 @@ const shadow = () => ({ type: 'outer', color: '000000', blur: 8, offset: 2, angl
     s.addText('Events near you', { x: M + 0.8, y: 4.05, w: 5, h: 0.6, fontFace: HEAD, fontSize: 20, bold: true, color: C.ink, valign: 'middle', margin: 0, isTextBox: true });
     chev(s, ['Music · sports · tech · comedy · theatre · food', 'Event, date & venue', 'Ticket tier', 'Quantity', 'Agents review', 'e-tickets'], 4.85);
     s.addText('Or just ask: "3 tickets for Orbit 9 IMAX tomorrow evening" · "Stand-up comedy with friends this weekend, split". Seats and prices are checked on the server, so a seat is never sold twice.', { x: M, y: 6.1, w: W - 2 * M, h: 0.7, fontFace: BODY, fontSize: 13, color: C.muted, margin: 0, isTextBox: true });
+  }
+
+  // 4b. Chat concierge + live data
+  {
+    const s = pres.addSlide();
+    title(s, 'Just ask: the chat concierge', 'The opening screen is a chat. The agents do every step through to payment and the ticket.');
+    const turns = [
+      ['you', '“I’m planning to go for a movie today, can you check the theatres?”'],
+      ['agent', 'Lists theatres near you (real cinemas from OpenStreetMap) with shows left today'],
+      ['you', 'Taps a theatre'],
+      ['agent', 'Shows each film and its showtimes; matches your time are highlighted'],
+      ['you', '“2 tickets” → confirms the seats the agent preselected'],
+      ['agent', 'Budget + Policy checks, then who pays → payment page (UPI / card / netbanking)'],
+      ['agent', 'Books, sends the ticket, splits with the group, offers to file the expense'],
+    ];
+    turns.forEach(([who, t], i) => {
+      const y = 1.85 + i * 0.68;
+      const me = who === 'you';
+      const w = 6.4;
+      const x = me ? M + 1.2 : M;
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.56, fill: { color: me ? C.violet : C.white }, line: { color: me ? C.violet : C.line, width: 0.75 }, rectRadius: 0.12 });
+      s.addText(t, { x: x + 0.2, y, w: w - 0.4, h: 0.56, fontFace: BODY, fontSize: 12.5, color: me ? C.white : C.ink, valign: 'middle', margin: 0, isTextBox: true });
+    });
+    const sx = M + 8.0;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: sx, y: 1.85, w: W - M - sx, h: 4.7, fill: { color: C.paper }, line: { color: C.line, width: 0.75 }, rectRadius: 0.15 });
+    s.addText('Live data, free APIs', { x: sx + 0.3, y: 2.0, w: W - M - sx - 0.6, h: 0.45, fontFace: HEAD, fontSize: 17, bold: true, color: C.ink, margin: 0, isTextBox: true });
+    s.addText(
+      [
+        ['OpenStreetMap', 'real cinemas, restaurants, venues'],
+        ['iTunes chart / TMDB', 'films and posters'],
+        ['TheSportsDB', 'IPL, ISL, NHL, NBA, MLS, CFL fixtures'],
+        ['Open-Meteo', 'weather'],
+        ['Frankfurter', '₹ ↔ C$ rates'],
+        ['Nager.Date', 'public holidays'],
+      ].map(([a, b2], i, all) => ({ text: `${a}: ${b2}`, options: { bullet: true, breakLine: i < all.length - 1 } })),
+      { x: sx + 0.3, y: 2.55, w: W - M - sx - 0.6, h: 3.0, fontFace: BODY, fontSize: 13, color: C.ink, paraSpaceAfter: 6, valign: 'top', margin: 0, isTextBox: true },
+    );
+    s.addText('Falls back to labelled sample data offline. Payments are a demo gateway.', { x: sx + 0.3, y: 5.65, w: W - M - sx - 0.6, h: 0.7, fontFace: BODY, fontSize: 11.5, italic: true, color: C.muted, margin: 0, isTextBox: true });
   }
 
   // 5. Four questions
@@ -378,14 +416,15 @@ const shadow = () => ({ type: 'outer', color: '000000', blur: 8, offset: 2, angl
     s.addText(
       [
         { text: 'cd entertainment-os && npm start → http://localhost:4600', options: { bullet: true, breakLine: true } },
-        { text: 'Set your city with the location picker (or choose Other and type it)', options: { bullet: true, breakLine: true } },
+        { text: 'Type in the chat: “I’m planning to go for a movie today, check the theatres”', options: { bullet: true, breakLine: true } },
+        { text: 'Set your city (India, Canada, or Other) with the location picker', options: { bullet: true, breakLine: true } },
         { text: 'Switch "Acting as" to play requester, manager, dept head, Compliance, Finance, HR or Benefits', options: { bullet: true, breakLine: true } },
         { text: 'npm test runs the agent test suite; set ANTHROPIC_API_KEY to let Claude read requests', options: { bullet: true, breakLine: true } },
         { text: 'Companion docs: Handbook (.docx) and Operations Workbook (.xlsx)', options: { bullet: true } },
       ],
       { x: M, y: 2.2, w: 11.5, h: 3.8, fontFace: BODY, fontSize: 18, color: 'E3E1FA', paraSpaceAfter: 12, valign: 'top', margin: 0, isTextBox: true },
     );
-    s.addText('Movies, cinemas, events and venues in the demo are fictional sample data.', { x: M, y: 6.5, w: 11, h: 0.4, fontFace: BODY, fontSize: 12, color: 'A9A5D6', margin: 0, isTextBox: true });
+    s.addText('Online: real places, films and fixtures from free APIs. Offline: labelled sample data. Payments are simulated.', { x: M, y: 6.5, w: 11, h: 0.4, fontFace: BODY, fontSize: 12, color: 'A9A5D6', margin: 0, isTextBox: true });
   }
 
   const out = path.join(__dirname, 'Entertainment-OS-Overview.pptx');

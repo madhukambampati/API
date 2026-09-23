@@ -69,7 +69,7 @@ const gap = () => new Paragraph({ spacing: { after: 120 }, children: [] });
 
 const children = [
   new Paragraph({ spacing: { before: 2400, after: 200 }, children: [new TextRun({ text: 'Entertainment OS', bold: true, size: 64, color: GREEN })] }),
-  new Paragraph({ spacing: { after: 400 }, children: [new TextRun({ text: 'Employee & Approver Handbook — India', size: 36 })] }),
+  new Paragraph({ spacing: { after: 400 }, children: [new TextRun({ text: 'Employee & Approver Handbook — India & Canada', size: 36 })] }),
   p('Movies · Events near you (music, sports, tech, comedy, theatre, food) · Dining · Private dining · Catering · Gifting & merch · Experiences'),
   p('One agentic operating system for finding, booking, budgeting, approving, expensing and splitting every entertainment spend — company-paid, personal, family or friends. All amounts are in Indian rupees (₹).'),
   p([new TextRun({ text: `Version 2.0 · ${data.meta.period} · ${data.meta.company} · Owner: Finance Operations with People (HR & Benefits)`, color: '777777' })]),
@@ -82,14 +82,52 @@ const children = [
   bullet([b('Who booked it? '), 'The requester, their department, cost center and the city of the booking.']),
   bullet([b('Who is spending how much? '), 'Company spend, reimbursable spend, personal spend and each person’s share of group spend.']),
   bullet([b('Which pot of money? '), 'Department budget, personal monthly budget, or the lifestyle & wellbeing allowance.']),
-  bullet([b('Who needs to approve it? '), 'An ordered approval chain built from the policy in section 8.']),
+  bullet([b('Who needs to approve it? '), 'An ordered approval chain built from the policy in section 10.']),
   gap(),
   callout('Principle', 'Company money needs approval proportional to risk. Personal money needs no approval — only transparency. Shared money needs a fair, auditable split.'),
 
-  h1('2. Choosing your location'),
+  h1('2. The chat concierge'),
+  p('The first thing you see is a chat with the concierge. Say what you are planning in your own words and it takes you through every step, with the other agents working behind it.'),
+  table(
+    ['You', 'The agents'],
+    [
+      ['“I’m planning to go for a movie today, can you check the theatres?”', 'Lists the theatres near your city (real cinemas from OpenStreetMap when online), with the number of films and shows left today and how many fall in the time you asked for.'],
+      ['Tap a theatre, or type “the first one” or its name', 'Shows every film playing there, with posters and showtimes. Shows matching your time or format (IMAX, 3D, Recliner) are highlighted.'],
+      ['Tap a showtime, or type “7 pm”', 'Asks how many tickets (or uses your family or friends group size), then opens a seat map with the best seats together already selected.'],
+      ['Confirm seats, or type “F7 F8” / “best seats”', 'Budget and Policy agents check the booking. Asks who pays: just me, split with a group, company (team outing) or pay & expense it.'],
+      ['Pick who pays', 'Opens the payment page: UPI, card or netbanking in India; card, Apple Pay / Google Pay or Interac in Canada. Company outings go on the company card, after approval if needed.'],
+      ['Pay', 'Books the seats, issues the ticket with a booking ID and QR code, records the payment on the booking trace, posts group shares, and offers to file the expense report.'],
+    ],
+    [3600, 5760],
+  ),
+  gap(),
+  callout('Demo payments', 'Payments go through a simulated gateway: the UPI ID format is checked and a payment reference is issued, but no money moves and no card numbers are ever asked for. Connecting a real gateway (Razorpay, Stripe, Moneris) replaces one module, src/agents/payment.js.'),
+  gap(),
+  p('The same chat handles events ("any stand-up comedy this weekend with friends?": list → tier → quantity → who pays → payment) and everything else ("client dinner for 6 tomorrow" returns a priced proposal you can review and book).'),
+
+  h1('3. Live data from free public APIs'),
+  p('When the app has internet access it fills itself with real data from free services that need no sign-up. Every item is labelled live or sample, and anything a service can’t provide falls back to sample data automatically.'),
+  table(
+    ['What', 'Free source', 'Notes'],
+    [
+      ['City coordinates', 'OpenStreetMap Nominatim', 'Works for typed-in “Other” places too'],
+      ['Cinemas, restaurants, stadiums, theatres, caterers, gift shops, attractions', 'OpenStreetMap Overpass', 'Real names, addresses and distances; prices are estimates'],
+      ['Films', 'Apple iTunes movie chart (India / Canada)', 'With a free TMDB key, the films actually playing in cinemas'],
+      ['Sports fixtures', 'TheSportsDB (public key)', 'IPL and ISL in India; NHL, NBA, MLB, MLS and CFL in Canada; ticket prices are estimates'],
+      ['Concerts & shows', 'Ticketmaster Discovery (optional free key)', 'Real events and price ranges, strongest in Canada'],
+      ['Weather (16 days)', 'Open-Meteo', 'Shown on the home page and on events'],
+      ['Exchange rates', 'Frankfurter (European Central Bank)', '₹ amounts also shown in C$, US$, £, S$'],
+      ['Public holidays', 'Nager.Date; built-in list for India', 'Canadian holidays filtered by province'],
+    ],
+    [3000, 2900, 3460],
+  ),
+  gap(),
+  p('Showtimes, seat maps and ticket prices are simulated: no free API publishes them for Indian or Canadian cinemas. Results are cached (weather for an hour, places for a week) so the free services are used politely.'),
+
+  h1('4. Choosing your location'),
   p('The location picker at the top of every screen controls which movies, cinemas, events and venues you see. It has three linked dropdowns:'),
   ...stepList([
-    [b('Country '), `— India first, plus a few other countries where the company travels (${data.locationCounts.countries} in total).`],
+    [b('Country '), `— India first, then Canada (13 provinces and territories), plus a few other countries (${data.locationCounts.countries} in total).`],
     [b('State / region '), `— all ${data.locationCounts.indiaStates} Indian states and union territories.`],
     [b('City '), `— the main cities of the chosen state (${data.locationCounts.indiaCities} Indian cities built in).`],
   ]),
@@ -100,7 +138,7 @@ const children = [
   bullet('Typing a city in a request ("dinner for 6 in Pune tomorrow") overrides the picker for that request.'),
   bullet('Prices adjust by city: metros are the baseline, tier-2 cities are about 20% lower, other cities about 30% lower, and cities outside India are shown converted to ₹.'),
 
-  h1('3. What you can book'),
+  h1('5. What you can book'),
   table(
     ['Category', 'What it covers', 'Per-person cap (company money)'],
     Object.entries(CAT).map(([k, c]) => [c.label, c.blurb, inr(P.perAttendeeCap[k])]),
@@ -128,12 +166,12 @@ const children = [
   h2('Dining & venues'),
   p('Restaurants, private dining rooms, caterers, gift hampers and experiences (heritage walks, cooking classes, and a weekend-escape suggestion for team offsites in your state). Pick a venue and the price is calculated on the server from the venue’s per-person rate.'),
 
-  h1('4. Who pays: the four funding types'),
+  h1('6. Who pays: the four funding types'),
   p('The Concierge suggests a funding type from your wording, and you can always change it before confirming. A movie or concert for yourself defaults to Personal; anything for "the team", "office" or "clients" defaults to Company-paid.'),
   table(
     ['Funding type', 'Use it when', 'Approvals', 'What happens after booking'],
     [
-      ['Company-paid', 'Client entertainment, team events, anything the company should pay directly.', 'Per the approval matrix (section 8).', 'Charged to your department cost center; budget updates straight away.'],
+      ['Company-paid', 'Client entertainment, team events, anything the company should pay directly.', 'Per the approval matrix (section 10).', 'Charged to your department cost center; budget updates straight away.'],
       ['Paid personally → expense report', 'You pay with your own card or UPI for something the company or your allowance should cover.', 'None at booking; approvals happen on the expense report.', 'Receipt captured; the booking becomes claimable on an expense report.'],
       ['Personal', 'Your own leisure, not reimbursed.', 'None.', 'Counts toward your personal monthly budget (a private heads-up only).'],
       ['Shared with family / friends', 'Several people share the cost.', 'None.', 'The Split agent posts it to the group ledger and works out who owes whom.'],
@@ -141,7 +179,7 @@ const children = [
     [2100, 2700, 1900, 2660],
   ),
 
-  h1('5. The agent pipeline'),
+  h1('7. The agent pipeline'),
   p('Every request passes through the same chain of agents. Each agent writes to the booking’s trace, so anyone can see why a decision was made.'),
   table(
     ['#', 'Agent', 'Input', 'Decision / output'],
@@ -153,13 +191,15 @@ const children = [
       ['5', 'Booking agent', 'Approved booking', 'Confirms with the cinema, organiser or venue; issues a confirmation code, m-tickets or e-tickets; holds or releases seats.'],
       ['6', 'Split agent', 'Shared bookings, manual group expenses', 'Posts to the group ledger; shares exact to the paisa; balances; fewest-payments settle-up.'],
       ['7', 'Expense agent', 'Reimbursable bookings', 'Drafts reports with receipts, routes them to Finance / HR / Benefits, applies allowance limits, marks them reimbursed.'],
+      ['8', 'Payment agent', 'Payment method (UPI / card / netbanking / Interac)', 'Validates the details, re-checks seats and price, issues a payment reference, and records it on the booking (simulated gateway, no money moves).'],
+      ['9', 'Chat agent', 'Your messages and taps', 'Runs the conversation: theatres → films → seats → who pays → payment → ticket, calling the agents above at each step.'],
     ],
     [500, 1700, 2100, 5060],
   ),
   gap(),
   p('Prices for movie seats, event tickets and catalog venues are always recalculated on the server, so a booking can never be made at a price other than the listed one, and a seat can never be sold twice.'),
 
-  h1('6. Roles'),
+  h1('8. Roles'),
   table(
     ['Role', 'Demo person', 'What they do'],
     [
@@ -175,7 +215,7 @@ const children = [
     [1800, 2800, 4760],
   ),
 
-  h1('7. Budgets'),
+  h1('9. Budgets'),
   table(
     ['Pot', 'Owner', 'Period', 'What counts against it'],
     [
@@ -188,7 +228,7 @@ const children = [
   gap(),
   p('Status: ok (healthy), warn (less than 10% of the department budget left, or a personal overshoot), over (department budget exceeded, which adds Finance).'),
 
-  h1('8. Approval matrix (company money)'),
+  h1('10. Approval matrix (company money)'),
   table(
     ['Condition', 'Approver added', 'Why'],
     [
@@ -206,7 +246,7 @@ const children = [
   bullet('A rejection ends the chain, the booking is not placed, and any held movie seats are released.'),
   bullet('Approvers always see the live budget position, not a snapshot from the time of the request.'),
 
-  h1('9. Expense reports'),
+  h1('11. Expense reports'),
   ...stepList([
     'Book with "Paid personally → expense report" (or say "I’ll pay and expense it").',
     'When the booking is confirmed, open Expense reports. Every confirmed booking you haven’t claimed yet is listed.',
@@ -228,7 +268,7 @@ const children = [
   bullet(`Submit within ${P.reportSlaDays} business days of the event. Receipts are captured at booking.`),
   bullet('A booking on an expense report can’t be cancelled until the report is withdrawn.'),
 
-  h1('10. Family & friends: splitting costs'),
+  h1('12. Family & friends: splitting costs'),
   p('Groups work like Splitwise. A group is family or friends; members can be employees or guests. Shared bookings (a family movie, a comedy night with friends) post to the group automatically; anything else (cabs, groceries for a sadya, a gift) can be added by hand.'),
   table(
     ['Method', 'How it works', 'Example: ₹3,000 dinner, 3 people'],
@@ -245,7 +285,7 @@ const children = [
   bullet('Settle up suggests the fewest payments that bring everyone to zero; record each UPI payment with one click.'),
   bullet('Your share of every group expense counts toward your personal monthly budget.'),
 
-  h1('11. Worked examples'),
+  h1('13. Worked examples'),
   table(
     ['Request', 'What the agents do', 'Outcome'],
     data.bookings
@@ -260,13 +300,13 @@ const children = [
   ),
   p([new TextRun({ text: 'These rows are produced by running the real agents on the demo requests.', italics: true, color: '777777' })]),
 
-  h1('12. Controls, privacy and audit'),
+  h1('14. Controls, privacy and audit'),
   bullet('Every agent decision and every human decision is written to the booking or report trace, and to the company-wide Agent activity log, with a timestamp.'),
   bullet('Budget, policy and approval decisions are plain code. When Claude is enabled, it only turns your text into a structured draft.'),
   bullet('Seat availability and ticket and venue prices are checked on the server at booking time.'),
   bullet('The Budgets & spend dashboard shows each person’s company, reimbursable, personal and group totals. In this reference build every employee can see it; in production, restrict the per-person view to Finance and the individual.'),
 
-  h1('13. FAQ'),
+  h1('15. FAQ'),
   p([b('My city is not in the list. '), 'Choose Other in the State or City dropdown and type it. You’ll still get cinemas, events and venues.']),
   p([b('Can I book a family movie on the company? '), 'No. Use Shared (split) or Personal. Company-paid bookings need a business or team purpose.']),
   p([b('The seats I wanted were taken. '), 'Someone booked them first. Refresh the seat map and pick again; the system never double-books a seat.']),
@@ -279,12 +319,12 @@ const children = [
   bullet('npm test — runs the agent test suite (locations, movies & seats, events, approvals, splits, expense routing).'),
   bullet('Set ANTHROPIC_API_KEY to let the Concierge agent read requests with Claude; without it, the rule engine is used.'),
   bullet('Use "Acting as" in the sidebar to see the app as a requester, manager, department head, Finance, Compliance, HR or Benefits.'),
-  bullet('All movies, cinemas, events and venues in the demo are fictional sample data.'),
+  bullet('Offline, movies, cinemas, events and venues are fictional sample data; online they come from the free APIs in section 3. Showtimes, seat maps and payments are always simulated.'),
 ];
 
 const doc = new Document({
   creator: 'Entertainment OS',
-  title: 'Entertainment OS — Employee & Approver Handbook (India)',
+  title: 'Entertainment OS — Employee & Approver Handbook (India & Canada)',
   styles: {
     default: { document: { run: { font: FONT, size: 21 } } },
     paragraphStyles: [

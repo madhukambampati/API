@@ -39,6 +39,21 @@ export const LOCATIONS = {
     Lakshadweep: ['Kavaratti'],
     Puducherry: ['Puducherry'],
   },
+  Canada: {
+    Alberta: ['Calgary', 'Edmonton', 'Banff', 'Red Deer'],
+    'British Columbia': ['Vancouver', 'Victoria', 'Surrey', 'Kelowna', 'Whistler'],
+    Manitoba: ['Winnipeg', 'Brandon'],
+    'New Brunswick': ['Moncton', 'Saint John', 'Fredericton'],
+    'Newfoundland and Labrador': ["St. John's"],
+    'Nova Scotia': ['Halifax', 'Sydney'],
+    Ontario: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Hamilton', 'London', 'Waterloo', 'Niagara Falls'],
+    'Prince Edward Island': ['Charlottetown'],
+    Quebec: ['Montreal', 'Quebec City', 'Gatineau', 'Laval'],
+    Saskatchewan: ['Saskatoon', 'Regina'],
+    'Northwest Territories': ['Yellowknife'],
+    Nunavut: ['Iqaluit'],
+    Yukon: ['Whitehorse'],
+  },
   'United Arab Emirates': { Dubai: ['Dubai'], 'Abu Dhabi': ['Abu Dhabi'] },
   Singapore: { Singapore: ['Singapore'] },
   'United Kingdom': { England: ['London', 'Manchester'], Scotland: ['Edinburgh'] },
@@ -46,6 +61,16 @@ export const LOCATIONS = {
 };
 
 export const DEFAULT_LOCATION = { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
+
+// ISO code and local currency per country (used for live APIs and ₹ conversions).
+export const COUNTRY_META = {
+  India: { code: 'IN', currency: 'INR', symbol: '\u20b9' },
+  Canada: { code: 'CA', currency: 'CAD', symbol: 'C$' },
+  'United States': { code: 'US', currency: 'USD', symbol: 'US$' },
+  'United Kingdom': { code: 'GB', currency: 'GBP', symbol: '\u00a3' },
+  'United Arab Emirates': { code: 'AE', currency: 'AED', symbol: 'AED ' },
+  Singapore: { code: 'SG', currency: 'SGD', symbol: 'S$' },
+};
 
 const METROS = new Set(['Mumbai', 'New Delhi', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Gurugram', 'Noida']);
 const TIER2 = new Set(['Ahmedabad', 'Jaipur', 'Kochi', 'Lucknow', 'Chandigarh', 'Indore', 'Goa', 'Panaji', 'Coimbatore', 'Visakhapatnam', 'Bhubaneswar', 'Thane', 'Nagpur', 'Surat', 'Vadodara', 'Mysuru', 'Thiruvananthapuram', 'Guwahati', 'Bhopal', 'Udaipur']);
@@ -63,6 +88,7 @@ export const STATE_LANGUAGES = {
   Karnataka: ['Kannada'], 'Tamil Nadu': ['Tamil'], Puducherry: ['Tamil'], Kerala: ['Malayalam'], Lakshadweep: ['Malayalam'],
   Telangana: ['Telugu'], 'Andhra Pradesh': ['Telugu'], 'West Bengal': ['Bengali'], Tripura: ['Bengali'],
   Maharashtra: ['Marathi', 'Hindi'], Gujarat: ['Gujarati', 'Hindi'], Punjab: ['Punjabi', 'Hindi'],
+  Quebec: ['French'],
 };
 
 // A weekend-escape suggestion per state for team offsites.
@@ -71,6 +97,8 @@ export const NEARBY_ESCAPES = {
   Rajasthan: 'Udaipur lakeside offsite', 'Tamil Nadu': 'Mahabalipuram beach retreat', Telangana: 'Ananthagiri Hills retreat', Delhi: 'Neemrana fort retreat',
   Haryana: 'Aravalli farm-stay offsite', 'Uttar Pradesh': 'Rishikesh riverside retreat', 'West Bengal': 'Darjeeling tea-estate retreat', 'Himachal Pradesh': 'Manali mountain camp',
   Uttarakhand: 'Rishikesh rafting & camp', Gujarat: 'Rann of Kutch tent city', Punjab: 'Anandpur Sahib farm retreat',
+  Alberta: 'Banff mountain lodge retreat', 'British Columbia': 'Whistler mountain retreat', Ontario: 'Muskoka cottage offsite',
+  Quebec: 'Mont-Tremblant resort offsite', 'Nova Scotia': 'Cabot Trail coastal retreat', Manitoba: 'Lake Winnipeg lodge retreat',
 };
 
 export function normaliseLocation(input = {}) {
@@ -86,17 +114,22 @@ export function locationLabel(loc) {
 }
 
 // Find a known city mentioned in free text ("dinner in Pune tomorrow").
-export function findCityInText(text) {
+// Names like London exist in two countries, so a match in `preferCountry` wins.
+export function findCityInText(text, preferCountry) {
   const t = text.toLowerCase();
+  const matches = [];
   for (const [country, states] of Object.entries(LOCATIONS)) {
     for (const [state, cities] of Object.entries(states)) {
       for (const city of cities) {
-        if (new RegExp(`\\b${city.toLowerCase().replace(/\s+/g, '\\s+')}\\b`).test(t)) return { country, state, city };
+        const re = new RegExp(`\\b${city.toLowerCase().replace(/[.']/g, '.?').replace(/\s+/g, '\\s+')}\\b`);
+        if (re.test(t)) matches.push({ country, state, city });
       }
     }
   }
+  if (matches.length) return matches.find((m) => m.country === preferCountry) || matches[0];
   if (/\bbangalore\b/.test(t)) return { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
   if (/\bbombay\b/.test(t)) return { country: 'India', state: 'Maharashtra', city: 'Mumbai' };
   if (/\bgurgaon\b/.test(t)) return { country: 'India', state: 'Haryana', city: 'Gurugram' };
+  if (/\bgta\b/.test(t)) return { country: 'Canada', state: 'Ontario', city: 'Toronto' };
   return null;
 }

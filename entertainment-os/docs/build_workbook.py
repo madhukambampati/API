@@ -71,7 +71,7 @@ def title(ws, text, sub):
 # ---------------- Read Me ----------------
 ws = wb.active
 ws.title = "Read Me"
-title(ws, "Entertainment OS — Operations Workbook (India)", f"{data['meta']['company']} · {data['meta']['period']} · all amounts in Indian rupees (₹) · generated from the demo run of the agent pipeline")
+title(ws, "Entertainment OS — Operations Workbook (India & Canada)", f"{data['meta']['company']} · {data['meta']['period']} · all amounts in Indian rupees (₹) · generated from the demo run of the agent pipeline")
 rows = [
     ("Sheet", "What it shows"),
     ("Policy", "Approval thresholds and per-person caps in ₹ (inputs). Change them and every booking's approval chain recalculates."),
@@ -83,7 +83,8 @@ rows = [
     ("Group Balances", "Net balance per member = paid − share + settlements sent − settlements received."),
     ("Split Calculator", "Try a split: enter an amount, pick a method and weights."),
     ("Locations", "Country → State → City list used by the location picker. 'Other' lets anyone type a place that isn't listed."),
-    ("Catalog", "Films now showing, their languages and formats, and the event types listed near you."),
+    ("Catalog", "Sample films, their languages and formats, and the event types listed near you (live data replaces the samples when online)."),
+    ("Data Sources", "The free public APIs the app uses for live data, what each provides, and the fallbacks."),
     ("Flow", "Step-by-step flow of a request through the agents."),
     ("", ""),
     ("Legend", ""),
@@ -94,8 +95,8 @@ rows = [
 for r, (a, b) in enumerate(rows, 4):
     ws.cell(row=r, column=1, value=a).font = BOLD if a in ("Sheet", "Legend") else BLACK
     ws.cell(row=r, column=2, value=b).font = BLACK
-ws["A18"].font = BLUE
-ws["A19"].fill = INPUT_FILL
+ws["A19"].font = BLUE
+ws["A20"].fill = INPUT_FILL
 ws.column_dimensions["A"].width = 20
 ws.column_dimensions["B"].width = 118
 
@@ -349,10 +350,31 @@ for i, (k, v) in enumerate(data["eventTypes"].items(), er + 1):
     put(ws, i, 2, k)
 ws.cell(row=er + len(data["eventTypes"]) + 2, column=1, value="Films, cinemas, events and venues are fictional demo data, generated for whichever city is selected.").font = NOTE
 
+# ---------------- Data Sources ----------------
+ws = wb.create_sheet("Data Sources")
+header(ws, 1, ["Data", "Free source", "Key needed?", "Cache", "Used for"], [30, 36, 16, 12, 60])
+sources = [
+    ("City coordinates", "OpenStreetMap Nominatim", "No", "30 days", "Map position of any city, including typed-in 'Other' places"),
+    ("Real places", "OpenStreetMap Overpass", "No", "7 days", "Cinemas, restaurants, stadiums, theatres, event venues, hotels, caterers, gift shops, attractions"),
+    ("Films", "Apple iTunes movie chart (country store)", "No", "6 hours", "Popular films with posters; TMDB replaces it when TMDB_API_KEY is set"),
+    ("Films in cinemas", "TMDB now playing", "Free key (TMDB_API_KEY)", "6 hours", "Films actually showing in the country's cinemas"),
+    ("Sports fixtures", "TheSportsDB (public key 123)", "No", "3 hours", "IPL, ISL; NHL, NBA, MLB, MLS, CFL; Premier League"),
+    ("Concerts & shows", "Ticketmaster Discovery", "Free key (TICKETMASTER_API_KEY)", "3 hours", "Real events and ticket price ranges near the city"),
+    ("Weather", "Open-Meteo", "No", "1 hour", "16-day forecast on the home page and events; also gives the city's time zone"),
+    ("Exchange rates", "Frankfurter (ECB)", "No", "12 hours", "₹ shown alongside C$, US$, £, S$"),
+    ("Public holidays", "Nager.Date (India: built-in list)", "No", "7 days", "Upcoming holidays, filtered by Canadian province"),
+    ("Showtimes, seat maps, payments", "Simulated", "—", "—", "No free API publishes them; the payment gateway is a demo"),
+]
+for r, row in enumerate(sources, 2):
+    for c, v in enumerate(row, 1):
+        put(ws, r, c, v).alignment = Alignment(wrap_text=True, vertical="top")
+ws.cell(row=len(sources) + 3, column=1, value="If a source can't be reached, that part of the app falls back to labelled sample data. Set EOS_OFFLINE=1 to never call the network.").font = NOTE
+
 # ---------------- Flow ----------------
 ws = wb.create_sheet("Flow")
 header(ws, 1, ["Step", "Agent / actor", "What happens", "Output", "Where in the app"], [6, 20, 64, 40, 26])
 flow = [
+    (0, "Chat agent", "Opening screen: the user types e.g. 'I'm planning to go for a movie today, can you check the theatres?'. The chat lists theatres near the city, then the films and showtimes at the chosen theatre, a seat map with the best seats preselected, who pays, the payment page, and the ticket.", "Conversation that calls the agents below", "Discover · Concierge chat"),
     (1, "Requester", "Picks Country → State → City (or 'Other' and types it), then browses Movies / Events / Dining, or types a request such as '3 tickets for Orbit 9 IMAX tomorrow evening'.", "Location + request", "Top bar · Discover"),
     (2, "Concierge agent", "Works out the category, city, date and party size; picks the show and best seats together, the event and ticket tier, or the venue; prices it; proposes who pays; matches a family/friends group.", "Priced booking draft", "Checkout · Concierge"),
     (3, "Budget agent", "Checks the right pot: department quarterly budget, wellbeing allowance or personal monthly budget.", "ok / warn / over + notes", "Checkout · Budget agent"),
