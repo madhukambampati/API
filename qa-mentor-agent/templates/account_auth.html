@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechOrbit — {{ "Create account" if mode == "signup" else "Log in" }}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="settings-panel" style="max-width: 380px; width: 100%;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 2rem;">🪐</span>
+        <h1 style="margin: 8px 0 0; font-size: 1.3rem; font-family: var(--font-heading);">TechOrbit</h1>
+        <p class="settings-note" style="margin-top: 4px;">
+          {{ "Create an account to sync your progress across devices." if mode == "signup" else "Log in to load your synced progress." }}
+        </p>
+      </div>
+
+      {% if not accounts_enabled %}
+      <p class="settings-note" style="color: var(--danger); text-align: center;">
+        Accounts aren't set up on this deployment yet — check back later.
+      </p>
+      {% else %}
+      <form method="POST">
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" autofocus required />
+        </div>
+        <div class="field-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="{{ 'new-password' if mode == 'signup' else 'current-password' }}"
+            minlength="{{ 8 if mode == 'signup' else 1 }}"
+            required
+          />
+          {% if mode == "signup" %}
+          <p class="settings-note" style="margin-top: 4px;">At least 8 characters.</p>
+          {% endif %}
+        </div>
+        {% if error %}
+        <p class="settings-note" style="color: var(--danger); margin-bottom: 10px;">{{ error }}</p>
+        {% endif %}
+        <button type="submit" class="tool-btn" style="width: 100%;">
+          {{ "Create account" if mode == "signup" else "Log in" }}
+        </button>
+      </form>
+      {% endif %}
+
+      <p class="settings-note" style="text-align: center; margin-top: 16px;">
+        {% if mode == "signup" %}
+        Already have an account? <a href="{{ url_for('account_login') }}">Log in</a>
+        {% else %}
+        New here? <a href="{{ url_for('account_signup') }}">Create an account</a>
+        {% endif %}
+      </p>
+      <p class="settings-note" style="text-align: center; margin-top: 6px;">
+        <a href="{{ url_for('settings') }}">← Back to Settings</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

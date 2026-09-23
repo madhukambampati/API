@@ -55,10 +55,22 @@
   </div>
 
   <div class="settings-panel">
-    <h3>{{ icon("construction") }} Accounts &amp; Sync</h3>
+    <h3>{{ icon("layers") }} Accounts &amp; Sync</h3>
+    {% if not accounts_enabled %}
     <p class="tool-desc">Real accounts and progress that syncs across devices are planned but not built yet.</p>
     <button type="button" class="tool-btn" id="settings-upgrade-btn">Learn more →</button>
     <p class="settings-note">This is a roadmap item, not a paid feature — nothing to buy here.</p>
+    {% elif current_user_email %}
+    <p class="tool-desc">Signed in as <strong>{{ current_user_email }}</strong>. Your profile, history, bookmarks, and progress sync to this account.</p>
+    <p class="settings-note" id="sync-status-text">Not yet synced this session.</p>
+    <a href="{{ url_for('account_logout') }}" class="tool-btn secondary">Log out</a>
+    {% else %}
+    <p class="tool-desc">Create a free account to sync your profile, history, bookmarks, and progress across devices.</p>
+    <div class="tool-row">
+      <a href="{{ url_for('account_signup') }}" class="tool-btn">Create account →</a>
+      <a href="{{ url_for('account_login') }}" class="tool-btn secondary">Log in</a>
+    </div>
+    {% endif %}
   </div>
 
   {% if login_enabled %}

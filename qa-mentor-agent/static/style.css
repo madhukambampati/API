@@ -2419,15 +2419,24 @@ html[data-sidebar="collapsed"] .sidebar-collapse-btn .icon {
   margin-bottom: 6px;
 }
 
-.field-group input[type="text"] {
+.field-group input[type="text"],
+.field-group input[type="email"],
+.field-group input[type="password"] {
   width: 100%;
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm, 10px);
   color: var(--text);
   padding: 9px 12px;
   font-family: inherit;
   font-size: 0.88rem;
+}
+
+.field-group input[type="text"]:focus,
+.field-group input[type="email"]:focus,
+.field-group input[type="password"]:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .avatar-picker {

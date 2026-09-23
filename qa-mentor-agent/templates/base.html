@@ -163,7 +163,7 @@
             <div class="profile-avatar" id="profile-avatar">🙂</div>
             <div class="profile-info">
               <div class="profile-name" id="profile-name">You</div>
-              <div class="profile-plan">Local profile</div>
+              <div class="profile-plan">{{ current_user_email if current_user_email else "Local profile" }}</div>
             </div>
             {{ icon("chevron-down", "chevron") }}
           </div>
@@ -178,7 +178,11 @@
 
   <div id="toast" class="toast"></div>
 
+  <script>
+    window.ACCOUNT_LOGGED_IN = {{ "true" if current_user_email else "false" }};
+  </script>
   <script src="{{ url_for('static', filename='common.js') }}"></script>
+  <script src="{{ url_for('static', filename='sync.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

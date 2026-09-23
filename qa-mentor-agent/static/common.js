@@ -23,6 +23,7 @@ function safeSet(key, value) {
   } catch (e) {
     /* storage unavailable, ignore */
   }
+  if (window.notifyLocalDataChanged) window.notifyLocalDataChanged();
 }
 
 function getProfile() {
@@ -197,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         localStorage.setItem(THEME_KEY, isLight ? "dark" : "light");
       } catch (e) {}
+      if (window.notifyLocalDataChanged) window.notifyLocalDataChanged();
       applyTheme();
     });
   }

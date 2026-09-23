@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         localStorage.setItem(THEME_KEY, el.dataset.theme);
       } catch (e) {}
+      if (window.notifyLocalDataChanged) window.notifyLocalDataChanged();
       applyTheme();
       selectThemeOption(el.dataset.theme);
     };

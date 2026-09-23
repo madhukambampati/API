@@ -11,6 +11,7 @@ import anthropic
 from dotenv import load_dotenv
 from flask import Flask, Response, abort, jsonify, redirect, render_template, request, session, url_for
 
+import db
 from content_data import LESSONS, RADAR_ITEMS, ROLES
 
 load_dotenv()
@@ -217,6 +218,75 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/account/signup", methods=["GET", "POST"])
+def account_signup():
+    error = None
+    if request.method == "POST":
+        ip = _client_ip()
+        email = (request.form.get("email") or "").strip()
+        password = request.form.get("password") or ""
+        if _is_rate_limited(ip):
+            error = "Too many attempts. Please wait a few minutes and try again."
+        elif not db.accounts_enabled():
+            error = "Accounts aren't set up on this deployment yet."
+        else:
+            user, err = db.create_user(email, password)
+            if user is None:
+                _record_failed_attempt(ip)
+                error = err
+            else:
+                session["user_id"] = str(user["_id"])
+                session["user_email"] = user["email"]
+                return redirect(url_for("settings", just_logged_in=1))
+    return render_template("account_auth.html", mode="signup", error=error, accounts_enabled=db.accounts_enabled())
+
+
+@app.route("/account/login", methods=["GET", "POST"])
+def account_login():
+    error = None
+    if request.method == "POST":
+        ip = _client_ip()
+        email = request.form.get("email") or ""
+        password = request.form.get("password") or ""
+        if _is_rate_limited(ip):
+            error = "Too many attempts. Please wait a few minutes and try again."
+        elif not db.accounts_enabled():
+            error = "Accounts aren't set up on this deployment yet."
+        else:
+            user = db.verify_user(email, password)
+            if user is None:
+                _record_failed_attempt(ip)
+                error = "Incorrect email or password."
+            else:
+                session["user_id"] = str(user["_id"])
+                session["user_email"] = user["email"]
+                return redirect(url_for("settings", just_logged_in=1))
+    return render_template("account_auth.html", mode="login", error=error, accounts_enabled=db.accounts_enabled())
+
+
+@app.route("/account/logout")
+def account_logout():
+    session.pop("user_id", None)
+    session.pop("user_email", None)
+    return redirect(url_for("settings"))
+
+
+@app.route("/api/sync", methods=["GET", "POST"])
+def api_sync():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "not_logged_in"}), 401
+    if request.method == "GET":
+        return jsonify({"data": db.get_user_data(user_id)})
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "invalid_payload"}), 400
+    ok = db.save_user_data(user_id, payload)
+    if not ok:
+        return jsonify({"error": "save_failed"}), 500
+    return jsonify({"ok": True})
+
+
 @app.route("/robots.txt")
 def robots_txt():
     return Response("User-agent: *\nDisallow: /\n", mimetype="text/plain")
@@ -229,7 +299,11 @@ def favicon_ico():
 
 @app.context_processor
 def inject_auth_flags():
-    return {"login_enabled": bool(SITE_PASSWORD)}
+    return {
+        "login_enabled": bool(SITE_PASSWORD),
+        "accounts_enabled": db.accounts_enabled(),
+        "current_user_email": session.get("user_email"),
+    }
 
 
 @app.context_processor
