@@ -38,6 +38,7 @@ function upcomingShows(s, shows, date) {
 }
 
 function sourceNote(loc) {
+  if (live.status(loc) === 'loading' && !live.get(loc)) return 'Live cinema and film data is still loading, so these are sample theatres for now. Ask again in a minute for real ones. Showtimes, seat maps and prices are simulated.';
   const b = live.get(loc);
   const real = cinemas(loc)[0]?.source === 'OpenStreetMap';
   const mv = b?.moviesSource;
@@ -386,7 +387,7 @@ export async function handle({ sessionId, actorId, text, action, location }) {
   let s = sessions.get(sessionId);
   if (!s || s.actorId !== actorId) s = create(actorId, location);
   if (location && s.step === 'idle') s.loc = normaliseLocation(location);
-  await live.ensure(s.loc);
+  await live.ensure(s.loc, { waitMs: 3000 });
   const out = [];
   try {
     if (action) await onAction(s, action, out);
@@ -455,7 +456,7 @@ async function onText(s, text, out) {
   const city = findCityInText(text, s.loc.country);
   if (city && city.city !== s.loc.city) {
     s.loc = city;
-    await live.ensure(s.loc);
+    await live.ensure(s.loc, { waitMs: 3000 });
     out.push(say(`📍 Switched to ${locationLabel(s.loc)}.`));
   }
 

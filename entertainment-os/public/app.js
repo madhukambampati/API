@@ -174,11 +174,40 @@ async function afterLocationChange() {
   ui.discover = null;
   ui.showtimes = null;
   toast(`Showing ${locLabel()}`);
+  render();
   await loadDiscover();
   render();
 }
+// Discover data (movies, events, venues, weather…). The server answers within a few seconds;
+// while live data is still being gathered it says `pending` and we poll until it's ready.
+let discoverPoll = null;
 async function loadDiscover() {
-  ui.discover = await api(`/api/discover?${locQS()}`);
+  clearTimeout(discoverPoll);
+  const key = locQS();
+  try {
+    const d = await api(`/api/discover?${key}`);
+    if (key !== locQS()) return; // location changed meanwhile
+    ui.discover = d;
+    ui.error = null;
+    if (d.pending) pollDiscover(key, 1);
+  } catch (e) {
+    ui.error = `Couldn't load movies and events: ${e.message}`;
+  }
+}
+function pollDiscover(key, n) {
+  discoverPoll = setTimeout(async () => {
+    if (key !== locQS()) return;
+    try {
+      const d = await api(`/api/discover?${key}`);
+      if (key !== locQS()) return;
+      ui.discover = d;
+      if (['discover', 'movies', 'events', 'venues'].includes(ui.tab)) render();
+      if (d.pending && n < 30) pollDiscover(key, n + 1);
+      else if (!d.pending) toast(`Live data loaded for ${locLabel()}`);
+    } catch {
+      if (n < 30) pollDiscover(key, n + 1);
+    }
+  }, 4000);
 }
 
 // ---------- helpers ----------
@@ -221,9 +250,11 @@ function renderShell() {
   $('#loc-btn').innerHTML = `${icon('pin')}<span><b>${esc(loc().city)}</b> <span class="muted">${esc([loc().state, loc().country].filter(Boolean).join(', '))}</span></span>`;
 }
 
+const EMPTY_DISCOVER = { movies: [], events: [], elsewhere: [], eventTypes: {}, venues: {}, sources: [], holidays: [], weather: null, fx: null, currency: null, moviesSource: null };
 function viewDiscover() {
   const s = ui.state;
-  const D = ui.discover;
+  const D = ui.discover || EMPTY_DISCOVER;
+  const waiting = !ui.discover;
   const types = [['all', 'All'], ...Object.entries(D.eventTypes).filter(([k]) => D.events.some((e) => e.type === k))];
   const evs = D.events.filter((e) => ui.eventType === 'all' || e.type === ui.eventType).slice(0, 6);
   const me = s.me;
@@ -251,12 +282,12 @@ function viewDiscover() {
       <div class="cat-rail">${Object.entries(s.categories).map(([id, c]) => `<button class="cat" data-cat="${id}"><span class="ic">${icon(c.icon)}</span><b>${esc(c.label)}</b></button>`).join('')}</div>
       <section class="section">
         <div class="section-head"><h2>${D.moviesSource?.startsWith('TMDB') ? 'Now playing' : 'Popular movies'} in ${esc(loc().city)}</h2><span class="row">${srcTag(D.movies[0]?.source)}<button class="btn sm ghost" data-tab="movies">All movies →</button></span></div>
-        <div class="shelf">${D.movies.map((m) => poster(m)).join('')}</div>
+        <div class="shelf">${waiting ? '<div class="muted">Loading films…</div>' : D.movies.map((m) => poster(m)).join('')}</div>
       </section>
       <section class="section">
         <div class="section-head"><h2>Happening near you</h2><button class="btn sm ghost" data-tab="events">All events →</button></div>
         <div class="chips" style="margin-bottom:12px">${types.map(([k, l]) => `<button class="chip ${ui.eventType === k ? 'on' : ''}" data-etype="${k}">${esc(l)}</button>`).join('')}</div>
-        <div class="ev-list">${evs.map(evRow).join('') || '<div class="card empty">No events of this type nearby in the next few weeks.</div>'}</div>
+        <div class="ev-list">${waiting ? '<div class="card empty">Loading events…</div>' : evs.map(evRow).join('') || '<div class="card empty">No events of this type nearby in the next few weeks.</div>'}</div>
       </section>
     </div>
     <aside class="rail">
@@ -277,7 +308,8 @@ function viewDiscover() {
           ? `<div class="card"><h3>Upcoming holidays</h3>${D.holidays.slice(0, 4).map((h) => `<div class="stat-line"><span>${esc(h.name)}${h.regional ? ' <span class="small muted">(regional)</span>' : ''}</span><span class="small muted">${esc(fmtDate(h.date))}</span></div>`).join('')}<p class="small muted" style="margin:6px 0 0">Good dates for a long-weekend outing.</p></div>`
           : ''
       }
-      <div class="card"><h3>Live data <span class="small muted">(${liveCount}/${D.sources.length} connected)</span></h3>
+      <div class="card"><h3>Live data <span class="small muted">${D.sources.length ? `(${liveCount}/${D.sources.length} connected)` : ''}</span></h3>
+        ${!D.sources.length ? `<p class="small muted" style="margin:0">${D.pending || !ui.discover ? '⏳ Connecting to OpenStreetMap, Open-Meteo, Wikidata, TheSportsDB…' : 'No live sources answered — showing sample data.'}</p>` : ''}
         ${D.sources.map((x) => `<div class="stat-line"><span>${esc(x.name)}</span><span class="small ${x.ok ? 'pos' : 'muted'}" title="${esc(x.error || '')}">${x.ok ? '● live' : x.optional ? 'optional key' : '○ sample'}</span></div>`).join('')}
         ${D.fx && D.fx.rates?.CAD ? `<p class="small muted" style="margin:6px 0 0">C$1 = ₹${(1 / D.fx.rates.CAD).toFixed(2)}${D.fx.approx ? ' (approx.)' : ` (ECB, ${esc(D.fx.date || '')})`}</p>` : ''}
       </div>
@@ -784,11 +816,30 @@ function resetChat() {
   ui.chat = { sessionId: null, log: [], busy: false, method: null, seatSel: null };
 }
 
+const DISCOVER_VIEWS = ['discover', 'movies', 'events', 'venues'];
 function render() {
+  if (!ui.state) {
+    $('#view').innerHTML = ui.error ? errorBanner() : '<div class="card empty">Loading…</div>';
+    return;
+  }
+  const typed = $('#chat-input')?.value || '';
+  const focused = document.activeElement?.id;
+  const logEl = $('#chat-log');
+  const atBottom = !logEl || logEl.scrollHeight - logEl.scrollTop - logEl.clientHeight < 40;
+  const scrollTop = logEl?.scrollTop;
   renderShell();
   const views = { discover: viewDiscover, movies: viewMovies, events: viewEvents, venues: viewVenues, bookings: viewBookings, approvals: viewApprovals, expenses: viewExpenses, splits: viewSplits, spend: viewSpend, activity: viewActivity };
-  $('#view').innerHTML = (views[ui.tab] || viewDiscover)();
+  let html;
+  if (DISCOVER_VIEWS.includes(ui.tab) && ui.tab !== 'discover' && !ui.discover) html = `<div class="card empty">Loading what's on in ${esc(loc().city)}…</div>`;
+  else html = (views[ui.tab] || viewDiscover)();
+  $('#view').innerHTML = (ui.error ? errorBanner() : '') + (ui.discover?.pending && DISCOVER_VIEWS.includes(ui.tab) ? `<div class="note warn small" style="margin-bottom:14px">⏳ Fetching live cinemas, films and events for ${esc(loc().city)} from the free APIs. Sample data is shown until it arrives (the first time can take up to a minute).</div>` : '') + html;
+  const inp = $('#chat-input');
+  if (inp && typed) inp.value = typed;
+  if (inp && focused === 'chat-input') inp.focus();
+  const newLog = $('#chat-log');
+  if (newLog) newLog.scrollTop = atBottom ? newLog.scrollHeight : scrollTop;
 }
+const errorBanner = () => `<div class="note over" style="margin-bottom:14px">⚠️ ${esc(ui.error)} <button class="btn sm" data-retry>Retry</button></div>`;
 async function refresh() {
   ui.state = await api('/api/state');
   render();
@@ -847,6 +898,10 @@ document.addEventListener('click', async (e) => {
       return reviewCheckout();
     }
     return o.action ? chatSend({ action: o.action }, o.label) : chatSend({ text: o.text }, o.text);
+  }
+  if (e.target.closest('[data-retry]')) {
+    ui.error = null;
+    return ui.state ? (await loadDiscover(), render()) : boot();
   }
   if (e.target.closest('#chat-new')) {
     resetChat();
@@ -947,22 +1002,28 @@ $('#actor').addEventListener('change', async (e) => {
   store.set('eos.actor', ui.actor);
   resetChat();
   ui.state = await api('/api/state');
-  await loadDiscover();
+  ui.discover = null;
   render();
   chatSend({});
+  await loadDiscover();
+  render();
 });
 $('#modal').addEventListener('click', (e) => {
   if (e.target.id === 'modal') closeModal();
 });
 
-(async () => {
+async function boot() {
   try {
+    ui.error = null;
     ui.locations = await api('/api/locations');
     ui.state = await api('/api/state');
+    render(); // draw straight away; movies/events fill in when ready
+    chatSend({});
     await loadDiscover();
     render();
-    chatSend({});
   } catch (e) {
-    toast(e.message, true);
+    ui.error = `Couldn't reach the Entertainment OS server: ${e.message}. Is \`npm start\` still running?`;
+    render();
   }
-})();
+}
+boot();

@@ -63,19 +63,42 @@ async function gather(loc) {
   };
 }
 
-// Fetch (or reuse) live data for a location. Never throws; failures become "sample data" fallbacks.
-export async function ensure(loc) {
+export function status(loc) {
   const key = locKey(loc);
-  const have = bundles.get(key);
-  if (have && Date.now() - have.at < FRESH_MS) return have;
+  return inflight.has(key) ? 'loading' : bundles.has(key) ? 'ready' : 'none';
+}
+
+function refresh(loc) {
+  const key = locKey(loc);
   if (inflight.has(key)) return inflight.get(key);
+  const t0 = Date.now();
   const p = gather(loc)
     .catch((err) => ({ at: Date.now(), places: {}, movies: [], sports: [], ticketmaster: [], holidays: [], sources: [{ name: 'live data', ok: false, error: err.message }] }))
     .then((b) => {
       bundles.set(key, b);
       inflight.delete(key);
+      if (process.env.NODE_ENV !== 'test' && process.env.EOS_OFFLINE !== '1') {
+        const ok = b.sources.filter((x) => x.ok).length;
+        console.log(`[live] ${loc.city}: ${ok}/${b.sources.length} sources in ${((Date.now() - t0) / 1000).toFixed(1)}s · ${Object.values(b.places || {}).flat().length} places · ${b.movies.length} films · ${b.sports.length} fixtures`);
+      }
       return b;
     });
   inflight.set(key, p);
   return p;
+}
+
+/**
+ * Fetch (or reuse) live data for a location. Never throws; failures become "sample data" fallbacks.
+ * waitMs: how long the caller is willing to wait. If the data isn't ready by then it resolves to
+ * whatever is available now (possibly null) and gathering carries on in the background.
+ * Stale data is served immediately while it refreshes in the background.
+ */
+export async function ensure(loc, { waitMs = Infinity } = {}) {
+  const key = locKey(loc);
+  const have = bundles.get(key);
+  if (have && Date.now() - have.at < FRESH_MS) return have;
+  const p = refresh(loc);
+  if (have) return have;
+  if (waitMs === Infinity) return p;
+  return Promise.race([p, new Promise((r) => setTimeout(() => r(bundles.get(key) || null), waitMs))]);
 }

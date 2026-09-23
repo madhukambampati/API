@@ -75,12 +75,12 @@ const routes = [
   ['GET', /^\/api\/state$/, (req) => state(actor(req))],
   ['POST', /^\/api\/agent\/plan$/, async (req, body) => {
     const who = actor(req);
-    await live.ensure(normaliseLocation(body.location || person(who).home));
+    await live.ensure(normaliseLocation(body.location || person(who).home), { waitMs: 3000 });
     return orchestrator.plan(String(body.text || '').slice(0, 500), who, { location: body.location });
   }],
   ['POST', /^\/api\/agent\/preview$/, async (req, body) => {
     const who = actor(req);
-    await live.ensure(normaliseLocation(body.location || person(who).home));
+    await live.ensure(normaliseLocation(body.location || person(who).home), { waitMs: 3000 });
     return orchestrator.preview(body, who);
   }],
   ['POST', /^\/api\/chat$/, async (req, body) => chat.handle({ sessionId: body.sessionId, actorId: actor(req), text: body.text, action: body.action, location: body.location })],
@@ -91,7 +91,9 @@ const routes = [
     async (req, body, m, url) => {
       actor(req);
       const loc = locFrom(url);
-      const b = await live.ensure(loc);
+      // Answer quickly: if live data is still being gathered, serve sample data and say so.
+      const b = (await live.ensure(loc, { waitMs: 2500 })) || { sources: [], holidays: [] };
+      const pending = live.status(loc) === 'loading';
       const all = catalog.events(loc, { type: url.searchParams.get('type') || 'all' });
       return {
         location: loc,
@@ -108,6 +110,7 @@ const routes = [
         fx: b.fx || null,
         currency: COUNTRY_META[loc.country] || null,
         sources: b.sources || [],
+        pending,
       };
     },
   ],
@@ -117,7 +120,7 @@ const routes = [
     async (req, body, m, url) => {
       actor(req);
       const loc = locFrom(url);
-      await live.ensure(loc);
+      await live.ensure(loc, { waitMs: 3000 });
       return catalog.showtimes(url.searchParams.get('movie'), url.searchParams.get('date'), loc);
     },
   ],
@@ -132,7 +135,7 @@ const routes = [
   ],
   ['POST', /^\/api\/bookings$/, async (req, body) => {
     const who = actor(req);
-    await live.ensure(normaliseLocation(body.location || person(who).home));
+    await live.ensure(normaliseLocation(body.location || person(who).home), { waitMs: 3000 });
     return orchestrator.createBooking(body, who);
   }],
   ['POST', /^\/api\/bookings\/([\w-]+)\/cancel$/, (req, body, m) => orchestrator.cancelBooking(m[1], actor(req))],
