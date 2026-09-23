@@ -49,7 +49,7 @@ function politely(url, fn) {
  * Fetch JSON with caching. Returns { ok, data, error, cached }.
  * ttl is in seconds. `key` defaults to method + url + body.
  */
-export async function getJSON(url, { ttl = 3600, method = 'GET', body, headers = {}, timeout = 9000, key } = {}) {
+export async function getJSON(url, { ttl = 3600, method = 'GET', body, headers = {}, timeout = 9000, key, accept = () => true } = {}) {
   const c = loadCache();
   const k = key || `${method} ${url} ${body || ''}`;
   const hit = c[k];
@@ -66,8 +66,11 @@ export async function getJSON(url, { ttl = 3600, method = 'GET', body, headers =
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    c[k] = { at: Date.now(), data };
-    persist();
+    if (accept(data)) {
+      // only cache answers worth keeping (e.g. not an Overpass "server busy" reply)
+      c[k] = { at: Date.now(), data };
+      persist();
+    }
     return { ok: true, data, cached: false };
   } catch (err) {
     // Serve stale data rather than nothing when the service is down.

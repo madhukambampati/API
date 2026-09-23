@@ -40,7 +40,7 @@ When the machine running the app has internet access, the app uses these free pu
 | Data | Source | Key |
 |---|---|---|
 | City coordinates | OpenStreetMap Nominatim | none |
-| Cinemas, restaurants, stadiums, theatres, venues, caterers, gift shops, attractions | OpenStreetMap Overpass | none |
+| Cinemas, restaurants, stadiums, theatres, venues, caterers, gift shops, attractions | OpenStreetMap Overpass, with Nominatim search as backup | none |
 | Recent films + posters | Wikidata (recent releases) + Wikipedia page images | none |
 | Popular films + posters (fallback) | Apple iTunes movie chart (country store) | none |
 | Films actually in cinemas | TMDB `now_playing` | optional free key: `TMDB_API_KEY` |

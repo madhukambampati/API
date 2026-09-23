@@ -11,7 +11,7 @@ const loc = { city, state, country: country || DEFAULT_LOCATION.country };
 console.log(`Checking live data for ${[loc.city, loc.state, loc.country].filter(Boolean).join(', ')} …\n`);
 const t0 = Date.now();
 const b = await live.ensure(loc);
-for (const s of b.sources) console.log(`${s.ok ? '✅' : s.optional ? '➖' : '❌'}  ${s.name}${s.ok ? '' : `  — ${s.error}`}`);
+for (const s of b.sources) console.log(`${s.ok ? (s.error ? "⚠️ " : "✅") : s.optional ? "➖" : "❌"}  ${s.name}${s.error ? `  — ${s.error}` : ""}`);
 const places = Object.fromEntries(Object.entries(b.places || {}).map(([k, v]) => [k, v.length]));
 console.log(`\nPlaces found: ${JSON.stringify(places)}`);
 const cins = b.places?.cinema || [];

@@ -37,7 +37,7 @@ async function gather(loc) {
   const countryCode = meta?.code || geo.data?.countryCode || null;
 
   const [places, weather, fx, holidays, movies, sports, tm] = await Promise.all([
-    coords ? P.places(coords) : Promise.resolve({ source: 'OpenStreetMap Overpass', ok: false, error: 'no coordinates', data: {} }),
+    coords ? P.places(coords) : Promise.resolve({ source: 'OpenStreetMap places', ok: false, error: 'no coordinates', data: {} }),
     coords ? P.weather(coords) : Promise.resolve({ source: 'Open-Meteo', ok: false, error: 'no coordinates', data: null }),
     P.fx(),
     P.holidays({ countryCode, state: loc.state, from: today }),
@@ -81,7 +81,8 @@ function refresh(loc) {
       inflight.delete(key);
       if (process.env.NODE_ENV !== 'test' && process.env.EOS_OFFLINE !== '1') {
         const ok = b.sources.filter((x) => x.ok).length;
-        console.log(`[live] ${loc.city}: ${ok}/${b.sources.length} sources in ${((Date.now() - t0) / 1000).toFixed(1)}s · ${Object.values(b.places || {}).flat().length} places · ${b.movies.length} films · ${b.sports.length} fixtures`);
+        console.log(`[live] ${loc.city}: ${ok}/${b.sources.length} sources in ${((Date.now() - t0) / 1000).toFixed(1)}s · ${Object.values(b.places || {}).flat().length} places (${(b.places?.cinema || []).length} cinemas) · ${b.movies.length} films · ${b.sports.length} fixtures`);
+        for (const x of b.sources.filter((x) => x.error && !x.optional)) console.log(`[live]   ${x.ok ? '!' : '✗'} ${x.name}: ${x.error}`);
       }
       return b;
     });

@@ -134,3 +134,25 @@ test('cinemas get their own Overpass query; old films with re-release dates are 
   assert.equal(P.releaseYearFromSummary('Frostbound is a 2026 Canadian science fiction thriller film.'), 2026);
   assert.equal(P.releaseYearFromSummary('A film.'), null);
 });
+
+test('Nominatim place search backs up Overpass; Overpass "busy" replies count as failures', () => {
+  const center = { lat: 43.4516, lon: -80.4925 };
+  const url = P.nominatimPlacesUrl(center, 'cinema');
+  assert.match(url, /q=cinema&viewbox=-80\.\d+,43\.\d+,-80\.\d+,43\.\d+&bounded=1&limit=40/);
+  const list = P.normaliseNominatimPlaces(
+    [
+      { osm_type: 'way', osm_id: 1, lat: '43.46', lon: '-80.52', category: 'amenity', type: 'cinema', name: 'Real Cinema One', address: { house_number: '10', road: 'King St', city: 'Waterloo' }, extratags: { website: 'https://example.ca' } },
+      { osm_type: 'node', osm_id: 2, lat: '43.45', lon: '-80.49', category: 'amenity', type: 'cinema', name: 'Real Cinema Two', address: { city: 'Kitchener' } },
+      { osm_type: 'node', osm_id: 3, lat: '43.45', lon: '-80.49', category: 'amenity', type: 'cafe', name: 'Cinema Cafe' },
+      { osm_type: 'node', osm_id: 4, lat: '43.45', lon: '-80.49', category: 'amenity', type: 'cinema', name: 'Real Cinema Two' },
+    ],
+    'cinema',
+    center,
+  );
+  assert.deepEqual(list.map((c) => c.name), ['Real Cinema Two', 'Real Cinema One'], 'nearest first, non-cinemas and duplicates dropped');
+  assert.equal(list[1].address, '10 King St, Waterloo');
+  assert.equal(list[1].osmId, 'way-1');
+  assert.match(P.overpassFailure({ elements: [], remark: 'runtime error: Query timed out in "query" at line 1 after 26 seconds.' }), /timed out/);
+  assert.equal(P.overpassFailure({ elements: [] }), null, 'an empty answer without an error is genuine');
+  assert.equal(P.overpassFailure({ remark: 'x' }), 'unexpected response');
+});

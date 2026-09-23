@@ -355,7 +355,7 @@ ws = wb.create_sheet("Data Sources")
 header(ws, 1, ["Data", "Free source", "Key needed?", "Cache", "Used for"], [30, 36, 16, 12, 60])
 sources = [
     ("City coordinates", "OpenStreetMap Nominatim", "No", "30 days", "Map position of any city, including typed-in 'Other' places"),
-    ("Real places", "OpenStreetMap Overpass", "No", "7 days", "Cinemas, restaurants, stadiums, theatres, event venues, hotels, caterers, gift shops, attractions"),
+    ("Real places", "OpenStreetMap Overpass + Nominatim search", "No", "7 days", "Cinemas, restaurants, stadiums, theatres, event venues, hotels, caterers, gift shops, attractions"),
     ("Films", "Apple iTunes movie chart (country store)", "No", "6 hours", "Popular films with posters; TMDB replaces it when TMDB_API_KEY is set"),
     ("Films in cinemas", "TMDB now playing", "Free key (TMDB_API_KEY)", "6 hours", "Films actually showing in the country's cinemas"),
     ("Sports fixtures", "TheSportsDB (public key 123)", "No", "3 hours", "IPL, ISL; NHL, NBA, MLB, MLS, CFL; Premier League"),

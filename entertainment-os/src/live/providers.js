@@ -98,26 +98,106 @@ export function normaliseOsm(json, center) {
 
 const OVERPASS_MIRRORS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
 
-async function overpass(q) {
-  let last;
-  for (const url of OVERPASS_MIRRORS) {
-    last = await getJSON(url, { method: 'POST', body: `data=${enc(q)}`, headers: { 'content-type': 'application/x-www-form-urlencoded' }, ttl: 7 * 86400, timeout: 30000, key: `overpass ${q}` });
-    if (last.ok && Array.isArray(last.data?.elements)) return last;
-  }
-  return { ok: false, error: last?.error || 'no answer' };
+// Overpass sometimes answers HTTP 200 with an empty result and a "runtime error" remark
+// (server busy / query timed out) — that is a failure, not "no cinemas here".
+export function overpassFailure(json) {
+  if (!json || !Array.isArray(json.elements)) return 'unexpected response';
+  if (!json.elements.length && /error/i.test(json.remark || '')) return json.remark.slice(0, 120);
+  return null;
 }
 
-// Cinemas are asked for on their own (small query, answers fast) so a slow or failed
-// "everything else" query never replaces real theatres with sample ones.
+async function overpass(q, timeout) {
+  const errors = [];
+  for (const url of OVERPASS_MIRRORS) {
+    const r = await getJSON(url, { method: 'POST', body: `data=${enc(q)}`, headers: { 'content-type': 'application/x-www-form-urlencoded', accept: '*/*' }, ttl: 7 * 86400, timeout, key: `overpass ${q}`, accept: (d) => !overpassFailure(d) });
+    const bad = r.ok ? overpassFailure(r.data) : r.error;
+    if (!bad) return r;
+    errors.push(`${new URL(url).host}: ${bad}`);
+  }
+  return { ok: false, error: errors.join('; ') };
+}
+
+// ---------- 2b. Real places, second route: Nominatim search ----------
+// Nominatim understands "special phrases" like "cinema" inside a bounded box and returns the
+// same OpenStreetMap objects. It's slower (1 request/second) but far more dependable than Overpass.
+const NOMINATIM_PLACES = [
+  ['cinema', 'cinema', (x) => x.category === 'amenity' && x.type === 'cinema'],
+  ['theatre', 'theatre', (x) => x.category === 'amenity' && /^(theatre|arts_centre)$/.test(x.type)],
+  ['stadium', 'stadium', (x) => x.category === 'leisure' && x.type === 'stadium'],
+  ['restaurant', 'restaurant', (x) => x.category === 'amenity' && x.type === 'restaurant'],
+  ['hotel', 'hotel', (x) => x.category === 'tourism' && x.type === 'hotel'],
+  ['attraction', 'museum', (x) => x.category === 'tourism' && /^(museum|attraction|gallery)$/.test(x.type)],
+];
+
+export function normaliseNominatimPlaces(json, kind, center) {
+  const test = NOMINATIM_PLACES.find(([k]) => k === kind)?.[2] || (() => true);
+  const seen = new Set();
+  return arr(json)
+    .filter((x) => x?.name && test(x))
+    .filter((x) => (seen.has(x.name.toLowerCase()) ? false : seen.add(x.name.toLowerCase())))
+    .map((x) => {
+      const a = x.address || {};
+      const pos = { lat: Number(x.lat), lon: Number(x.lon) };
+      const address = [[a.house_number, a.road].filter(Boolean).join(' '), a.suburb || a.neighbourhood, a.city || a.town || a.village].filter(Boolean).join(', ');
+      return {
+        osmId: `${x.osm_type}-${x.osm_id}`,
+        name: x.namedetails?.['name:en'] || x.name,
+        kind,
+        cuisine: x.extratags?.cuisine ? x.extratags.cuisine.split(';').map((c) => c.replace(/_/g, ' ')).slice(0, 2).join(', ') : null,
+        stars: x.extratags?.stars || null,
+        address: address || null,
+        website: x.extratags?.website || x.extratags?.['contact:website'] || null,
+        distanceKm: distanceKm(center, pos),
+      };
+    })
+    .sort((a, b) => (a.distanceKm ?? 99) - (b.distanceKm ?? 99));
+}
+
+export function nominatimPlacesUrl({ lat, lon }, phrase, km = 25) {
+  const dLat = km / 111;
+  const dLon = km / (111 * Math.cos((lat * Math.PI) / 180));
+  const box = [lon - dLon, lat + dLat, lon + dLon, lat - dLat].map((n) => n.toFixed(4)).join(',');
+  return `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${enc(phrase)}&viewbox=${box}&bounded=1&limit=40&addressdetails=1&extratags=1`;
+}
+
+async function nominatimPlaces(center, kinds) {
+  const out = {};
+  const errors = [];
+  for (const [kind, phrase] of NOMINATIM_PLACES.filter(([k]) => kinds.includes(k))) {
+    // "cinema" is usually read as a special phrase; "[cinema]" forces that on newer servers.
+    let list = [];
+    for (const q of [phrase, `[${phrase}]`]) {
+      const r = await getJSON(nominatimPlacesUrl(center, q), { ttl: 7 * 86400, timeout: 15000 });
+      if (!r.ok) {
+        errors.push(`${kind}: ${r.error}`);
+        break;
+      }
+      list = normaliseNominatimPlaces(r.data, kind, center);
+      if (list.length) break;
+    }
+    if (list.length) out[kind] = list;
+  }
+  return { data: out, error: errors.join('; ') || null };
+}
+
+// Cinemas are asked for on their own (small query, answers fast). Nominatim runs alongside and
+// fills in whatever Overpass couldn't deliver, so real theatres show up even when Overpass is down.
 export async function places(center) {
-  const [cin, rest] = await Promise.all([
-    overpass(overpassQuery(center, ['cinema'])),
-    overpass(overpassQuery(center, PLACE_SETS.map(([k]) => k).filter((k) => k !== 'cinema'))),
+  const kinds = PLACE_SETS.map(([k]) => k);
+  const [cin, rest, nom] = await Promise.all([
+    overpass(overpassQuery(center, ['cinema']), 20000),
+    overpass(overpassQuery(center, kinds.filter((k) => k !== 'cinema')), 30000),
+    nominatimPlaces(center, NOMINATIM_PLACES.map(([k]) => k)),
   ]);
-  const data = { ...(rest.ok ? normaliseOsm(rest.data, center) : {}), ...(cin.ok ? normaliseOsm(cin.data, center) : {}) };
+  const data = { ...nom.data, ...(rest.ok ? normaliseOsm(rest.data, center) : {}) };
+  const osmCinemas = cin.ok ? normaliseOsm(cin.data, center).cinema || [] : [];
+  if (osmCinemas.length || !data.cinema) data.cinema = osmCinemas.length ? osmCinemas : data.cinema;
+  if (!data.cinema?.length) delete data.cinema;
   const n = Object.values(data).reduce((t, l) => t + l.length, 0);
-  const error = !cin.ok ? `cinemas: ${cin.error}` : !rest.ok ? `other places: ${rest.error}` : n ? null : 'no places found';
-  return { source: 'OpenStreetMap Overpass', ok: n > 0, error, data, count: n, cinemasOk: cin.ok };
+  const overpassOk = cin.ok && rest.ok;
+  const via = overpassOk ? 'Overpass' : n ? 'Nominatim search' : null;
+  const error = overpassOk ? (n ? null : 'no places found') : `Overpass — ${[cin.ok ? null : cin.error, rest.ok ? null : rest.error].filter(Boolean)[0]}${nom.error ? `; Nominatim — ${nom.error}` : ''}`;
+  return { source: via ? `OpenStreetMap places (${via})` : 'OpenStreetMap places', ok: n > 0, error, data, count: n, cinemasOk: Boolean(data.cinema?.length) || cin.ok };
 }
 
 // ---------- 3. Weather: Open-Meteo ----------

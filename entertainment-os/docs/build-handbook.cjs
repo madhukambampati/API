@@ -111,7 +111,7 @@ const children = [
     ['What', 'Free source', 'Notes'],
     [
       ['City coordinates', 'OpenStreetMap Nominatim', 'Works for typed-in “Other” places too'],
-      ['Cinemas, restaurants, stadiums, theatres, caterers, gift shops, attractions', 'OpenStreetMap Overpass', 'Real names, addresses and distances; prices are estimates'],
+      ['Cinemas, restaurants, stadiums, theatres, caterers, gift shops, attractions', 'OpenStreetMap Overpass (Nominatim search as backup)', 'Real names, addresses and distances; prices are estimates'],
       ['Films', 'Apple iTunes movie chart (India / Canada)', 'With a free TMDB key, the films actually playing in cinemas'],
       ['Sports fixtures', 'TheSportsDB (public key)', 'IPL and ISL in India; NHL, NBA, MLB, MLS and CFL in Canada; ticket prices are estimates'],
       ['Concerts & shows', 'Ticketmaster Discovery (optional free key)', 'Real events and price ranges, strongest in Canada'],
