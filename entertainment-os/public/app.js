@@ -362,7 +362,7 @@ function viewMovies() {
     ${detail}
     <div class="chips section">${langs.map((l) => `<button class="chip ${ui.movieLang === l ? 'on' : ''}" data-lang="${esc(l)}">${l === 'all' ? 'All languages' : esc(l)}</button>`).join('')}</div>
     <div class="movie-grid">${list.map((m) => poster(m)).join('') || '<p>No verified film information available.</p>'}</div>
-    <section class="card section"><h2>Mapped cinemas near ${esc(loc().city)}</h2><p class="muted">OpenStreetMap listings; opening hours and screenings are not verified.</p>${(D.cinemas || []).map((c) => `<div class="venue"><div><b>${esc(c.name)}</b><p>${esc(c.address || 'Address not published')}${c.distanceKm != null ? ` · ${esc(c.distanceKm)} km` : ''}</p></div>${safeLink(c.website, 'Cinema website')}</div>`).join('') || '<p>No mapped cinemas available.</p>'}</section>`;
+    <section class="card section"><h2>Mapped cinemas near ${esc(loc().city)}</h2><p class="muted">OpenStreetMap listings; opening hours and screenings are not verified.</p>${(D.cinemas || []).map((c) => `<div class="venue"><span class="ic">${icon('film')}</span><div><b>${esc(c.name)}</b><div class="small muted">${esc(c.address || 'Address not published')}${c.distanceKm != null ? ` · ${esc(c.distanceKm)} km` : ''}</div></div>${safeLink(c.website, 'Cinema website')}</div>`).join('') || '<p>No mapped cinemas available.</p>'}</section>`;
 }
 
 function viewEvents() {
