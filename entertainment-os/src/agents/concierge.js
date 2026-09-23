@@ -11,14 +11,14 @@ const KEYWORDS = [
   ['movies', /\b(movie|movies|film|cinema|screening|imax|recliner|matinee|multiplex)\b/i],
   ['pdr', /private (dining|room)|\bpdr\b|buyout|banquet|event space/i],
   ['catering', /cater|(?:lunch|breakfast|dinner)\b[^\d]*\d{2,}\s*(?:people|guests|pax)|boxed|buffet/i],
-  ['events', /concert|\bgig\b|music|festival|\bmatch\b|cricket|\bt20\b|football|kabaddi|marathon|\btech\b|summit|conference|meetup|hackathon|devcon|comedy|stand-?up|improv|\bplay\b|theatre|theater|musical|carnival|live event|tickets? (?:for|to) (?:the )?(?:game|show)/i],
+  ['events', /concert|\bgig\b|music|festival|\bmatch\b|cricket|\bt20\b|football|kabaddi|marathon|hockey|basketball|baseball|soccer|\b(?:nhl|nba|mlb|mls|cfl)\b|raptors|maple leafs|blue jays|canucks|canadiens|oilers|flames|argonauts|\bgame\b|\btech\b|summit|conference|meetup|hackathon|devcon|comedy|stand-?up|improv|\bplay\b|theatre|theater|musical|carnival|live event|tickets? (?:for|to) (?:the )?(?:game|show)/i],
   ['gifting', /gift|merch|swag|hamper|diwali box|festive box/i],
   ['experiences', /offsite|retreat|tour|experience|trail|walk|spa|trip|class|workshop|houseboat/i],
   ['reservations', /dinner|lunch|brunch|table|reservation|restaurant|drinks|dine/i],
 ];
 const EVENT_TYPE_WORDS = [
   ['music', /concert|\bgig\b|music|festival|qawwali|carnatic|bollywood|indie/i],
-  ['sports', /\bmatch\b|cricket|\bt20\b|football|kabaddi|marathon|\brun\b|stadium|sports?/i],
+  ['sports', /\bmatch\b|cricket|\bt20\b|football|kabaddi|marathon|\brun\b|stadium|sports?|hockey|basketball|baseball|soccer|\b(?:nhl|nba|mlb|mls|cfl)\b|\bgame\b/i],
   ['tech', /\btech\b|summit|conference|meetup|hackathon|devcon|\bai\b|cloud|startup/i],
   ['comedy', /comedy|stand-?up|improv/i],
   ['theatre', /\bplay\b|theatre|theater|musical|drama/i],

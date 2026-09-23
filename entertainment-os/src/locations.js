@@ -1,4 +1,6 @@
-// Country → state → city. India first and complete (all states and union territories).
+import { R, REGION } from './region.js';
+
+// Country → state → city. India is complete (all states and union territories); so is Canada.
 // The UI adds an "Other" choice at every level so any place can be typed in.
 export const LOCATIONS = {
   India: {
@@ -60,7 +62,10 @@ export const LOCATIONS = {
   'United States': { California: ['San Francisco', 'Los Angeles'], 'New York': ['New York City'], Texas: ['Austin'] },
 };
 
-export const DEFAULT_LOCATION = { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
+export const DEFAULT_LOCATION = R.defaultLocation;
+
+// Countries shown in the location picker for this edition (Canada only by default).
+export const ACTIVE_LOCATIONS = Object.fromEntries(R.countries.map((c) => [c, LOCATIONS[c]]));
 
 // ISO code and local currency per country (used for live APIs and ₹ conversions).
 export const COUNTRY_META = {
@@ -75,8 +80,15 @@ export const COUNTRY_META = {
 const METROS = new Set(['Mumbai', 'New Delhi', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Gurugram', 'Noida']);
 const TIER2 = new Set(['Ahmedabad', 'Jaipur', 'Kochi', 'Lucknow', 'Chandigarh', 'Indore', 'Goa', 'Panaji', 'Coimbatore', 'Visakhapatnam', 'Bhubaneswar', 'Thane', 'Nagpur', 'Surat', 'Vadodara', 'Mysuru', 'Thiruvananthapuram', 'Guwahati', 'Bhopal', 'Udaipur']);
 
-// Price multiplier vs a metro. Foreign cities are converted to ₹ at a premium.
+const CA_BIG = new Set(['Toronto', 'Vancouver', 'Whistler', 'Banff']);
+const CA_MID = new Set(['Montreal', 'Calgary', 'Ottawa', 'Mississauga', 'Victoria', 'Edmonton', 'Quebec City', 'Brampton', 'Surrey', 'Laval', 'Waterloo', 'Hamilton']);
+
+// Price multiplier vs the most expensive cities of the edition's home country.
 export function priceTier(loc) {
+  if (REGION === 'CA') {
+    if (!loc || loc.country !== 'Canada') return 1;
+    return CA_BIG.has(loc.city) ? 1 : CA_MID.has(loc.city) ? 0.95 : 0.88;
+  }
   if (!loc || loc.country !== 'India') return 1.6;
   if (METROS.has(loc.city)) return 1;
   if (TIER2.has(loc.city)) return 0.8;
@@ -118,7 +130,7 @@ export function locationLabel(loc) {
 export function findCityInText(text, preferCountry) {
   const t = text.toLowerCase();
   const matches = [];
-  for (const [country, states] of Object.entries(LOCATIONS)) {
+  for (const [country, states] of Object.entries(ACTIVE_LOCATIONS)) {
     for (const [state, cities] of Object.entries(states)) {
       for (const city of cities) {
         const re = new RegExp(`\\b${city.toLowerCase().replace(/[.']/g, '.?').replace(/\s+/g, '\\s+')}\\b`);
@@ -127,9 +139,11 @@ export function findCityInText(text, preferCountry) {
     }
   }
   if (matches.length) return matches.find((m) => m.country === preferCountry) || matches[0];
-  if (/\bbangalore\b/.test(t)) return { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
-  if (/\bbombay\b/.test(t)) return { country: 'India', state: 'Maharashtra', city: 'Mumbai' };
-  if (/\bgurgaon\b/.test(t)) return { country: 'India', state: 'Haryana', city: 'Gurugram' };
+  const india = Boolean(ACTIVE_LOCATIONS.India);
+  if (india && /\bbangalore\b/.test(t)) return { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
+  if (india && /\bbombay\b/.test(t)) return { country: 'India', state: 'Maharashtra', city: 'Mumbai' };
+  if (india && /\bgurgaon\b/.test(t)) return { country: 'India', state: 'Haryana', city: 'Gurugram' };
   if (/\bgta\b/.test(t)) return { country: 'Canada', state: 'Ontario', city: 'Toronto' };
+  if (/\bmontr[ée]al\b/.test(t)) return { country: 'Canada', state: 'Quebec', city: 'Montreal' };
   return null;
 }

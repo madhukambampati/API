@@ -1,10 +1,17 @@
 // Entertainment OS — single-page UI (vanilla JS, no build step).
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const money = (n) => `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+// Amounts are in the company currency: C$ in the Canada edition, ₹ in the India edition.
+const CUR = () => (ui.state?.meta?.currency === 'INR' ? '₹' : 'C$');
+const LOCALE = () => ui.state?.meta?.locale || 'en-CA';
+const money = (n) => {
+  const v = Math.round(Number(n || 0) * 100) / 100;
+  if (CUR() === '₹') return `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+  return `C$${v.toLocaleString('en-CA', { minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 })}`;
+};
 const dt = (d) => new Date(`${d}T12:00:00`);
-const fmtDate = (d) => dt(d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
-const fmtTime = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+const fmtDate = (d) => dt(d).toLocaleDateString(LOCALE(), { weekday: 'short', day: 'numeric', month: 'short' });
+const fmtTime = (t) => new Date(t).toLocaleString(LOCALE(), { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
 const hhmm = (t) => {
   const [h, m] = t.split(':').map(Number);
   return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
@@ -47,7 +54,7 @@ const NAV = [
   ['spend', 'Budgets & spend', 'chart'],
   ['activity', 'Agent activity', 'spark'],
 ];
-const SUGGESTIONS = ['2 tickets for Orbit 9 IMAX tonight', 'Stand-up comedy with friends this weekend', 'Client dinner for 6 tomorrow', 'Tech conference passes for 3 for the team', 'Movie with my family Saturday evening', 'Diwali gift hampers for 40 clients'];
+const SUGGESTIONS = ['2 tickets for an IMAX movie tonight', 'Stand-up comedy with friends this weekend', 'Client dinner for 6 tomorrow', 'Tech conference passes for 3 for the team', 'Movie with my family Saturday evening', 'Diwali gift hampers for 40 clients'];
 
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
@@ -96,7 +103,13 @@ async function run(fn, okMsg) {
 }
 
 // ---------- location ----------
-const loc = () => store.get(`eos.loc.${ui.actor}`, null) || ui.state?.me?.home || { country: 'India', state: 'Karnataka', city: 'Bengaluru' };
+const BUILT_IN_COUNTRIES = ['India', 'Canada', 'United States', 'United Kingdom', 'United Arab Emirates', 'Singapore'];
+const loc = () => {
+  const saved = store.get(`eos.loc.${ui.actor}`, null);
+  // A saved place from a country this edition doesn't offer (e.g. India in the Canada edition) is ignored.
+  const usable = saved && (!ui.locations || ui.locations[saved.country] || !BUILT_IN_COUNTRIES.includes(saved.country));
+  return (usable && saved) || ui.state?.me?.home || ui.state?.meta?.defaultLocation || { country: 'Canada', state: 'Ontario', city: 'Toronto' };
+};
 const locQS = () => new URLSearchParams(loc()).toString();
 const locLabel = (l = loc()) => [l.city, l.state, l.country].filter(Boolean).join(', ');
 
@@ -176,17 +189,23 @@ const fundingPill = (f) => pill(f, fundingLabel[f]);
 const statusLabel = { pending_approval: 'Awaiting approval', confirmed: 'Confirmed', approved: 'Approved', rejected: 'Rejected', cancelled: 'Cancelled', draft: 'Draft', submitted: 'Submitted', reimbursed: 'Reimbursed' };
 const statusPill = (s) => pill(s, statusLabel[s] || s);
 const stepsHtml = (steps) => (steps.length ? `<div class="steps">${steps.map((s) => `<span class="step ${esc(s.status)}" title="${esc(s.reason)}">${esc(s.role)} · ${esc(name(s.approverId).split(' ')[0])}</span>`).join('')}</div>` : '<span class="muted small">No approval needed</span>');
-const posterArt = (m) => (m.poster ? `background:#222 url('${esc(m.poster)}') center/cover` : `background:linear-gradient(160deg,#${esc(m.colors[0])},#${esc(m.colors[1])})`);
-const poster = (m, attrs = '') => `<button class="poster" data-movie="${esc(m.id)}" ${attrs}><div class="art" style="${posterArt(m)}">${m.cert ? `<span class="cert">${esc(m.cert)}</span>` : m.rating ? `<span class="cert">★ ${esc(m.rating)}</span>` : ''}${m.local ? '<span class="local">Local pick</span>' : ''}<span class="t">${esc(m.title)}</span></div><div class="meta">${esc([m.language, m.genre].filter(Boolean).join(' · '))}</div></button>`;
+const posterArt = (m) => `background:linear-gradient(160deg,#${esc(m.colors[0])},#${esc(m.colors[1])})`;
+// Real poster on top of the gradient; if the image can't load, the gradient + title stay visible.
+const posterImg = (m) => (m.poster ? `<img class="pimg" src="${esc(m.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()" onload="this.parentElement.classList.add('has-img')" />` : '');
+const poster = (m, attrs = '') => `<button class="poster" data-movie="${esc(m.id)}" ${attrs}><div class="art" style="${posterArt(m)}">${posterImg(m)}${m.cert ? `<span class="cert">${esc(m.cert)}</span>` : m.rating ? `<span class="cert">★ ${esc(m.rating)}</span>` : ''}${m.local ? '<span class="local">Local pick</span>' : ''}<span class="t">${esc(m.title)}</span></div><div class="meta">${esc([m.language, m.genre].filter(Boolean).join(' · '))}</div></button>`;
 // Approximate amount in the city's own currency (e.g. ≈ C$12.30) when outside India.
 const localMoney = (n) => {
   const c = ui.discover?.currency;
-  const rate = c && c.currency !== 'INR' ? ui.discover?.fx?.rates?.[c.currency] : null;
-  return rate ? ` ≈ ${c.symbol}${(n * rate).toFixed(2)}` : '';
+  const company = ui.state?.meta?.currency;
+  const rates = ui.discover?.fx?.rates;
+  if (!c || !company || c.currency === company || !rates) return '';
+  const r = (x) => (x === 'INR' ? 1 : rates[x]);
+  if (!r(c.currency) || !r(company)) return '';
+  return ` ≈ ${c.symbol}${((n / r(company)) * r(c.currency)).toFixed(2)}`;
 };
 const srcTag = (src) => (!src ? '' : src === 'sample' ? '<span class="src sample" title="Demo data">sample</span>' : `<span class="src live" title="${esc(src)}">live · ${esc(src.split(' (')[0])}</span>`);
 const weatherFor = (date) => ui.discover?.weather?.days?.find((d) => d.date === date);
-const dateBlock = (d) => `<div class="date-block"><div class="d">${dt(d).getDate()}</div><div class="m">${dt(d).toLocaleDateString('en-IN', { month: 'short' })}</div></div>`;
+const dateBlock = (d) => `<div class="date-block"><div class="d">${dt(d).getDate()}</div><div class="m">${dt(d).toLocaleDateString(LOCALE(), { month: 'short' })}</div></div>`;
 const evRow = (e) => {
   const w = weatherFor(e.date);
   return `<button class="ev" data-event="${esc(e.id)}">${dateBlock(e.date)}<div><div class="t">${esc(e.title)}</div><div class="small muted">${esc(fmtDate(e.date))} · ${esc(hhmm(e.time))} · ${esc(e.venue)}${e.distanceKm != null ? ` · ${esc(e.distanceKm)} km` : ''}${e.league ? ` · ${esc(e.league)}` : ''}</div><div style="margin-top:4px"><span class="tag ${esc(e.type)}">${esc(e.typeLabel)}</span> ${srcTag(e.source)}${w ? ` <span class="small muted">${w.emoji} ${w.max}°</span>` : ''}${e.interested ? ` <span class="small muted">${e.interested.toLocaleString('en-IN')} interested</span>` : ''}</div></div><div class="price"><span class="small muted">from${e.priceEstimated ? ' (est.)' : ''}</span><br>${money(e.tiers[0].price)}<div class="small muted">${esc(localMoney(e.tiers[0].price))}</div></div></button>`;
@@ -260,7 +279,7 @@ function viewDiscover() {
       }
       <div class="card"><h3>Live data <span class="small muted">(${liveCount}/${D.sources.length} connected)</span></h3>
         ${D.sources.map((x) => `<div class="stat-line"><span>${esc(x.name)}</span><span class="small ${x.ok ? 'pos' : 'muted'}" title="${esc(x.error || '')}">${x.ok ? '● live' : x.optional ? 'optional key' : '○ sample'}</span></div>`).join('')}
-        ${D.fx && D.currency && D.currency.currency !== 'INR' && D.fx.rates?.[D.currency.currency] ? `<p class="small muted" style="margin:6px 0 0">₹1 = ${esc(D.currency.symbol)}${D.fx.rates[D.currency.currency].toFixed(4)}${D.fx.approx ? ' (approx.)' : ` (ECB, ${esc(D.fx.date || '')})`}</p>` : ''}
+        ${D.fx && D.fx.rates?.CAD ? `<p class="small muted" style="margin:6px 0 0">C$1 = ₹${(1 / D.fx.rates.CAD).toFixed(2)}${D.fx.approx ? ' (approx.)' : ` (ECB, ${esc(D.fx.date || '')})`}</p>` : ''}
       </div>
     </aside>
   </div>`;
@@ -412,10 +431,10 @@ function viewSplits() {
       <h3 style="margin-top:16px">Add an expense</h3>
       <form class="form" data-expense="${esc(g.id)}">
         <label class="field">Description<input name="description" required placeholder="Dinner, tickets, cab…" /></label>
-        <label class="field">Amount (₹)<input name="amount" type="number" step="0.01" min="1" required /></label>
+        <label class="field">Amount (${CUR()})<input name="amount" type="number" step="0.01" min="1" required /></label>
         <label class="field">Paid by<select name="paidBy">${opts}</select></label>
         <label class="field">Split<select name="method"><option value="equal">Equally</option><option value="exact">Exact amounts</option><option value="percent">Percentages</option><option value="shares">Shares</option></select></label>
-        <div class="field wide"><span>Per-person values (exact ₹ / % / shares)</span><div class="row">${g.members.map((m) => `<label class="small">${esc(g.memberNames[m].split(' ')[0])} <input name="w_${esc(m)}" type="number" step="0.01" style="width:84px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)" /></label>`).join('')}</div></div>
+        <div class="field wide"><span>Per-person values (exact ${CUR()} / % / shares)</span><div class="row">${g.members.map((m) => `<label class="small">${esc(g.memberNames[m].split(' ')[0])} <input name="w_${esc(m)}" type="number" step="0.01" style="width:84px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)" /></label>`).join('')}</div></div>
         <div class="field wide"><button class="btn primary">Add & split</button></div>
       </form>
       <h3 style="margin-top:16px">History</h3>${history.map((x) => x.html).join('') || '<p class="muted">No expenses yet.</p>'}
@@ -499,7 +518,7 @@ function drawCheckout() {
             <label class="field">Vendor<input name="vendor" value="${esc(draft.vendor)}" /></label>
             <label class="field">Date<input type="date" name="date" value="${esc(draft.date)}" /></label>
             <label class="field">Guests<input type="number" min="1" name="partySize" value="${esc(draft.partySize)}" /></label>
-            <label class="field">Amount (₹)<input type="number" min="1" step="0.01" name="amount" value="${esc(draft.amount)}" /></label></div></details>` : ''}
+            <label class="field">Amount (${CUR()})<input type="number" min="1" step="0.01" name="amount" value="${esc(draft.amount)}" /></label></div></details>` : ''}
         </form>
       </div>
     </div>
@@ -673,7 +692,7 @@ function renderCard(c, idx) {
   }
   if (c.type === 'cinemaMovies') {
     return `<div class="ccard">${c.movies
-      .map((x) => `<div class="mrow ${x.wanted ? 'wanted' : ''}"><div class="mini" style="${posterArt(x.movie)}"></div><div><b>${esc(x.movie.title)}</b>${x.wanted ? ' <span class="pill ok">You asked for this</span>' : ''}<div class="small muted">${esc([x.movie.language, x.movie.genre, x.movie.cert].filter(Boolean).join(' · '))}</div><div class="times">${x.shows.map((sh) => `<button class="time ${sh.match ? 'hl' : ''}" ${act({ type: 'pickShow', showKey: sh.key }, `${x.movie.title} · ${hhmm(sh.time)} · ${sh.format}`)}>${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div></div>`)
+      .map((x) => `<div class="mrow ${x.wanted ? 'wanted' : ''}"><div class="mini" style="${posterArt(x.movie)}">${posterImg(x.movie)}</div><div><b>${esc(x.movie.title)}</b>${x.wanted ? ' <span class="pill ok">You asked for this</span>' : ''}<div class="small muted">${esc([x.movie.language, x.movie.genre, x.movie.cert].filter(Boolean).join(' · '))}</div><div class="times">${x.shows.map((sh) => `<button class="time ${sh.match ? 'hl' : ''}" ${act({ type: 'pickShow', showKey: sh.key }, `${x.movie.title} · ${hhmm(sh.time)} · ${sh.format}`)}>${esc(hhmm(sh.time))}<small>${esc(sh.format)} · ${money(sh.price)}</small></button>`).join('')}</div></div></div>`)
       .join('')}</div>`;
   }
   if (c.type === 'seats') {
@@ -701,7 +720,7 @@ function renderCard(c, idx) {
       ${
         pay
           ? `<div class="methods">${c.methods.map((x) => `<label class="method ${m === x.id ? 'on' : ''}"><input type="radio" name="pm" value="${x.id}" ${m === x.id ? 'checked' : ''} data-pm="${x.id}" /> ${esc(x.label)}</label>`).join('')}</div>
-             ${m === 'upi' ? '<input class="upi" id="upi-id" placeholder="Your UPI ID, e.g. name@okaxis" autocomplete="off" />' : m === 'card' ? '<div class="small muted">Uses your saved demo card •••• 4242. No card details are collected.</div>' : ''}
+             ${m === 'upi' ? '<input class="upi" id="upi-id" placeholder="Your UPI ID, e.g. name@okaxis" autocomplete="off" />' : m === 'interac' ? '<input class="upi" id="upi-id" placeholder="Email or mobile registered with Interac" autocomplete="off" />' : m === 'card' ? '<div class="small muted">Uses your saved demo card •••• 4242. No card details are collected.</div>' : ''}
              <button class="btn primary pay-btn" data-pay>Pay ${money(c.amount)}</button>`
           : ''
       }</div>`;

@@ -356,3 +356,9 @@ details.edit summary { cursor: pointer; font-weight: 600; font-size: 13px; color
   .msg.user .bubble { max-width: 88%; }
   .tkt { grid-template-columns: 1fr; }
 }
+
+/* real poster images sit on top of the gradient fallback */
+.poster .art, .mrow .mini { position: relative; overflow: hidden; }
+.pimg, .poster .art > .pimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.poster .art.has-img .t { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+.mrow .mini .pimg { border-radius: 8px; }

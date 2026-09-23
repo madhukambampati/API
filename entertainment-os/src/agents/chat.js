@@ -10,7 +10,8 @@ import * as orchestrator from './orchestrator.js';
 import * as expense from './expense.js';
 import * as payment from './payment.js';
 import * as live from '../live/index.js';
-import { inr } from '../money.js';
+import { inr, CURRENCY, convert } from '../money.js';
+import { FX_FALLBACK } from '../live/providers.js';
 
 const sessions = new Map();
 const MAX_SESSIONS = 500;
@@ -102,6 +103,7 @@ function greet(s, out) {
         txt('🎟️ Events this weekend', 'Any concerts or sports events this weekend?'),
         txt('👨‍👩‍👧 Family movie on Saturday', 'Movie with my family on Saturday evening'),
         txt('🍽️ Client dinner for 6 tomorrow', 'Book a client dinner for 6 tomorrow'),
+        txt('🏒 Hockey tickets this week', 'Any hockey or basketball games this week?'),
       ],
     }),
   );
@@ -215,7 +217,7 @@ function showSeats(s, out) {
 // ---------- event flow ----------
 const EVENT_WORDS = [
   ['music', /concert|\bgig\b|music|band|jazz|qawwali|carnatic|dj/],
-  ['sports', /sport|match|game|cricket|\bipl\b|hockey|\bnhl\b|basketball|\bnba\b|football|soccer|baseball|kabaddi|marathon/],
+  ['sports', /sport|match|game|cricket|\bipl\b|hockey|\bnhl\b|basketball|\bnba\b|football|soccer|baseball|\bmlb\b|\bmls\b|\bcfl\b|raptors|maple leafs|blue jays|canucks|canadiens|kabaddi|marathon/],
   ['tech', /\btech\b|conference|summit|meetup|hackathon|devcon|startup/],
   ['comedy', /comedy|stand-?up|improv/],
   ['theatre', /\bplay\b|drama|musical|theatre show/],
@@ -334,7 +336,8 @@ function review(s, out) {
   s.step = 'payment';
   const meta = COUNTRY_META[s.loc.country];
   const fx = live.get(s.loc)?.fx;
-  const localAmount = meta && meta.currency !== 'INR' && fx?.rates?.[meta.currency] ? `${meta.symbol}${(d.amount * fx.rates[meta.currency]).toFixed(2)}` : null;
+  const conv = meta && meta.currency !== CURRENCY ? convert(d.amount, CURRENCY, meta.currency, { ...FX_FALLBACK, ...(fx?.rates || {}) }) : null;
+  const localAmount = conv ? `${meta.symbol}${conv.toFixed(2)}` : null;
   out.push(
     say('All checks passed. Here is your payment page.', {
       card: { type: 'payment', lines, agents, amount: d.amount, localAmount, methods: payment.methodsFor(s.loc.country), funding: d.funding },
@@ -495,6 +498,11 @@ async function onText(s, text, out) {
     if (fund) {
       Object.assign(s.ctx, fund, { fundingExplicit: true });
       return review(s, out);
+    }
+    if (s.step === 'payment' && s.loc.country === 'Canada') {
+      const handle = text.match(/\S+@\S+\.\S+|\+?1?\d{10}/);
+      if (handle || /\binterac\b/.test(t)) return pay(s, { method: 'interac', upiId: handle?.[0] }, out);
+      if (/\b(card|credit|debit|visa|mastercard|pay)\b/.test(t)) return pay(s, { method: /apple|google|wallet/.test(t) ? 'wallet' : 'card' }, out);
     }
     const upi = text.match(/[\w.-]{2,64}@[a-zA-Z]{2,32}/);
     if (s.step === 'payment' && (upi || /\b(upi|card|netbanking|pay)\b/.test(t))) {

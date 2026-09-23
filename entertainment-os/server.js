@@ -11,7 +11,8 @@ import * as split from './src/agents/split.js';
 import * as insights from './src/insights.js';
 import { loadDemo } from './src/demo.js';
 import { llmEnabled } from './src/llm.js';
-import { LOCATIONS, normaliseLocation, locationLabel } from './src/locations.js';
+import { ACTIVE_LOCATIONS, normaliseLocation, locationLabel, DEFAULT_LOCATION } from './src/locations.js';
+import { R } from './src/region.js';
 import * as catalog from './src/catalog.js';
 import * as live from './src/live/index.js';
 import * as chat from './src/agents/chat.js';
@@ -47,7 +48,7 @@ function actor(req) {
 function state(actorId) {
   const d = load();
   return {
-    meta: { ...d.meta, llm: llmEnabled() },
+    meta: { ...d.meta, llm: llmEnabled(), currency: R.currency, symbol: R.symbol, locale: R.locale, defaultLocation: DEFAULT_LOCATION },
     me: person(actorId),
     categories: CATEGORIES,
     funding: FUNDING,
@@ -83,7 +84,7 @@ const routes = [
     return orchestrator.preview(body, who);
   }],
   ['POST', /^\/api\/chat$/, async (req, body) => chat.handle({ sessionId: body.sessionId, actorId: actor(req), text: body.text, action: body.action, location: body.location })],
-  ['GET', /^\/api\/locations$/, () => LOCATIONS],
+  ['GET', /^\/api\/locations$/, () => ACTIVE_LOCATIONS],
   [
     'GET',
     /^\/api\/discover$/,
@@ -213,8 +214,8 @@ const server = http.createServer(async (req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 
-// Seed on first run, or when the saved data predates the India/movies/events schema.
-if (!load().bookings.length || !load().seatBookings) await loadDemo();
+// Seed on first run, when saved data predates this schema, or when it belongs to the other edition (CA/IN).
+if (!load().bookings.length || !load().seatBookings || load().meta?.currency !== R.currency) await loadDemo();
 
 server.listen(PORT, () => {
   console.log(`Entertainment OS running on http://localhost:${PORT}  (Claude intake: ${llmEnabled() ? 'on' : 'off — rule engine'})`);

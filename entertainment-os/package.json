@@ -6,9 +6,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/*.test.js",
+    "test": "EOS_REGION=IN node --test test/agents.test.js test/live.test.js && EOS_REGION=CA node --test test/canada.test.js",
     "docs": "node docs/build-handbook.cjs && node docs/build-deck.cjs && python3 docs/build_workbook.py",
-    "demo": "node src/demo.js"
+    "demo": "node src/demo.js",
+    "check-live": "node scripts/check-live.mjs",
+    "start:india": "EOS_REGION=IN node server.js"
   },
   "engines": {
     "node": ">=18"

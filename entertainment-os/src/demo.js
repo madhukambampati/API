@@ -2,19 +2,21 @@
 // demo data always matches the rules in code.
 import { reset, save, load, person } from './store.js';
 import { seed } from './seed.js';
+import { REGION } from './region.js';
 import * as orchestrator from './agents/orchestrator.js';
 import * as expense from './agents/expense.js';
 import * as split from './agents/split.js';
 
+const CA = REGION === 'CA';
 const REQUESTS = [
   ['u-ananya', 'Client dinner for 6 tonight'],
   ['u-rahul', 'Private dining room for 30 on 15 Oct for the client summit'],
   ['u-neha', 'Offsite lunch catering for 120 people on 2 Oct'],
-  ['u-priya', 'Corporate box at the T20 night for 10 clients'],
-  ['u-ananya', 'Diwali gift hampers for 60 clients on 20 Oct'],
+  ['u-priya', CA ? 'Corporate box at the hockey game for 10 clients' : 'Corporate box at the T20 night for 10 clients'],
+  ['u-ananya', CA ? 'Holiday gift hampers for 60 clients on 20 Oct' : 'Diwali gift hampers for 60 clients on 20 Oct'],
   ['u-kavya', 'Team offsite retreat for 12 on 24 Oct'],
-  ['u-arjun', 'Team movie night for 8 — Pushpaka Rising IMAX Friday evening'],
-  ['u-ananya', 'Kaveri Diaries movie with my family Saturday evening'],
+  ['u-arjun', CA ? 'Team movie night for 8 — Frostbound IMAX Friday evening' : 'Team movie night for 8 — Pushpaka Rising IMAX Friday evening'],
+  ['u-ananya', CA ? 'Harbour Lights movie with my family Saturday evening' : 'Kaveri Diaries movie with my family Saturday evening'],
   ['u-arjun', 'Stand-up comedy with friends this weekend, split'],
   ['u-ananya', 'Client lunch for 2 tomorrow, I will pay and expense it'],
   ['u-arjun', 'Cooking class on my wellbeing allowance, reimburse me, for 1 on 5 Oct'],
@@ -44,9 +46,9 @@ export async function loadDemo({ now = new Date() } = {}) {
   approveAll(byTitle('Team offsite'));
 
   // Family & friends add costs outside of bookings, Splitwise style.
-  split.addExpense({ groupId: 'g-friends', paidBy: 'f-sneha', amount: 640, description: 'Cabs to the venue', method: 'equal' });
-  split.addExpense({ groupId: 'g-family', paidBy: 'f-rohan', amount: 4800, description: 'Groceries for the Onam sadya', method: 'shares', weights: { 'u-ananya': 1, 'f-rohan': 1, 'f-diya': 2 } });
-  split.settle({ groupId: 'g-friends', from: 'f-karthik', to: 'u-arjun', amount: 500 });
+  split.addExpense({ groupId: 'g-friends', paidBy: 'f-sneha', amount: CA ? 38 : 640, description: CA ? 'Uber to the venue' : 'Cabs to the venue', method: 'equal' });
+  split.addExpense({ groupId: 'g-family', paidBy: 'f-rohan', amount: CA ? 180 : 4800, description: CA ? 'Groceries for Thanksgiving dinner' : 'Groceries for the Onam sadya', method: 'shares', weights: { 'u-ananya': 1, 'f-rohan': 1, 'f-diya': 2 } });
+  split.settle({ groupId: 'g-friends', from: 'f-karthik', to: 'u-arjun', amount: CA ? 30 : 500 });
 
   // Expense reports: client lunch (business → Finance), cooking class (wellbeing → Benefits).
   const lunch = byTitle('Client lunch for 2');

@@ -225,8 +225,79 @@ export function normaliseItunes(json) {
     .filter((m) => m.title);
 }
 
+// Recent theatrical releases from Wikidata (no key), with posters from Wikipedia page summaries.
+export function wikidataFilmsQuery({ countryCode, from, to }) {
+  const origin = countryCode === 'IN' ? '?film wdt:P495 wd:Q668 .' : '';
+  return `SELECT ?film ?filmLabel ?date ?article ?links ?langLabel ?genreLabel WHERE {
+  ?film wdt:P31 wd:Q11424 ; wdt:P577 ?date ; wikibase:sitelinks ?links .
+  FILTER(?date >= "${from}T00:00:00Z"^^xsd:dateTime && ?date <= "${to}T00:00:00Z"^^xsd:dateTime)
+  ${origin}
+  ?article schema:about ?film ; schema:isPartOf <https://en.wikipedia.org/> .
+  OPTIONAL { ?film wdt:P364 ?lang . }
+  OPTIONAL { ?film wdt:P136 ?genre . }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+} ORDER BY DESC(?links) LIMIT 150`;
+}
+
+export function normaliseWikidataFilms(json) {
+  const byId = new Map();
+  for (const b of json?.results?.bindings || []) {
+    const qid = b.film?.value?.split('/').pop();
+    const title = b.filmLabel?.value;
+    if (!qid || !title || /^Q\d+$/.test(title)) continue;
+    const f = byId.get(qid) || { qid, title, links: Number(b.links?.value || 0), date: b.date?.value?.slice(0, 10), wiki: decodeURIComponent((b.article?.value || '').split('/wiki/')[1] || ''), languages: new Set(), genres: new Set() };
+    if (b.langLabel?.value && !/^Q\d+$/.test(b.langLabel.value)) f.languages.add(b.langLabel.value.replace(/ language$/, '').replace(/^\w/, (c) => c.toUpperCase()));
+    if (b.genreLabel?.value && !/^Q\d+$/.test(b.genreLabel.value)) f.genres.add(b.genreLabel.value.replace(/ film$/, '').replace(/^\w/, (c) => c.toUpperCase()));
+    byId.set(qid, f);
+  }
+  return [...byId.values()]
+    .sort((a, b) => b.links - a.links)
+    .map((f) => ({
+      id: `wd-${f.qid}`,
+      title: f.title,
+      wiki: f.wiki,
+      language: [...f.languages][0] || null,
+      genre: [...f.genres].slice(0, 2).join(' · ') || 'Film',
+      cert: null,
+      runtime: null,
+      releaseDate: f.date,
+      rating: null,
+      poster: null,
+      summary: null,
+    }));
+}
+
+export function normaliseWikiSummary(json) {
+  if (!json) return null;
+  return { poster: json.thumbnail?.source || json.originalimage?.source || null, summary: json.extract || null };
+}
+
+async function recentFilms({ countryCode }) {
+  const today = new Date();
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const from = iso(new Date(today.getTime() - 45 * 86400000));
+  const to = iso(new Date(today.getTime() + 10 * 86400000));
+  const q = wikidataFilmsQuery({ countryCode, from, to });
+  const r = await getJSON(`https://query.wikidata.org/sparql?format=json&query=${enc(q)}`, { ttl: 12 * 3600, timeout: 30000, headers: { accept: 'application/sparql-results+json' }, key: `wikidata films ${countryCode} ${from}` });
+  if (!r.ok) return { ok: false, error: r.error, data: [] };
+  const films = normaliseWikidataFilms(r.data).slice(0, 18);
+  // Posters: Wikipedia page summaries, four at a time.
+  for (let i = 0; i < films.length; i += 4) {
+    await Promise.all(
+      films.slice(i, i + 4).map(async (f) => {
+        if (!f.wiki) return;
+        const s = await getJSON(`https://en.wikipedia.org/api/rest_v1/page/summary/${enc(f.wiki)}`, { ttl: 7 * 86400 });
+        const n = s.ok ? normaliseWikiSummary(s.data) : null;
+        if (n) Object.assign(f, n);
+      }),
+    );
+  }
+  const withPosters = films.filter((f) => f.poster);
+  return { ok: withPosters.length > 0, error: withPosters.length ? null : 'no posters found', data: withPosters.length >= 6 ? withPosters : films };
+}
+
 export async function movies({ countryCode }) {
-  const cc = (countryCode || 'IN').toLowerCase();
+  const cc = (countryCode || 'CA').toLowerCase();
   const key = process.env.TMDB_API_KEY;
   if (key) {
     const bearer = key.startsWith('eyJ');
@@ -235,9 +306,13 @@ export async function movies({ countryCode }) {
     const data = r.ok ? normaliseTmdb(r.data) : [];
     if (data.length) return { source: 'TMDB (now playing in cinemas)', ok: true, data };
   }
+  const wd = await recentFilms({ countryCode: cc.toUpperCase() });
+  if (wd.ok && wd.data.length >= 6) return { source: 'Wikidata + Wikipedia (recent releases)', ok: true, data: wd.data };
   const r = await getJSON(`https://itunes.apple.com/${cc}/rss/topmovies/limit=20/json`, { ttl: 6 * 3600 });
-  const data = r.ok ? normaliseItunes(r.data) : [];
-  return { source: `Apple iTunes movie chart (${cc.toUpperCase()})`, ok: data.length > 0, error: data.length ? null : r.error || 'no movies', data };
+  const chart = r.ok ? normaliseItunes(r.data) : [];
+  const data = [...(wd.ok ? wd.data : []), ...chart].slice(0, 18);
+  const source = chart.length ? `Apple iTunes movie chart (${cc.toUpperCase()})` : 'Wikidata + Wikipedia (recent releases)';
+  return { source, ok: data.length > 0, error: data.length ? null : [wd.error, r.error].filter(Boolean).join('; ') || 'no movies', data };
 }
 
 // ---------- 7. Sports fixtures: TheSportsDB (free public key "123") ----------
@@ -249,14 +324,15 @@ export const LEAGUES = {
   AE: [4328],
   SG: [4328],
 };
-// Rough ticket tiers per sport (₹ before the city price tier) — the API has no prices.
+// Rough ticket tiers per sport (before the city price tier) — the API has no prices.
 export const SPORT_TIERS = {
-  Cricket: [['Stand', 800], ['Pavilion', 2500], ['Corporate box (per seat)', 15000]],
-  'Ice Hockey': [['Upper bowl', 5000], ['Lower bowl', 12000], ['Club seats', 25000]],
-  Basketball: [['Upper level', 4000], ['Lower level', 11000], ['Courtside club', 30000]],
-  Baseball: [['Outfield', 2500], ['Infield', 6000], ['Premium', 15000]],
-  Soccer: [['Stand', 1500], ['Premium', 5000]],
-  'American Football': [['Upper deck', 4000], ['Lower deck', 9000], ['Club', 20000]],
+  // [tier, ₹ base, C$ base]
+  Cricket: [['Stand', 800, 25], ['Pavilion', 2500, 60], ['Corporate box (per seat)', 15000, 250]],
+  'Ice Hockey': [['Upper bowl', 5000, 95], ['Lower bowl', 12000, 240], ['Club seats', 25000, 450]],
+  Basketball: [['Upper level', 4000, 75], ['Lower level', 11000, 210], ['Courtside club', 30000, 650]],
+  Baseball: [['Outfield', 2500, 35], ['Infield', 6000, 85], ['Premium', 15000, 220]],
+  Soccer: [['Stand', 1500, 35], ['Premium', 5000, 95]],
+  'American Football': [['Upper deck', 4000, 45], ['Lower deck', 9000, 95], ['Club', 20000, 180]],
 };
 
 export function normaliseSportsDb(json) {

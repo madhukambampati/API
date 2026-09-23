@@ -5,6 +5,8 @@
 // used first; otherwise the fictional sample data below fills in.
 import { priceTier, STATE_LANGUAGES, NEARBY_ESCAPES } from './locations.js';
 import * as live from './live/index.js';
+import { REGION } from './region.js';
+import { CURRENCY, convert } from './money.js';
 import { SPORT_TIERS, FX_FALLBACK, distanceKm } from './live/providers.js';
 
 // ---------- helpers ----------
@@ -28,41 +30,49 @@ function rng(seed) {
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (d, n) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + n));
-const price = (base, loc) => Math.round((base * priceTier(loc)) / 10) * 10;
+// Prices are kept as [INR base, CAD base]; the edition decides which one is used.
+const CA = REGION === 'CA';
+const price = (inrBase, loc, cadBase) => {
+  if (!CA) return Math.round((inrBase * priceTier(loc)) / 10) * 10;
+  const v = (cadBase ?? inrBase / 60) * priceTier(loc);
+  return v >= 20 ? Math.round(v) : Math.round(v * 2) / 2;
+};
 
 // ---------- venues & vendors ----------
 function sampleVendors(category, loc) {
   const c = loc.city;
   const list = {
     reservations: [
-      { vendor: `${c} Supper Club`, perPerson: 3500, note: 'Fine dining · tasting menu' },
-      { vendor: `The ${c} Street Kitchen`, perPerson: 1800, note: 'Modern Indian · casual' },
-      { vendor: `Saffron Terrace, ${c}`, perPerson: 2400, note: 'North Indian · rooftop' },
+      { vendor: `${c} Supper Club`, perPerson: 3500, cad: 95, note: 'Fine dining · tasting menu' },
+      { vendor: `The ${c} Street Kitchen`, perPerson: 1800, cad: 45, note: CA ? 'Modern Canadian · casual' : 'Modern Indian · casual' },
+      { vendor: `Saffron Terrace, ${c}`, perPerson: 2400, cad: 60, note: 'North Indian · rooftop' },
     ],
     pdr: [
-      { vendor: `The ${c} Grand — Private Dining Room`, perPerson: 4500, note: 'Seats up to 40' },
-      { vendor: `Banyan Hall, ${c}`, perPerson: 3200, note: 'Banquet · up to 150' },
+      { vendor: `The ${c} Grand — Private Dining Room`, perPerson: 4500, cad: 140, note: 'Seats up to 40' },
+      { vendor: CA ? `Lakeview Hall, ${c}` : `Banyan Hall, ${c}`, perPerson: 3200, cad: 95, note: 'Banquet · up to 150' },
     ],
     catering: [
-      { vendor: `Annapurna Caterers ${c}`, perPerson: 900, note: 'Veg & non-veg buffets' },
-      { vendor: `${c} Feast Co.`, perPerson: 1400, note: 'Live counters' },
+      { vendor: `Annapurna Caterers ${c}`, perPerson: 900, cad: 28, note: 'Veg & non-veg buffets' },
+      { vendor: `${c} Feast Co.`, perPerson: 1400, cad: 40, note: 'Live counters' },
     ],
     gifting: [
-      { vendor: `${c} Artisan Hampers`, perPerson: 3500, note: 'Dry fruits, sweets, handloom' },
-      { vendor: 'Brand Merch Co.', perPerson: 1200, note: 'Branded merch · pan-India delivery' },
+      { vendor: `${c} Artisan Hampers`, perPerson: 3500, cad: 85, note: CA ? 'Maple treats, chocolates, local crafts' : 'Dry fruits, sweets, handloom' },
+      { vendor: 'Brand Merch Co.', perPerson: 1200, cad: 35, note: CA ? 'Branded merch · Canada-wide delivery' : 'Branded merch · pan-India delivery' },
     ],
     experiences: [
-      { vendor: NEARBY_ESCAPES[loc.state] || `Weekend retreat near ${c}`, perPerson: 22000, note: 'Overnight team offsite' },
-      { vendor: `${c} Heritage Walk & Food Trail`, perPerson: 2500, note: 'Half-day experience' },
-      { vendor: `${c} Cooking Studio`, perPerson: 3000, note: 'Hands-on class' },
+      { vendor: NEARBY_ESCAPES[loc.state] || `Weekend retreat near ${c}`, perPerson: 22000, cad: 650, note: 'Overnight team offsite' },
+      { vendor: `${c} Heritage Walk & Food Trail`, perPerson: 2500, cad: 45, note: 'Half-day experience' },
+      { vendor: `${c} Cooking Studio`, perPerson: 3000, cad: 85, note: 'Hands-on class' },
     ],
   }[category];
-  return (list || []).map((v, i) => ({ id: `${category}-${slug(c)}-${i}`, category, ...v, perPerson: price(v.perPerson, loc), source: 'sample' }));
+  return (list || []).map((v, i) => ({ id: `${category}-${slug(c)}-${i}`, category, ...v, perPerson: price(v.perPerson, loc, v.cad), source: 'sample' }));
 }
 
 // Which OpenStreetMap place kinds feed each category, and the per-person price band (₹ before city tier).
 const LIVE_KINDS = { reservations: ['restaurant'], pdr: ['venue', 'hotel'], catering: ['caterer', 'hotel'], gifting: ['gift'], experiences: ['attraction'] };
-const LIVE_BANDS = { reservations: [1200, 3800], pdr: [3000, 5500], catering: [700, 1600], gifting: [800, 4000], experiences: [500, 2500] };
+const LIVE_BANDS = CA
+  ? { reservations: [35, 110], pdr: [90, 170], catering: [22, 48], gifting: [30, 120], experiences: [20, 75] }
+  : { reservations: [1200, 3800], pdr: [3000, 5500], catering: [700, 1600], gifting: [800, 4000], experiences: [500, 2500] };
 const KIND_LABEL = { restaurant: 'Restaurant', venue: 'Event venue', hotel: 'Hotel banquet', caterer: 'Caterer', gift: 'Gift shop', attraction: 'Attraction' };
 const cap = (x) => x.charAt(0).toUpperCase() + x.slice(1);
 
@@ -76,7 +86,10 @@ export function vendors(category, loc) {
     id: `${category}-osm-${pl.osmId}`,
     category,
     vendor: pl.name,
-    perPerson: price(lo + (hi - lo) * rng(`${category}|${pl.osmId}`)(), loc),
+    perPerson: (() => {
+      const base = lo + (hi - lo) * rng(`${category}|${pl.osmId}`)();
+      return CA ? price(null, loc, base) : price(base, loc);
+    })(),
     note: [pl.cuisine && cap(pl.cuisine), KIND_LABEL[pl.kind], pl.address, pl.distanceKm != null && `${pl.distanceKm} km`].filter(Boolean).join(' · '),
     website: pl.website,
     distanceKm: pl.distanceKm,
@@ -89,7 +102,7 @@ export function vendors(category, loc) {
 }
 
 // ---------- movies ----------
-export const MOVIES = [
+const MOVIES_IN = [
   { id: 'm-monsoon-letters', title: 'Monsoon Letters', language: 'Hindi', genre: 'Romance · Drama', cert: 'UA', runtime: '2h 18m', formats: ['2D', 'Recliner'], colors: ['1D4E89', '7FB7BE'] },
   { id: 'm-rakshak', title: 'Rakshak: The Last Guard', language: 'Hindi', genre: 'Action', cert: 'UA', runtime: '2h 34m', formats: ['2D', 'IMAX', 'Recliner'], colors: ['7A1C1C', 'E0A458'] },
   { id: 'm-marina-nights', title: 'Marina Nights', language: 'Tamil', genre: 'Thriller', cert: 'UA', runtime: '2h 26m', formats: ['2D', 'Recliner'], colors: ['0B3C49', '3FA7D6'] },
@@ -99,7 +112,18 @@ export const MOVIES = [
   { id: 'm-ponnonam', title: 'Ponnonam', language: 'Malayalam', genre: 'Family · Comedy', cert: 'U', runtime: '2h 10m', formats: ['2D'], colors: ['8A5A00', 'F6D55C'] },
   { id: 'm-kolkata-noir', title: 'Kolkata Noir', language: 'Bengali', genre: 'Mystery', cert: 'A', runtime: '2h 01m', formats: ['2D', 'Recliner'], colors: ['1F1F1F', 'B08968'] },
 ];
-const FORMAT_PRICE = { '2D': 220, '3D': 320, IMAX: 520, Recliner: 680 };
+// Canada edition samples (Canadian ratings; a French film ranks first in Quebec).
+const MOVIES_CA = [
+  { id: 'm-orbit-9', title: 'Orbit 9', language: 'English', genre: 'Sci-fi', cert: 'PG', runtime: '2h 12m', formats: ['2D', '3D', 'IMAX'], colors: ['111827', '6366F1'] },
+  { id: 'm-maple-heist', title: 'Maple Street Heist', language: 'English', genre: 'Crime · Comedy', cert: '14A', runtime: '1h 58m', formats: ['2D', 'Recliner'], colors: ['7A1C1C', 'E0A458'] },
+  { id: 'm-frostbound', title: 'Frostbound', language: 'English', genre: 'Adventure', cert: 'PG', runtime: '2h 21m', formats: ['2D', '3D', 'IMAX'], colors: ['0B3C49', '3FA7D6'] },
+  { id: 'm-harbour-lights', title: 'Harbour Lights', language: 'English', genre: 'Romance · Drama', cert: 'PG', runtime: '1h 52m', formats: ['2D', 'Recliner'], colors: ['1D4E89', '7FB7BE'] },
+  { id: 'm-dernier-hiver', title: 'Le Dernier Hiver', language: 'French', genre: 'Drama', cert: '14A', runtime: '2h 04m', formats: ['2D'], colors: ['2D5A27', 'C9D86B'] },
+  { id: 'm-rakshak', title: 'Rakshak: The Last Guard', language: 'Hindi', genre: 'Action', cert: '14A', runtime: '2h 34m', formats: ['2D', 'IMAX'], colors: ['4A2C6D', 'F2A541'] },
+  { id: 'm-marina-nights', title: 'Marina Nights', language: 'Tamil', genre: 'Thriller', cert: '14A', runtime: '2h 26m', formats: ['2D'], colors: ['1F1F1F', 'B08968'] },
+];
+export const MOVIES = CA ? MOVIES_CA : MOVIES_IN;
+const FORMAT_PRICE = { '2D': [220, 14.99], '3D': [320, 18.99], IMAX: [520, 23.99], Recliner: [680, 19.99] };
 const SHOW_SLOTS = ['09:30', '12:45', '15:30', '18:45', '21:30', '22:45'];
 
 const POSTER_COLORS = [['1D4E89', '7FB7BE'], ['7A1C1C', 'E0A458'], ['0B3C49', '3FA7D6'], ['4A2C6D', 'F2A541'], ['2D5A27', 'C9D86B'], ['111827', '6366F1'], ['8A5A00', 'F6D55C'], ['1F1F1F', 'B08968']];
@@ -162,7 +186,7 @@ export function showtimes(movieId, date, loc) {
       if (!slots.length) slots.push(SHOW_SLOTS[3]);
       const shows = slots.map((time, i) => {
         const format = formats[i % formats.length];
-        return { key: `${movieId}|${cin.id}|${date}|${time}|${format}`, time, format, price: price(FORMAT_PRICE[format], loc) };
+        return { key: `${movieId}|${cin.id}|${date}|${time}|${format}`, time, format, price: price(FORMAT_PRICE[format][0], loc, FORMAT_PRICE[format][1]) };
       });
       return { cinema: cin, shows };
     })
@@ -218,37 +242,38 @@ export const EVENT_TYPES = { music: 'Music', sports: 'Sports', tech: 'Tech', com
 
 const EVENT_TEMPLATES = [
   { only: 'India', type: 'music', title: 'Monsoon Beats Festival', venue: '{c} Open Grounds', time: '16:00', tiers: [['General', 999], ['Fan pit', 2499], ['VIP lounge', 5999]] },
-  { type: 'music', title: 'Indie Nights Live', venue: 'The Loft, {c}', time: '20:00', tiers: [['Entry', 799], ['Entry + 2 drinks', 1499]] },
+  { type: 'music', title: 'Indie Nights Live', venue: 'The Loft, {c}', time: '20:00', tiers: [['Entry', 799, 25], ['Entry + 2 drinks', 1499, 45]] },
   { only: 'India', type: 'music', title: 'Sufi & Qawwali Evening', venue: '{c} Cultural Centre', time: '19:00', tiers: [['Silver', 600], ['Gold', 1500], ['Platinum', 3000]] },
   { only: 'India', type: 'music', title: 'Carnatic Classics under the Stars', venue: '{c} Amphitheatre', time: '18:30', tiers: [['Lawn', 400], ['Reserved', 1200]] },
   { only: 'India', type: 'music', title: 'Bollywood Retro Night', venue: 'Skybar {c}', time: '21:00', tiers: [['Entry', 1200], ['Table for 4', 8000]] },
   { only: 'India', type: 'sports', title: 'T20 Night: {c} Chargers vs Capital Kings', venue: '{c} Cricket Stadium', time: '19:30', tiers: [['Stand', 800], ['Pavilion', 2500], ['Corporate box (per seat)', 15000]] },
   { only: 'India', type: 'sports', title: 'Football: {c} FC vs Coastal United', venue: '{c} Football Arena', time: '19:00', tiers: [['Stand', 499], ['Premium', 1499]] },
   { only: 'India', type: 'sports', title: 'Kabaddi Showdown: {c} Titans vs Desert Hawks', venue: '{c} Indoor Stadium', time: '20:00', tiers: [['General', 350], ['Courtside', 2000]] },
-  { type: 'sports', title: '{c} Half Marathon 2026', venue: '{c} Riverfront', time: '05:30', tiers: [['10K run', 1200], ['Half marathon', 1800]] },
-  { type: 'tech', title: 'DevCon {c} 2026', venue: '{c} International Convention Centre', time: '09:30', tiers: [['Standard pass', 1499], ['Pro pass (workshops)', 4999]] },
-  { type: 'tech', title: 'AI & Cloud Summit', venue: 'Tech Park Auditorium, {c}', time: '10:00', tiers: [['Delegate', 2999], ['Delegate + dinner', 5999]] },
+  { type: 'sports', title: '{c} Half Marathon 2026', venue: '{c} Riverfront', time: '05:30', tiers: [['10K run', 1200, 70], ['Half marathon', 1800, 110]] },
+  { type: 'tech', title: 'DevCon {c} 2026', venue: '{c} International Convention Centre', time: '09:30', tiers: [['Standard pass', 1499, 199], ['Pro pass (workshops)', 4999, 549]] },
+  { type: 'tech', title: 'AI & Cloud Summit', venue: 'Tech Park Auditorium, {c}', time: '10:00', tiers: [['Delegate', 2999, 299], ['Delegate + dinner', 5999, 499]] },
   { only: 'India', type: 'tech', title: 'Hackathon: Build for Bharat', venue: '{c} Innovation Hub', time: '09:00', tiers: [['Team of 4', 2000]] },
-  { type: 'tech', title: 'Product Managers Meetup', venue: 'Cowork Commons, {c}', time: '18:30', tiers: [['RSVP + snacks', 299]] },
-  { type: 'comedy', title: 'Stand-up Saturday', venue: 'The Laugh Store, {c}', time: '20:30', tiers: [['Regular', 499], ['Front rows', 999]] },
-  { type: 'comedy', title: 'Improv Night: Made Up on the Spot', venue: 'Black Box Theatre, {c}', time: '19:30', tiers: [['Regular', 399]] },
-  { only: 'India', type: 'theatre', title: 'The Last Letter — a play', venue: 'Rangmanch Hall, {c}', time: '19:00', tiers: [['Balcony', 600], ['Stalls', 1200]] },
+  { type: 'tech', title: 'Product Managers Meetup', venue: 'Cowork Commons, {c}', time: '18:30', tiers: [['RSVP + snacks', 299, 15]] },
+  { type: 'comedy', title: 'Stand-up Saturday', venue: 'The Laugh Store, {c}', time: '20:30', tiers: [['Regular', 499, 30], ['Front rows', 999, 55]] },
+  { type: 'comedy', title: 'Improv Night: Made Up on the Spot', venue: 'Black Box Theatre, {c}', time: '19:30', tiers: [['Regular', 399, 25]] },
+  { only: 'India', type: 'theatre', title: 'The Last Letter — a play', venue: 'Rangmanch Hall, {c}', time: '19:00', tiers: [['Balcony', 600, 45], ['Stalls', 1200, 95]] },
   { only: 'India', type: 'theatre', title: 'Musical: Gardens of the Mughals', venue: '{c} Performing Arts Centre', time: '19:30', tiers: [['Silver', 1500], ['Gold', 3500]] },
-  { type: 'food', title: '{c} Street Food Carnival', venue: '{c} Exhibition Grounds', time: '12:00', tiers: [['Entry', 199], ['Entry + tasting tokens', 799]] },
+  { type: 'food', title: '{c} Street Food Carnival', venue: '{c} Exhibition Grounds', time: '12:00', tiers: [['Entry', 199, 10], ['Entry + tasting tokens', 799, 40]] },
   { only: 'India', type: 'food', title: 'Craft Coffee & Chai Festival', venue: '{c} Heritage Courtyard', time: '11:00', tiers: [['Day pass', 499]] },
   // Outside India
-  { only: 'intl', type: 'music', title: 'Harbourfront Jazz Night', venue: '{c} Waterfront Stage', time: '19:30', tiers: [['General', 1800], ['Reserved', 3500]] },
-  { only: 'intl', type: 'sports', title: 'Hockey Night: {c} Blades vs Northern Stars', venue: '{c} Arena', time: '19:00', tiers: [['Upper bowl', 5000], ['Lower bowl', 12000]] },
-  { only: 'intl', type: 'sports', title: 'Basketball: {c} Kings vs Harbour Hawks', venue: '{c} Centre Court', time: '19:30', tiers: [['Upper level', 4000], ['Lower level', 11000]] },
-  { only: 'intl', type: 'tech', title: 'Startup Pitch Night', venue: '{c} Innovation Hub', time: '18:00', tiers: [['General', 1500]] },
-  { only: 'intl', type: 'theatre', title: 'The Last Letter — a play', venue: '{c} Playhouse', time: '19:30', tiers: [['Balcony', 2500], ['Orchestra', 5000]] },
-  { only: 'intl', type: 'food', title: 'Poutine & Street Food Fest', venue: '{c} Market Square', time: '12:00', tiers: [['Entry', 800], ['Tasting pass', 2200]] },
+  { only: 'intl', type: 'music', title: 'Harbourfront Jazz Night', venue: '{c} Waterfront Stage', time: '19:30', tiers: [['General', 1800, 45], ['Reserved', 3500, 85]] },
+  { only: 'intl', type: 'sports', title: 'Hockey Night: {c} Blades vs Northern Stars', venue: '{c} Arena', time: '19:00', tiers: [['Upper bowl', 5000, 65], ['Lower bowl', 12000, 180]] },
+  { only: 'intl', type: 'sports', title: 'Basketball: {c} Kings vs Harbour Hawks', venue: '{c} Centre Court', time: '19:30', tiers: [['Upper level', 4000, 55], ['Lower level', 11000, 160]] },
+  { only: 'intl', type: 'tech', title: 'Startup Pitch Night', venue: '{c} Innovation Hub', time: '18:00', tiers: [['General', 1500, 25]] },
+  { only: 'intl', type: 'theatre', title: 'The Last Letter — a play', venue: '{c} Playhouse', time: '19:30', tiers: [['Balcony', 2500, 45], ['Orchestra', 5000, 95]] },
+  { only: 'intl', type: 'food', title: 'Fall Harvest & Craft Beer Festival', venue: '{c} Distillery District', time: '13:00', tiers: [['Entry', 1200, 20], ['Tasting pass', 2800, 45]] },
+  { only: 'intl', type: 'food', title: 'Poutine & Street Food Fest', venue: '{c} Market Square', time: '12:00', tiers: [['Entry', 800, 12], ['Tasting pass', 2200, 35]] },
 ];
 
-const toInr = (amount, currency, fx) => {
-  if (!currency || currency === 'INR') return amount;
-  const rate = fx?.rates?.[currency] || FX_FALLBACK[currency];
-  return rate ? amount / rate : amount;
+// Ticketmaster prices arrive in the venue's currency; convert to the company currency.
+const toCompany = (amount, currency, fx) => {
+  if (!currency || currency === CURRENCY) return amount;
+  return convert(amount, currency, CURRENCY, { ...FX_FALLBACK, ...(fx?.rates || {}) }) ?? amount;
 };
 const CITY_ALIASES = { Bengaluru: 'Bangalore', Mumbai: 'Bombay', 'New Delhi': 'Delhi', Gurugram: 'Gurgaon', Montreal: 'Montréal', 'Quebec City': 'Québec' };
 
@@ -277,7 +302,7 @@ function liveEvents(loc, { now, days }) {
       date,
       time: t.toISOString().slice(11, 16),
       distanceKm: null,
-      tiers: (SPORT_TIERS[sp.sport] || [['Standard', 1500], ['Premium', 5000]]).map(([name, p]) => ({ name, price: price(p, loc) })),
+      tiers: (SPORT_TIERS[sp.sport] || [['Standard', 1500, 40], ['Premium', 5000, 120]]).map(([name, p, c2]) => ({ name, price: price(p, loc, c2) })),
       interested: null,
       league: sp.league,
       local: names.some((n) => text.includes(n)),
@@ -288,8 +313,8 @@ function liveEvents(loc, { now, days }) {
   for (const e of b.ticketmaster || []) {
     if (!e.date || e.date < from || e.date > to) continue;
     const tiers = e.price
-      ? [...new Set([e.price.min, e.price.max])].map((amt, i, all) => ({ name: all.length > 1 ? (i ? 'Premium' : 'Standard') : 'Standard', price: Math.round(toInr(amt, e.price.currency, b.fx) / 10) * 10 }))
-      : [{ name: 'Standard', price: price(1500, loc) }];
+      ? [...new Set([e.price.min, e.price.max])].map((amt, i, all) => ({ name: all.length > 1 ? (i ? 'Premium' : 'Standard') : 'Standard', price: CA ? Math.round(toCompany(amt, e.price.currency, b.fx)) : Math.round(toCompany(amt, e.price.currency, b.fx) / 10) * 10 }))
+      : [{ name: 'Standard', price: price(1500, loc, 45) }];
     out.push({ id: e.id, type: e.type, typeLabel: EVENT_TYPES[e.type], title: e.title, venue: e.venue || 'Venue TBA', city: loc.city, date: e.date, time: e.time, distanceKm: distanceKm(b.coords, e.pos), tiers, interested: null, local: true, source: 'Ticketmaster', priceEstimated: !e.price, url: e.url });
   }
   return out;
@@ -316,7 +341,7 @@ export function events(loc, { now = new Date(), type, days = 45 } = {}) {
       date,
       time: tpl.time,
       distanceKm: Math.round((1 + r() * 18) * 10) / 10,
-      tiers: tpl.tiers.map(([name, p]) => ({ name, price: price(p, loc) })),
+      tiers: tpl.tiers.map(([name, p, c2]) => ({ name, price: price(p, loc, c2) })),
       interested: 200 + Math.floor(r() * 4800),
       local: true,
       source: 'sample',

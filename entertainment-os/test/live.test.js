@@ -141,7 +141,7 @@ test('Canadian cities get Canadian sample events and a C$ payment in ₹', () =>
   assert.ok(evs.length);
   assert.ok(!evs.some((e) => /Kabaddi|Chai|Qawwali|Monsoon/.test(e.title)));
   assert.ok(evs.some((e) => /Hockey|Basketball/.test(e.title)));
-  assert.deepEqual(payment.methodsFor('Canada').map((m) => m.id), ['card', 'wallet', 'interac']);
+  assert.deepEqual(payment.methodsFor('Canada').map((m) => m.id), ['card', 'interac', 'wallet']);
   assert.throws(() => payment.authorize({ amount: 100, method: 'upi', upiId: 'a@b', country: 'Canada' }), /available/);
 });
 

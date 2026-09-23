@@ -1,6 +1,6 @@
 # Entertainment OS
 
-One agentic operating system, built for **India and Canada** (amounts in ₹, with C$ shown alongside), for **movies, events near you (music, sports, tech, comedy, theatre, food), dining, private dining & events (PDRs), catering, gifting & merch, and experiences**. It covers:
+One agentic operating system for **movies, events near you (music, sports, tech, comedy, theatre, food), dining, private dining & events (PDRs), catering, gifting & merch, and experiences**. It covers:
 
 - **Chat concierge (opening screen)**: say *"I'm planning to go for a movie today, can you check the theatres?"* and the agents list the theatres near you. Pick one to see its films and showtimes, and the agent preselects the best seats. It asks who pays, then opens the payment page (UPI / card / netbanking in India; card, wallet or Interac in Canada) and issues the ticket. Events and other requests work the same way.
 - **Live data from free public APIs**: real cinemas, restaurants and venues from OpenStreetMap, films from the iTunes chart (or TMDB), sports fixtures from TheSportsDB, weather from Open-Meteo, exchange rates from Frankfurter and holidays from Nager.Date. Anything unavailable falls back to labelled sample data.
@@ -14,13 +14,22 @@ One agentic operating system, built for **India and Canada** (amounts in ₹, wi
 - **Expense reports**: if you paid with your own money, the Expense agent drafts the report and routes it to **Finance**, **HR** or **Benefits**.
 - **Family & friends splits**: Splitwise-style groups with equal, exact, percentage or share splits, balances and a fewest-payments settle-up.
 
+It runs in one of two editions:
+
+- **Canada (default)**: Toronto is the starting location. The picker shows Canada's 13 provinces and territories and 35 cities, plus "Other". Everything is priced in Canadian dollars (movie tickets C$15–24, hockey seats C$95–450), and payment is by card, Interac or wallet.
+- **India** (`EOS_REGION=IN`): Bengaluru is the starting location, with all 36 states and union territories. Everything is in ₹, and payment is by UPI, card or netbanking.
+
 ## Run it
 
 ```sh
 cd entertainment-os
-npm start            # http://localhost:4600 (loads demo data on first run)
-npm test             # agent test suite
+npm start              # Canada edition → http://localhost:4600
+npm run start:india    # India edition
+npm run check-live     # which free data sources can this machine reach?
+npm test               # agent tests for both editions
 ```
+
+If you see gradient placeholder posters and "sample" tags instead of real cinemas and films, run `npm run check-live`. It lists each free API with ✅ or ❌ and the error, for example a firewall or proxy blocking the request.
 
 The server has no dependencies (Node 18+). Use **Acting as** in the sidebar to switch between requester, manager, department head, Compliance, Finance, HR and Benefits. Demo data can be reset from **Agent activity → Reset demo data**.
 
@@ -32,7 +41,8 @@ When the machine running the app has internet access, the app uses these free pu
 |---|---|---|
 | City coordinates | OpenStreetMap Nominatim | none |
 | Cinemas, restaurants, stadiums, theatres, venues, caterers, gift shops, attractions | OpenStreetMap Overpass | none |
-| Films and posters | Apple iTunes movie chart (country store) | none |
+| Recent films + posters | Wikidata (recent releases) + Wikipedia page images | none |
+| Popular films + posters (fallback) | Apple iTunes movie chart (country store) | none |
 | Films actually in cinemas | TMDB `now_playing` | optional free key: `TMDB_API_KEY` |
 | Sports fixtures (IPL, ISL, NHL, NBA, MLB, MLS, CFL, …) | TheSportsDB | none (public key) |
 | Concerts & shows with prices | Ticketmaster Discovery | optional free key: `TICKETMASTER_API_KEY` |
