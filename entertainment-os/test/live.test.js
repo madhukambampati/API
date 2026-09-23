@@ -256,3 +256,36 @@ test('chat: events and other requests', async () => {
   assert.equal(r.messages.at(-1).card.type, 'proposal');
   assert.equal(r.messages.at(-1).card.draft.category, 'reservations');
 });
+
+test('fast providers publish before slow places; a failed provider preserves other results', async () => {
+  let releasePlaces;
+  const places = new Promise((resolve) => { releasePlaces = resolve; });
+  let weatherPublished;
+  const weatherReady = new Promise((resolve) => { weatherPublished = resolve; });
+  const snapshots = [];
+  const ok = (source, data) => ({ source, ok: true, data });
+  const pending = live.gather(TOR, {
+    geocode: async () => ok('geo', { lat: 43.65, lon: -79.38, countryCode: 'CA' }),
+    fx: async () => ok('fx', { rates: { CAD: 0.016 } }),
+    places: () => places,
+    weather: async () => ok('weather', { days: [{ date: '2026-09-23' }] }),
+    holidays: async () => ok('holidays', []),
+    movies: async () => { throw new Error('provider unavailable'); },
+    sports: async () => ok('sports', []),
+    ticketmaster: async () => ({ source: 'Ticketmaster', ok: false, optional: true }),
+  }, (snapshot) => {
+    snapshots.push(snapshot);
+    if (snapshot.weather) weatherPublished();
+  });
+  await weatherReady;
+  const early = snapshots.find((s) => s.weather);
+  assert.equal(early.places.cinema, undefined);
+  assert.ok(!early.sources.some((s) => s.name === 'places'));
+  releasePlaces({ ...ok('places', { cinema: [{ name: 'Real cinema' }] }), cinemasOk: true });
+  const result = await pending;
+  assert.equal(result.places.cinema[0].name, 'Real cinema');
+  assert.equal(result.weather.days.length, 1);
+  assert.equal(result.sources.length, 8);
+  assert.equal(result.sources.find((s) => s.name === 'Movies').error, 'provider unavailable');
+  assert.ok(!early.sources.some((s) => s.name === 'places'), 'published snapshots stay stable');
+});

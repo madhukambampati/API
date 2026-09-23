@@ -9,6 +9,11 @@ import { REGION } from './region.js';
 import { CURRENCY, convert } from './money.js';
 import { SPORT_TIERS, FX_FALLBACK, distanceKm } from './live/providers.js';
 
+// Demo mode (chat concierge, simulated booking/seats/payment, budgets & approvals — the whole
+// point of this app) is the default. Set EOS_DEMO=0 for the stricter "verified listings only, no
+// booking" mode instead (see test/real-data.test.js and README's "Deploying" section).
+export const demoMode = () => process.env.EOS_DEMO !== '0';
+
 // ---------- helpers ----------
 function hash(str) {
   let h = 2166136261;
@@ -73,20 +78,21 @@ const LIVE_KINDS = { reservations: ['restaurant'], pdr: ['venue', 'hotel'], cate
 const LIVE_BANDS = CA
   ? { reservations: [35, 110], pdr: [90, 170], catering: [22, 48], gifting: [30, 120], experiences: [20, 75] }
   : { reservations: [1200, 3800], pdr: [3000, 5500], catering: [700, 1600], gifting: [800, 4000], experiences: [500, 2500] };
-const KIND_LABEL = { restaurant: 'Restaurant', venue: 'Event venue', hotel: 'Hotel banquet', caterer: 'Caterer', gift: 'Gift shop', attraction: 'Attraction' };
+const KIND_LABEL = { restaurant: 'Restaurant', venue: 'Event venue', hotel: 'Hotel', caterer: 'Caterer', gift: 'Gift shop', attraction: 'Attraction' };
 const cap = (x) => x.charAt(0).toUpperCase() + x.slice(1);
 
 export function vendors(category, loc) {
   const sample = sampleVendors(category, loc);
   const b = live.get(loc);
-  const places = (LIVE_KINDS[category] || []).flatMap((k) => b?.places?.[k] || []).slice(0, 12);
-  if (!places.length) return sample;
+  const kinds = !demoMode() && category === 'catering' ? ['caterer'] : !demoMode() && category === 'pdr' ? ['venue'] : LIVE_KINDS[category] || [];
+  const places = kinds.flatMap((k) => b?.places?.[k] || []).slice(0, 12);
+  if (!places.length) return demoMode() ? sample : [];
   const [lo, hi] = LIVE_BANDS[category];
   const list = places.map((pl) => ({
     id: `${category}-osm-${pl.osmId}`,
     category,
     vendor: pl.name,
-    perPerson: (() => {
+    perPerson: !demoMode() ? null : (() => {
       const base = lo + (hi - lo) * rng(`${category}|${pl.osmId}`)();
       return CA ? price(null, loc, base) : price(base, loc);
     })(),
@@ -97,7 +103,7 @@ export function vendors(category, loc) {
     estimated: true,
   }));
   // The weekend-escape offsite is a suggestion, not a single mapped place, so keep it.
-  if (category === 'experiences') list.unshift({ ...sample[0], source: 'suggestion' });
+  if (demoMode() && category === 'experiences') list.unshift({ ...sample[0], source: 'suggestion' });
   return list;
 }
 
@@ -134,13 +140,13 @@ function liveMovies(loc) {
   return b.movies.map((m) => {
     const r = rng(m.id);
     const formats = ['2D', ...(r() < 0.5 ? ['3D'] : []), ...(r() < 0.4 ? ['IMAX'] : []), ...(r() < 0.5 ? ['Recliner'] : [])];
-    return { ...m, formats, colors: POSTER_COLORS[hash(m.id) % POSTER_COLORS.length], source: b.moviesSource };
+    return { ...m, formats: demoMode() ? formats : [], colors: POSTER_COLORS[hash(m.id) % POSTER_COLORS.length], source: b.moviesSource };
   });
 }
 
 export function movies(loc) {
   const local = STATE_LANGUAGES[loc.state] || [];
-  const list = liveMovies(loc) || MOVIES.map((m) => ({ ...m, source: 'sample' }));
+  const list = liveMovies(loc) || (demoMode() ? MOVIES.map((m) => ({ ...m, source: 'sample' })) : []);
   const rank = (m) => (local.includes(m.language) ? 0 : !m.language || m.language === 'Hindi' || m.language === 'English' ? 1 : 2);
   // A tie among non-local, non-English/Hindi films (Tamil, Telugu, Malayalam, etc.) is broken by
   // title rather than pushed as a block below every English film — real listings interleave them.
@@ -150,7 +156,7 @@ export function movies(loc) {
 }
 
 export function findMovie(id, loc) {
-  return movies(loc).find((m) => m.id === id) || MOVIES.find((m) => m.id === id) || null;
+  return movies(loc).find((m) => m.id === id) || (demoMode() ? MOVIES.find((m) => m.id === id) : null) || null;
 }
 
 export function cinemas(loc) {
@@ -160,11 +166,12 @@ export function cinemas(loc) {
     return real.map((pl) => {
       const r = rng(pl.osmId);
       const formats = ['2D', ...(r() < 0.6 ? ['3D'] : []), ...(/imax/i.test(pl.name) || r() < 0.35 ? ['IMAX'] : []), ...(/insignia|gold|lux|recliner/i.test(pl.name) || r() < 0.5 ? ['Recliner'] : [])];
-      return { id: `cin-osm-${pl.osmId}`, name: pl.name, formats, distanceKm: pl.distanceKm, address: pl.address, source: 'OpenStreetMap' };
+      return { id: `cin-osm-${pl.osmId}`, name: pl.name, website: pl.website || null, formats: demoMode() ? formats : [], distanceKm: pl.distanceKm, address: pl.address, source: 'OpenStreetMap' };
     });
   }
   // No real theatres (map data unavailable): obviously-fake demo theatres, never names that
   // could be mistaken for a real cinema.
+  if (!demoMode()) return [];
   const c = loc.city;
   return [
     { id: `cin-${slug(c)}-demo-a`, name: `Demo Theatre A (sample) — ${c}`, formats: ['2D', '3D', 'IMAX'], distanceKm: null, source: 'sample' },
@@ -182,6 +189,7 @@ function playsAt(movie, list) {
 
 // Showtimes for a movie on a date, across the city's cinemas.
 export function showtimes(movieId, date, loc) {
+  if (!demoMode()) return [];
   const movie = findMovie(movieId, loc);
   if (!movie) return [];
   return playsAt(movie, cinemas(loc))
@@ -299,31 +307,33 @@ function liveEvents(loc, { now, days }) {
     if (Number.isNaN(t.getTime())) continue;
     const date = iso(t);
     if (date < from || date > to) continue;
-    const text = [sp.title, sp.homeTeam, sp.venue, sp.city].join(' ').toLowerCase();
+    // A visiting team does not locate a game. Require an explicit venue city or a mapped venue.
+    const mappedVenue = Object.values(b.places || {}).flat().some((p) => p.name.toLowerCase() === (sp.venue || '').toLowerCase() && p.distanceKm != null && p.distanceKm <= 50);
+    const isLocal = names.includes((sp.city || '').trim().toLowerCase()) || mappedVenue;
     out.push({
       id: sp.id,
       type: 'sports',
       typeLabel: EVENT_TYPES.sports,
       title: sp.title,
-      venue: sp.venue || `${sp.homeTeam} home ground`,
+      venue: sp.venue || 'Venue not published',
       city: sp.city || null,
       date,
-      time: t.toISOString().slice(11, 16),
+      time: sp.timeKnown === false ? null : t.toISOString().slice(11, 16),
       distanceKm: null,
-      tiers: (SPORT_TIERS[sp.sport] || [['Standard', 1500, 40], ['Premium', 5000, 120]]).map(([name, p, c2]) => ({ name, price: price(p, loc, c2) })),
+      tiers: !demoMode() ? [] : (SPORT_TIERS[sp.sport] || [['Standard', 1500, 40], ['Premium', 5000, 120]]).map(([name, p, c2]) => ({ name, price: price(p, loc, c2) })),
       interested: null,
       league: sp.league,
-      local: names.some((n) => text.includes(n)),
+      local: isLocal,
       source: 'TheSportsDB',
       priceEstimated: true,
     });
   }
   for (const e of b.ticketmaster || []) {
     if (!e.date || e.date < from || e.date > to) continue;
-    const tiers = e.price
+    const tiers = !demoMode() ? [] : e.price
       ? [...new Set([e.price.min, e.price.max])].map((amt, i, all) => ({ name: all.length > 1 ? (i ? 'Premium' : 'Standard') : 'Standard', price: CA ? Math.round(toCompany(amt, e.price.currency, b.fx)) : Math.round(toCompany(amt, e.price.currency, b.fx) / 10) * 10 }))
       : [{ name: 'Standard', price: price(1500, loc, 45) }];
-    out.push({ id: e.id, type: e.type, typeLabel: EVENT_TYPES[e.type], title: e.title, venue: e.venue || 'Venue TBA', city: loc.city, date: e.date, time: e.time, distanceKm: distanceKm(b.coords, e.pos), tiers, interested: null, local: true, source: 'Ticketmaster', priceEstimated: !e.price, url: e.url });
+    out.push({ id: e.id, type: e.type, typeLabel: EVENT_TYPES[e.type], title: e.title, venue: e.venue || 'Venue TBA', city: e.city || null, date: e.date, time: e.time, distanceKm: distanceKm(b.coords, e.pos), tiers, interested: null, local: true, source: 'Ticketmaster', priceEstimated: !e.price, priceRange: e.price || null, url: e.url });
   }
   return out;
 }
@@ -358,7 +368,7 @@ export function events(loc, { now = new Date(), type, days = 45 } = {}) {
   // Real events come first; sample events only fill types that have no real local events.
   const real = liveEvents(loc, { now: base, days });
   const realTypes = new Set(real.filter((e) => e.local).map((e) => e.type));
-  const merged = [...real, ...list.filter((e) => !realTypes.has(e.type))];
+  const merged = [...real, ...(demoMode() ? list : []).filter((e) => !realTypes.has(e.type))];
   return merged.filter((e) => !type || type === 'all' || e.type === type).sort((a, b) => (a.date + a.time < b.date + b.time ? -1 : 1));
 }
 

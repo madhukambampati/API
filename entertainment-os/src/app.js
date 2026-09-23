@@ -53,7 +53,7 @@ function actor(req) {
 function state(actorId) {
   const d = load();
   return {
-    meta: { ...d.meta, llm: llmEnabled(), currency: R.currency, symbol: R.symbol, locale: R.locale, defaultLocation: DEFAULT_LOCATION },
+    meta: { ...d.meta, demo: catalog.demoMode(), llm: llmEnabled(), currency: R.currency, symbol: R.symbol, locale: R.locale, defaultLocation: DEFAULT_LOCATION },
     me: person(actorId),
     categories: CATEGORIES,
     funding: FUNDING,
@@ -115,6 +115,7 @@ const routes = [
         fx: b.fx || null,
         currency: COUNTRY_META[loc.country] || null,
         sources: b.sources || [],
+        updatedAt: b.at ? new Date(b.at).toISOString() : null,
         pending,
       };
     },
@@ -206,6 +207,9 @@ export async function handleRequest(req, res) {
     const route = routes.find(([method, re]) => method === req.method && re.test(url.pathname));
     if (!route) return send(res, 404, { error: 'Not found' });
     try {
+      if (!catalog.demoMode() && (req.method !== 'GET' || url.pathname === '/api/seats')) {
+        return send(res, 409, { error: 'Booking, payment and employee workflows are demo-only. Please use the venue or event provider for verified availability.' });
+      }
       const body = req.method === 'POST' ? await readBody(req) : {};
       const result = await route[2](req, body, url.pathname.match(route[1]), url);
       return send(res, 200, result);
@@ -226,5 +230,5 @@ export async function handleRequest(req, res) {
 // (CA/IN). Exported so both the long-running dev server and the serverless adapter can await it
 // once before serving requests — on Vercel this runs again on every cold start (see README).
 export const ready = (async () => {
-  if (!load().bookings.length || !load().seatBookings || load().meta?.currency !== R.currency) await loadDemo();
+  if (catalog.demoMode() && (!load().bookings.length || !load().seatBookings || load().meta?.currency !== R.currency)) await loadDemo();
 })();

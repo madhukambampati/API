@@ -33,6 +33,24 @@ If you see gradient placeholder posters and "sample" tags instead of real cinema
 
 The server has no dependencies (Node 18+). Use **Acting as** in the sidebar to switch between requester, manager, department head, Compliance, Finance, HR and Benefits. Demo data can be reset from **Agent activity → Reset demo data**.
 
+### Two modes
+
+By default the app runs in **demo mode** — the chat concierge, booking, seat selection, simulated
+payment, budgets, approvals, expense reports and splits all work, as described below. Cinemas,
+films and events come from the free APIs when reachable; anything unavailable falls back to
+labelled sample data so the flow never dead-ends.
+
+Set `EOS_DEMO=0` for a stricter **listings-only** mode: no chat, no booking, no invented fallback
+data at all. It shows only what a provider actually published — real cinemas and films with no
+formats/showtimes attached, sports fixtures only when the venue or provider city confirms they're
+local, and unpublished prices left blank rather than estimated. Every write endpoint (bookings,
+payments, reports, groups) returns `409` in this mode. This is the right choice if you want to
+embed the "what's on nearby" data feed on its own, with no simulated transactions anywhere near it.
+
+```sh
+EOS_DEMO=0 npm start     # listings-only; see test/real-data.test.js
+```
+
 ### Live data (free, no sign-up)
 
 When the machine running the app has internet access, the app uses these free public APIs:
@@ -54,6 +72,8 @@ When the machine running the app has internet access, the app uses these free pu
 TMDB_API_KEY=... TICKETMASTER_API_KEY=... npm start   # both optional
 EOS_OFFLINE=1 npm start                               # never call the network
 ```
+
+Results appear progressively as each provider responds. The open page checks for updates every minute (every four seconds during initial loading); failed sources are retried after three minutes and successful bundles after thirty minutes. These are periodically refreshed public listings, not a real-time ticket inventory feed. The Live data card shows when the server last checked the bundle.
 
 Responses are cached in `data/live-cache.json` (weather 1 h, places 7 days), so the services are used politely. The **Live data** card on the home page shows which sources are connected. Showtimes, seat maps and payments are always simulated: no free API publishes them, and the payment gateway (`src/agents/payment.js`) is a demo that never moves money or asks for card numbers.
 
