@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}TechOrbit — Features{% endblock %}
+{% block content %}
+<section class="hero">
+  <span class="hero-badge">🪐 TechOrbit — Every role. Every skill. One learning universe.</span>
+  <h1>Everything inside <span>TechOrbit</span></h1>
+  <p class="lead">
+    One platform for choosing a tech career, learning it with an AI mentor,
+    practicing hands-on, and tracking real progress — here's what's actually
+    built today, not a roadmap of promises.
+  </p>
+  <div class="hero-cta-row">
+    <a href="{{ url_for('careers_index') }}" class="tool-btn">{{ icon("compass") }} Explore Careers</a>
+    <a href="{{ url_for('onboarding') }}" class="tool-btn secondary">{{ icon("sparkles") }} Start Learning</a>
+  </div>
+</section>
+
+<div class="stat-row">
+  <div class="stat-tile"><div class="stat-num">{{ roles|length }}</div><div class="stat-label">Career paths with full profiles</div></div>
+  <div class="stat-tile"><div class="stat-num">21</div><div class="stat-label">Hands-on practice projects</div></div>
+  <div class="stat-tile"><div class="stat-num">49</div><div class="stat-label">Quiz questions &amp; coding challenges</div></div>
+  <div class="stat-tile"><div class="stat-num">8</div><div class="stat-label">Roadmap tracks (SDET path)</div></div>
+  <div class="stat-tile"><div class="stat-num">30+</div><div class="stat-label">Curated external resources</div></div>
+  <div class="stat-tile"><div class="stat-num">4</div><div class="stat-label">AI mentor modes</div></div>
+</div>
+
+<div class="section-heading"><div><h2>{{ icon("compass") }} Discover</h2><p>Find your path and keep up with the industry</p></div></div>
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("compass") }}</div>
+    <h3>Career Explorer</h3>
+    <p>Full profiles for all {{ roles|length }} roles — daily responsibilities, required skills, salary context, certifications, and a beginner→advanced skill ladder for each.</p>
+    <a href="{{ url_for('careers_index') }}">Browse roles →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("radar") }}</div>
+    <h3>Technology Radar</h3>
+    <p>Where tools and technologies stand today — Adopt, Trial, Assess, Watch, Declining, or Emerging — across QA, dev, and DevOps.</p>
+    <a href="{{ url_for('tech_radar') }}">View the radar →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("newspaper") }}</div>
+    <h3>Tech News</h3>
+    <p>A live feed of what's actually trending in the tech industry right now, sourced from Hacker News and refreshed every 30 minutes.</p>
+    <a href="{{ url_for('tech_news') }}">Read the news →</a>
+  </div>
+</div>
+
+<div class="section-heading"><div><h2>{{ icon("book-open") }} Learn</h2><p>Structured content and an AI mentor that adapts to your role</p></div></div>
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("message-circle") }}</div>
+    <h3>AI Mentor Chat</h3>
+    <p>Ask anything, get real explanations with examples. Switch between SDET, Developer, DevOps, and Career Coach modes — the mentor's focus, starter prompts, and tone change with it.</p>
+    <a href="{{ url_for('chat_page') }}">Start a conversation →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("map") }}</div>
+    <h3>Roadmaps</h3>
+    <p>Step-by-step, stage-by-stage learning tracks with estimated durations and topic breakdowns — from QA foundations through AI-QA specialization.</p>
+    <a href="{{ url_for('roadmaps') }}">See the roadmaps →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("library") }}</div>
+    <h3>Glossary &amp; Reference</h3>
+    <p>Quick-lookup glossary, a Git cheat sheet, HTTP status codes, Linux/CLI basics, and a tool comparison table — so you don't have to leave to check something.</p>
+    <a href="{{ url_for('glossary') }}">Look something up →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("book-open") }}</div>
+    <h3>Resources</h3>
+    <p>30+ hand-picked articles, docs, and visual guides, organized by topic — no link-dumping, every one is actually worth your time.</p>
+    <a href="{{ url_for('resources') }}">Browse resources →</a>
+  </div>
+</div>
+
+<div class="section-heading"><div><h2>{{ icon("target") }} Practice</h2><p>Learning sticks when you actually do it</p></div></div>
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("target") }}</div>
+    <h3>Quiz &amp; Coding Challenges</h3>
+    <p>39 quiz questions and 10 hands-on coding challenges with instant AI feedback, plus a daily challenge and streak tracker to build a habit.</p>
+    <a href="{{ url_for('practice') }}">Practice now →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("wrench") }}</div>
+    <h3>Dev Tools</h3>
+    <p>A test data generator, regex tester, JSON formatter, and Selenium/Playwright selector cheat sheet — small utilities that run entirely in your browser.</p>
+    <a href="{{ url_for('tools_page') }}">Open the tools →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("layers") }}</div>
+    <h3>Real Projects</h3>
+    <p>21 self-guided build briefs across all 7 roles — each with concrete steps, a suggested tech stack, and stretch goals, not just a one-line idea.</p>
+    <a href="{{ url_for('careers_index') }}">Find a project →</a>
+  </div>
+</div>
+
+<div class="section-heading"><div><h2>{{ icon("briefcase") }} Career</h2><p>Get from learning to hired</p></div></div>
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("award") }}</div>
+    <h3>Certifications Guide</h3>
+    <p>Which certifications are actually worth having for your role, with what they cost and where to get them — not a generic list.</p>
+    <a href="{{ url_for('career') }}">See certifications →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("message-circle") }}</div>
+    <h3>AI Mock Interview</h3>
+    <p>Practice real interview questions for your target role and get AI feedback on your answers before the real thing.</p>
+    <a href="{{ url_for('career') }}">Practice an interview →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("check-circle") }}</div>
+    <h3>ATS Resume Checker</h3>
+    <p>Paste your resume and a job description to get an ATS-style keyword match score, plus what's missing.</p>
+    <a href="{{ url_for('career') }}">Check your resume →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("bar-chart-3") }}</div>
+    <h3>Progress Tracking</h3>
+    <p>See topics viewed, coding challenges attempted, and your practice streak at a glance — all computed from what you've actually done.</p>
+    <a href="{{ url_for('progress_page') }}">View your progress →</a>
+  </div>
+</div>
+
+<div class="section-heading"><div><h2>{{ icon("bookmark") }} Personal</h2><p>Your data, your device</p></div></div>
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("bookmark") }}</div>
+    <h3>Bookmarks &amp; History</h3>
+    <p>Star a mentor reply to revisit later, and every question you've asked is saved locally so you can pick up where you left off.</p>
+    <a href="{{ url_for('bookmarks') }}">See your bookmarks →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("sun") }}</div>
+    <h3>Dark &amp; Light Themes</h3>
+    <p>A full light theme with proper contrast, not just an inverted dark mode — switch anytime from Settings.</p>
+    <a href="{{ url_for('settings') }}">Change your theme →</a>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">{{ icon("layers") }}</div>
+    <h3>Works on mobile</h3>
+    <p>A collapsible sidebar on desktop and a full-featured drawer on mobile — every page, no horizontal scrolling, no clipped content.</p>
+    <span class="settings-note" style="margin-top: 6px;">Try resizing your browser to see it</span>
+  </div>
+</div>
+{% endblock %}

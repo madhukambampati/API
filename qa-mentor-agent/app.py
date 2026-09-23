@@ -242,6 +242,16 @@ def home():
     return render_template("home.html", active="home", roles=_load_all_roles())
 
 
+@app.route("/features")
+def features():
+    return render_template(
+        "features.html",
+        active="features",
+        roles=_load_all_roles(),
+        academy_label="What's inside TechOrbit",
+    )
+
+
 @app.route("/onboarding")
 def onboarding():
     return render_template(

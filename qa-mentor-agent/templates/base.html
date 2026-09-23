@@ -50,6 +50,9 @@
           <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active == 'home' }}" {{ 'aria-current="page"'|safe if active == 'home' else '' }}>
             {{ icon("home", "nav-icon") }}<span class="nav-label">Home</span>
           </a>
+          <a href="{{ url_for('features') }}" class="nav-item {{ 'active' if active == 'features' }}" {{ 'aria-current="page"'|safe if active == 'features' else '' }}>
+            {{ icon("sparkles", "nav-icon") }}<span class="nav-label">Features</span>
+          </a>
           <a href="{{ url_for('careers_index') }}" class="nav-item {{ 'active' if active == 'careers-explorer' }}" {{ 'aria-current="page"'|safe if active == 'careers-explorer' else '' }}>
             {{ icon("compass", "nav-icon") }}<span class="nav-label">Explore Careers</span>
           </a>
