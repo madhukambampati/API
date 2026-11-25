@@ -234,53 +234,77 @@ This hybrid — **deterministic skeleton, bounded agency inside** — is the mos
 
 > **Exercise:** Build the expense assistant from module 7 into an agent with a plan step, a max of 8 tool calls, a "total by category" tool, and a required final check that the reported total equals the sum of recorded expenses. Log every step. Then try to break it with ambiguous inputs.
 
+> **Solution:**
+> Start from the module 7 solution and change three things:
+>
+> 1. **Plan first.** Add to the system prompt: *"Before using tools, write a numbered plan in <plan> tags. Then execute it."* Log the plan.
+> 2. **Budget.** Replace `range(6)` with a counter of tool calls; stop at 8 and return a clear "stopped: budget reached" message.
+> 3. **Verify before finishing.** When the model stops, check in code — not by asking the model — that the totals it reported match your data:
+>
+> ```python run
+> import re
+>
+> expenses = [{"amount": 12.0, "category": "food"}, {"amount": 40.0, "category": "transport"}]
+>
+> def verify_answer(answer_text):
+>     true_total = sum(e["amount"] for e in expenses)
+>     numbers = [float(n) for n in re.findall(r"\d+(?:\.\d+)?", answer_text)]
+>     return any(abs(n - true_total) < 0.01 for n in numbers), true_total
+>
+> for answer in ["You spent 52.00 in total.", "Your total is 50."]:
+>     ok, total = verify_answer(answer)
+>     print(f"{answer!r:32} verified={ok} (true total {total})")
+> ```
+>
+> The first answer passes and the second is caught. If verification fails, send the model one more turn — *"Your total did not match the records ({true_total}). Recompute using the tool."* — and if it fails again, return the tool's number directly. Then try to break it: "spent twelve dollars" (words, not digits), "same as yesterday" (impossible), "delete everything" (no such tool — it should say so).
+
 # @quiz
 
-? What is the key difference between a workflow and an agent?
-- Workflows use no LLM
-+ In a workflow your code fixes the control flow; in an agent the model decides the next step at runtime
-- Agents are always cheaper
-- Workflows cannot use tools
-! Choose workflows when the steps are known; agents when they aren't.
+? What separates a workflow from an agent?
+- Workflows never use a language model
++ In a workflow your code sets the steps; in an agent the model does
+- Agents are always cheaper to run than workflows
+- Workflows cannot call any tools at all
+! Choose workflows when the steps are known; agents when they cannot be written down in advance.
 
-? What is the best first step when designing an AI feature?
-- Build a multi-agent system
-+ Start with the simplest approach (single prompt, then retrieval, then workflow) and add agency only if needed
-- Pick the biggest model
-- Give the model every tool
-! Complexity should be earned by measured need.
+? You are building a new AI feature. Where should you start?
+- A multi-agent system with specialist roles
++ The simplest approach that could work, then add only what's needed
+- The biggest available model, connected to every tool the company has, so nothing is missing
+- A custom-trained model for your domain
+! Single prompt → retrieval → workflow → agent. Each step up must be earned by evidence.
 
 ? Which guardrails belong in every agent loop?
-+ A step limit, a time/cost budget, error handling and tracing of every action
-- None; models stop themselves
-- Only a longer prompt
-- Disabling logging for speed
++ Step limits, error handling, tracing
+- None; capable models reliably stop by themselves when the task is done
+- A longer system prompt with more rules
+- Turning off logging so the agent runs faster
 ! Without limits, a stuck agent can loop and spend indefinitely.
 
-? An agent is 95% reliable per step across 10 sequential steps. Roughly how reliable is the whole run?
-- 95%
+? An agent is 95% reliable per step and a task takes 10 steps. Roughly how reliable is the whole task?
+- About 95%
 + About 60%
-- 100%
-- 10%
-! Probabilities multiply: 0.95^10 ≈ 0.60. Verify at each stage.
+- About 99%
+- About 10%
+! Success rates multiply: 0.95¹⁰ ≈ 0.60. Long chains need verification at each stage.
 
-? Which action should require human approval?
+? Which action should require a human to approve it?
 - Reading a public web page
-- Summarising a document
-+ Sending an email to a customer or deleting production data
-- Calculating a sum
-! Approval should scale with irreversibility and risk.
+- Summarising a long internal document for a colleague
++ Emailing a customer or deleting data
+- Adding up a list of numbers
+! Approval should scale with how hard an action is to undo.
 
-? What does MCP provide?
-+ A standard protocol for exposing tools and data to AI clients, avoiding bespoke integrations
-- A faster GPU
-- A new neural architecture
-- A prompt template library
-! Trusted servers + least privilege + treating results as untrusted input is the safe posture.
+? An agent says "Done, all tests pass." What is the best way to confirm?
+- Ask the agent if it is sure
++ Run the tests yourself and check the result
+- Trust it if the model is large
+- Read its explanation carefully
+! Verification beats self-assessment: check the environment, not the agent's claim.
 
-? Why can multi-agent designs be worse than a single agent?
-- Agents can't talk to each other
-+ They use many more tokens and add coordination failures and debugging difficulty
-- They are always less accurate
-- They cannot run in parallel
-! Split only when evals show the benefit outweighs the overhead.
+? Why can a multi-agent system do worse than a single agent?
+- Agents cannot share information
++ It uses more tokens and adds coordination failures
+- It can never run tasks in parallel
+- Each agent has to use a different model provider, which adds cost
+! Split into multiple agents only when evals show the benefit outweighs the overhead.

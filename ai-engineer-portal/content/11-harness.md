@@ -203,53 +203,100 @@ Before shipping an LLM feature, can you answer yes to all of these?
 
 > **Exercise:** Take the chatbot skeleton from module 7 and add: (1) a Pydantic-validated JSON reply with a `sources` list, (2) a grounding check that each source quote appears in the policy, (3) a daily token budget that refuses to answer past a limit, (4) structured JSON logging of every call. Then deliberately break each part and watch the harness catch it.
 
+> **Solution:**
+> The key new pieces, which slot into the module 7 skeleton:
+>
+> ```python run
+> import json, time
+> from pydantic import BaseModel, ValidationError
+>
+> POLICY = "Refunds are available within 30 days of purchase with proof of payment."
+>
+> class Reply(BaseModel):
+>     answer: str
+>     sources: list[str]          # exact quotes from the policy
+>
+> def check_reply(raw: str) -> Reply:
+>     reply = Reply.model_validate(json.loads(raw))           # (1) schema
+>     for quote in reply.sources:                             # (2) grounding
+>         if quote not in POLICY:
+>             raise ValueError(f"source not found in policy: {quote!r}")
+>     return reply
+>
+> DAILY_TOKEN_BUDGET, used = 2_000, 0
+> def within_budget(tokens: int) -> bool:                     # (3) budget
+>     global used
+>     if used + tokens > DAILY_TOKEN_BUDGET:
+>         return False
+>     used += tokens
+>     return True
+>
+> def log(event, **fields):                                   # (4) structured logs
+>     print(json.dumps({"ts": round(time.time()), "event": event, **fields}))
+>
+> good = '{"answer": "Yes, within 30 days.", "sources": ["within 30 days of purchase"]}'
+> invented = '{"answer": "Yes, within 90 days.", "sources": ["within 90 days"]}'
+> broken = '{"answer": "Yes"'
+>
+> for raw in [good, invented, broken]:
+>     try:
+>         r = check_reply(raw)
+>         log("reply_ok", answer=r.answer)
+>     except (ValidationError, ValueError, json.JSONDecodeError) as e:
+>         log("reply_rejected", reason=type(e).__name__)
+> print("budget ok for 1500 tokens:", within_budget(1500))
+> print("budget ok for another 1500:", within_budget(1500))
+> ```
+>
+> One reply passes and two are rejected (an invented quote, broken JSON), then the budget refuses the second request. In the real chatbot, a rejected reply triggers one retry with the error message, then a safe fallback ("I'm not sure — let me connect you with a person").
+
 # @quiz
 
 ? What is the "harness" in harness engineering?
-- The GPU cluster
-+ Everything around the model: context assembly, tools, validation, permissions, retries, logging and evals
-- The model's training data
-- The tokenizer
-! Reliability comes largely from the system around the model.
+- The GPU cluster the model runs on
++ Everything around the model: context, tools, checks, logs
+- The data the model was trained on
+- The tokenizer that splits text into tokens
+! Reliability in products comes largely from the system around the model.
 
-? How should you treat model output in your program?
-- As trusted, verified data
-+ As untrusted input to validate (schema, business rules, grounding) before use
-- As always correct if temperature is 0
-- As code to execute directly
-! Validate before acting; sandbox anything executable.
+? How should your program treat a model's output?
+- As verified data that is safe to use directly in your app
++ As untrusted input to validate before use
+- As correct whenever temperature is 0
+- As code that can be executed as-is
+! Validate shape, business rules and grounding; sandbox anything executable.
 
-? To benefit from prompt caching you should…
-- Change the system prompt on every call
-+ Keep the large stable prefix identical and put variable content after it
-- Put the user question first
-- Disable logging
-! Caches match on an identical prefix.
+? You want prompt caching to work. What should you do?
+- Put a timestamp at the start of every prompt
++ Put the unchanging part first
+- Put the user's question before the system prompt so it is seen first
+- Rewrite the system prompt slightly on each call
+! Caches match an identical prefix, so stable content first and variable content last.
 
-? A tool call sends an email. A network error occurs and the call is retried. What protects against sending two emails?
-- Higher temperature
-+ Idempotency (e.g. an idempotency key) on side-effecting operations
-- A longer prompt
-- Retrying faster
-! Retries are only safe when operations are idempotent.
+? An email tool call fails with a network error and your code retries. What stops a double send?
+- A higher temperature on the retry
++ An idempotency key on the send operation
+- Retrying faster so the first call is cancelled
+- A longer system prompt about duplicates
+! Retries are only safe when side-effecting operations are idempotent.
 
-? Which is the safest place for an API credential used by a tool?
-- In the system prompt
-+ Held by your tool/execution layer, never visible to the model
-- In the user message
-- In the conversation history
-! The model should name actions; credentials stay in code.
+? Where should the API credential for a tool live?
+- In the system prompt, so the model can use it
++ In your tool code, never visible to the model
+- In the first user message
+- In the conversation history, encrypted
+! The model names the action; credentials stay in code it cannot see.
 
-? Tokens per request suddenly triple after a deployment. What is the most likely cause?
-+ A bug such as bloated context or a runaway loop — investigate traces
-- The model got smarter
-- Users are happier
-- Temperature changed itself
-! Alert on changes in token usage; it often signals harness faults.
+? After a deploy, tokens per request triple. What is the most likely cause?
++ A bug such as a bloated context or a runaway loop
+- The model became more thorough on its own
+- Users started asking much longer and more polite questions overnight
+- The provider changed its tokenizer overnight
+! Sudden token jumps usually mean a harness fault. Check traces first.
 
 ? What does context engineering aim for?
-- Using the entire context window
-+ Assembling the smallest set of high-signal information that makes the right next step likely
-- Writing very long system prompts
-- Disabling retrieval
-! Quality depends on relevance and clarity, not quantity.
+- Filling the whole context window every time, so nothing is ever missing
++ Only what the next step needs
+- The longest possible system prompt
+- Turning off retrieval to save cost
+! Relevance beats volume: irrelevant tokens distract the model and cost money.

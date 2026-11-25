@@ -47,7 +47,21 @@
         `<li><a href="#/m/${m.id}" class="${route.mod === m.id && !route.lesson ? 'on' : ''}"><span class="dot"></span>Overview</a></li>` +
         m.lessons.map(l => `<li><a href="#/m/${m.id}/${l.id}" class="${route.mod === m.id && route.lesson === l.id ? 'on' : ''}"><span class="dot">${isDone(m, l) ? '✓' : ''}</span>${esc(l.title)}</a></li>`).join('') +
         `<li><a href="#/m/${m.id}/quiz" class="${route.mod === m.id && route.lesson === 'quiz' ? 'on' : ''}"><span class="dot">${quizPassed(m) ? '✓' : ''}</span>Module quiz</a></li></ul></details>`;
-    }).join('') + `<p style="padding:.8rem .5rem;font-size:.85rem"><a href="#/certificate">Certificate</a></p>`;
+    }).join('') + `<div class="side-foot"><a href="#/certificate">Certificate</a><button type="button" id="backup">Back up progress</button><label class="linkish">Restore progress<input type="file" id="restore" accept="application/json" hidden></label><small>Progress lives in this browser only. Back it up to move devices.</small></div>`;
+    $('#backup').onclick = () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(P, null, 2)], { type: 'application/json' }));
+      a.download = 'ai-engineer-path-progress.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    };
+    $('#restore').onchange = e => {
+      const f = e.target.files[0]; if (!f) return;
+      f.text().then(t => {
+        const d = JSON.parse(t);
+        if (!d || typeof d.done !== 'object' || typeof d.quiz !== 'object') throw new Error('not a progress file');
+        P = Object.assign({ done: {}, quiz: {}, name: '', last: null }, { done: d.done, quiz: d.quiz, name: String(d.name || ''), last: d.last || null });
+        save(); route(); alert('Progress restored.');
+      }).catch(() => alert('That file is not a valid AI Engineer Path progress backup.'));
+    };
     const on = $('#sidebar a.on');
     if (on) on.scrollIntoView({ block: 'nearest' });
   }
@@ -59,7 +73,8 @@
   /* ---------- views ---------- */
   const footer = '<footer class="site">AI Engineer Path — a free, self-contained curriculum. Your progress is saved in this browser only.</footer>';
   const lessonTotal = C.modules.reduce((n, m) => n + m.lessons.length, 0);
-  const hours = Math.round(C.modules.reduce((n, m) => n + (parseFloat(m.time) || 0), 0));   // study time incl. exercises, from module estimates
+  const hours = Math.round(C.modules.reduce((n, m) => n + (parseFloat(m.time) || 0), 0));   // study time incl. exercises and projects, from module estimates
+  const readHours = Math.round(C.modules.reduce((n, m) => n + m.lessons.reduce((a, l) => a + l.mins, 0), 0) / 6) / 10;   // reading time only
 
   function viewHome() {
     const next = nextUndone();
@@ -74,14 +89,14 @@
     ];
     main.innerHTML = `<div class="wrap">
       <section class="hero"><h1>Learn AI from <span>zero</span> to <span>production</span></h1>
-      <p>One complete curriculum — foundations, machine learning, LLMs, RAG, agents, evals, harness engineering, safety and career. Everything you need is on this site: no other course, video or book required.</p>
+      <p>One complete curriculum — foundations, machine learning, LLMs, RAG, agents, evals, harness engineering, safety and career. Everything you need to go from beginner to job-ready is here, in order, with runnable code, exercises with solutions and projects. The Resources page is optional reading for going deeper.</p>
       <div class="cta"><a class="btn" href="${href(next || flat[0])}">${started ? 'Continue learning' : 'Start learning'}</a><a class="btn ghost" href="#/m/${C.modules[0].id}">View curriculum</a></div></section>
       ${cont}
-      <div class="stats"><div class="stat"><b>${C.modules.length}</b><span>modules</span></div><div class="stat"><b>${lessonTotal}</b><span>lessons</span></div><div class="stat"><b>~${hours}h</b><span>of guided study</span></div><div class="stat"><b>${C.projects.length}</b><span>hands-on projects</span></div><div class="stat"><b>${C.glossary.length}</b><span>glossary terms</span></div></div>
+      <div class="stats"><div class="stat"><b>${C.modules.length}</b><span>modules</span></div><div class="stat"><b>${lessonTotal}</b><span>lessons</span></div><div class="stat"><b>~${readHours}h</b><span>of reading</span></div><div class="stat"><b>~${hours}h</b><span>total with exercises &amp; projects</span></div><div class="stat"><b>${C.projects.length}</b><span>hands-on projects</span></div><div class="stat"><b>${C.glossary.length}</b><span>glossary terms</span></div></div>
       <h2 class="section-title">The roadmap</h2><p class="section-sub">Follow it in order, or jump to what you need. Each module ends with a quiz; 70% marks it complete.</p>
       <div class="phases">${phases.map(p => `<div class="phase"><h3>${p[0]}</h3><p><b>${p[1]}</b><br>${p[2]}</p></div>`).join('')}</div>
       <h2 class="section-title">All modules</h2><p class="section-sub">Prerequisites: none. Curiosity and a computer are enough — the course teaches the Python you need.</p>
-      <div class="grid">${C.modules.map(m => `<a class="card" href="#/m/${m.id}"><h3>${m.n}. ${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div><div class="row"><span class="tag ${m.level}">${m.level}</span><span>${m.lessons.length} lessons · ${esc(m.time)}</span></div></a>`).join('')}</div>
+      <div class="grid">${C.modules.map(m => `<a class="card" href="#/m/${m.id}"><h3>${m.n}. ${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div><div class="row"><span class="tag ${m.level}">${m.level}</span><span>${m.lessons.length} lessons · ${esc(m.time)} with practice</span></div></a>`).join('')}</div>
       <h2 class="section-title">How this portal works</h2>
       <div class="grid">
         <div class="card"><h3>Read &amp; run</h3><p>Lessons are short and concrete, with code you can copy and run. Mark each one complete as you go.</p></div>
@@ -95,7 +110,7 @@
 
   function viewModule(m) {
     main.innerHTML = `<div class="wrap" style="max-width:820px"><div class="crumbs"><a href="#/">Home</a> / Module ${m.n}</div>
-      <div class="mod-head"><span class="big">${m.n}</span><div><h1>${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag">${esc(m.time)}</span></div></div>
+      <div class="mod-head"><span class="big">${m.n}</span><div><h1>${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag" title="Reading plus exercises">${esc(m.time)} incl. practice</span></div></div>
       <p style="color:var(--muted);margin:.8rem 0">${esc(m.summary)}</p>
       <div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div>
       <h2 class="section-title" style="font-size:1.2rem">After this module you can</h2><ul class="outcomes article" style="padding-left:1.3rem">${m.outcomes.map(o => `<li>${esc(o)}</li>`).join('')}</ul>
@@ -113,7 +128,7 @@
   function viewLesson(m, l) {
     const it = { m, l }, { prev, next } = neighbors(it), done = isDone(m, l);
     main.innerHTML = `<div class="lesson-grid"><article class="article"><div class="crumbs"><a href="#/">Home</a> / <a href="#/m/${m.id}">${m.n}. ${esc(m.title)}</a></div>
-      <h1>${esc(l.title)}</h1><div class="meta">${l.mins} min read · Lesson ${m.lessons.indexOf(l) + 1} of ${m.lessons.length}</div>${l.html}
+      <h1>${esc(l.title)}</h1><div class="meta">${l.mins} min read (plus exercises) · Lesson ${m.lessons.indexOf(l) + 1} of ${m.lessons.length}</div>${l.html}
       <div class="lesson-foot">${prev ? `<a class="btn ghost" href="${href(prev)}">← ${esc(label(prev))}</a>` : ''}<span class="spacer"></span>
       <button id="complete" class="btn ${done ? 'done' : 'ghost'}" type="button">${done ? '✓ Completed' : 'Mark complete'}</button>
       ${next ? `<a id="next" class="btn" href="${href(next)}">${esc(label(next))} →</a>` : ''}</div>${footer}</article>
@@ -121,7 +136,7 @@
     $('#complete').onclick = () => { P.done[lessonKey(m, l)] = !P.done[lessonKey(m, l)]; if (!P.done[lessonKey(m, l)]) delete P.done[lessonKey(m, l)]; save(); renderChrome(); viewLesson(m, l); };
     const nx = $('#next');
     if (nx) nx.addEventListener('click', () => { if (!isDone(m, l)) { P.done[lessonKey(m, l)] = true; save(); } });
-    main.querySelectorAll('.toc a').forEach(a => a.onclick = e => { e.preventDefault(); const t = document.getElementById(a.dataset.id); if (t) t.scrollIntoView(); });
+    main.querySelectorAll('.toc a').forEach(a => a.onclick = e => { e.preventDefault(); const t = document.getElementById(a.dataset.id); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
     P.last = lessonKey(m, l); save();
   }
 
@@ -134,11 +149,18 @@
       return idx;
     });
     main.innerHTML = `<div class="wrap" style="max-width:780px"><div class="crumbs"><a href="#/">Home</a> / <a href="#/m/${m.id}">${m.n}. ${esc(m.title)}</a> / Quiz</div>
-      <h1>Quiz: ${esc(m.title)}</h1><p class="meta">${m.quiz.length} questions · score ${Math.round(PASS * 100)}% or more to complete the module${prevBest != null ? ` · your best: ${Math.round(prevBest * 100)}%` : ''}</p>
+      <h1>Quiz: ${esc(m.title)}</h1><p class="meta">${m.quiz.length} questions · answer every question · score ${Math.round(PASS * 100)}% or more to pass${prevBest != null ? ` · your best: ${Math.round(prevBest * 100)}%` : ''}</p>
       <form id="quiz">${m.quiz.map((q, i) => `<div class="q" data-i="${i}"><h3>${i + 1}. ${esc(q.q)}</h3>${order[i].map(j => `<label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${esc(q.options[j])}</span></label>`).join('')}<div class="why" hidden></div></div>`).join('')}
       <div class="lesson-foot"><button class="btn" type="submit">Check answers</button><a class="btn ghost" href="#/m/${m.id}">Back to module</a></div><div id="result"></div></form>${footer}</div>`;
     $('#quiz').onsubmit = e => {
       e.preventDefault();
+      const missing = m.quiz.map((_, i) => i).filter(i => !main.querySelector(`.q[data-i="${i}"] input:checked`));
+      main.querySelectorAll('.q').forEach(b => b.classList.toggle('missing', missing.includes(+b.dataset.i)));
+      if (missing.length) {
+        $('#result').innerHTML = `<p class="score fail">Answer every question before checking — ${missing.length} still unanswered (question ${missing.map(i => i + 1).join(', ')}).</p>`;
+        main.querySelector(`.q[data-i="${missing[0]}"]`).scrollIntoView({ block: 'center' });
+        return;
+      }
       let right = 0;
       m.quiz.forEach((q, i) => {
         const box = main.querySelector(`.q[data-i="${i}"]`);
@@ -154,8 +176,13 @@
       if (score > (P.quiz[m.id] || 0)) { P.quiz[m.id] = score; save(); }
       renderChrome();
       const nx = flat[flat.findIndex(x => x.m === m && x.quiz) + 1];
-      $('#result').innerHTML = `<div class="score ${pass ? 'pass' : 'fail'}">${right}/${m.quiz.length} — ${pass ? 'Module complete' : 'Review the lessons and try again'}</div>
-        <a class="btn ghost" href="#/m/${m.id}/quiz" onclick="location.reload()">Retry</a> ${nx ? `<a class="btn" href="${href(nx)}">Next: ${esc(nx.m.id === m.id ? 'module' : nx.m.title)} →</a>` : `<a class="btn" href="#/certificate">Get your certificate →</a>`}`;
+      const left = m.lessons.filter(l => !isDone(m, l)).length;
+      const verdict = !pass ? `You need ${Math.ceil(PASS * m.quiz.length)} to pass. Read the explanations above, review the lessons and try again.`
+        : left ? `Quiz passed. Finish the ${left} remaining lesson${left > 1 ? 's' : ''} to complete this module.` : 'Quiz passed — module complete.';
+      $('#result').innerHTML = `<div class="score ${pass ? 'pass' : 'fail'}">${right}/${m.quiz.length} — ${verdict}</div>
+        <button class="btn ghost" type="button" id="retry">Retry with new order</button> <a class="btn ghost" href="#/m/${m.id}">Back to lessons</a>
+        ${pass ? (nx ? `<a class="btn" href="${href(nx)}">Next: ${esc(nx.m.title)} →</a>` : `<a class="btn" href="#/certificate">Get your certificate →</a>`) : ''}`;
+      $('#retry').onclick = () => { viewQuiz(m); window.scrollTo({ top: 0, behavior: 'instant' }); };
       $('#result').scrollIntoView({ block: 'center' });
     };
   }
@@ -196,6 +223,12 @@
     }
   }
 
+  function view404() {
+    main.innerHTML = `<div class="wrap" style="max-width:720px"><h1>Page not found</h1><p class="section-sub" style="margin-top:.6rem">There is no page at <code>${esc(location.hash || '/')}</code>. It may have been renamed, or the link has a typo.</p>
+      <p style="display:flex;gap:.8rem;flex-wrap:wrap"><a class="btn" href="#/">Go to home</a><a class="btn ghost" href="#/m/${C.modules[0].id}">Start the course</a></p>
+      <p style="margin-top:1rem;color:var(--muted)">Tip: press <code>/</code> to search all lessons.</p>${footer}</div>`;
+  }
+
   /* ---------- playground ---------- */
   function viewPlayground() {
     main.innerHTML = `<div class="wrap" style="max-width:860px"><h1>Playground</h1><p class="section-sub">Small interactive demos of ideas from the course. Everything runs in your browser.</p>
@@ -212,7 +245,7 @@
         <p style="font-size:.88rem;margin-top:.6rem">1 = same direction (very similar meaning), 0 = unrelated, −1 = opposite. Try <code>1,0</code> and <code>0,1</code>.</p></section>
       <section class="play"><h2>4 · Chunking visualiser (for RAG)</h2><p>Split text into overlapping chunks before embedding. Overlap (highlighted) protects sentences that straddle a boundary.</p>
         <label>Text</label><textarea id="ch-text" rows="4">Retrieval-augmented generation looks up relevant documents and gives them to the model as context. Good chunking matters: chunks that are too small lose meaning, and chunks that are too large dilute the signal and waste tokens. Overlap keeps ideas from being cut in half.</textarea>
-        <div class="two"><div><label>Chunk size (characters)</label><input type="number" id="ch-size" value="120" min="20"></div><div><label>Overlap (characters)</label><input type="number" id="ch-ov" value="30" min="0"></div></div><div class="chunks" id="ch-out"></div></section>${footer}</div>`;
+        <div class="two"><div><label>Chunk size (characters)</label><input type="number" id="ch-size" value="120" min="20"></div><div><label>Overlap (characters)</label><input type="number" id="ch-ov" value="30" min="0"></div></div><p id="ch-warn" class="warn-text" role="status"></p><div class="chunks" id="ch-out"></div></section>${footer}</div>`;
 
     const logits = [['" Paris"', 6.0], ['" Lyon"', 3.4], ['" the"', 3.0], ['" a"', 2.0], ['" Berlin"', 1.2]];
     const temp = $('#temp');
@@ -240,7 +273,9 @@
     $('#cs-a').oninput = $('#cs-b').oninput = drawC; drawC();
 
     const drawH = () => {
-      const t = $('#ch-text').value, size = Math.max(20, +$('#ch-size').value || 20), ov = Math.min(Math.max(0, +$('#ch-ov').value || 0), size - 1), out = [];
+      const t = $('#ch-text').value, size = Math.max(20, +$('#ch-size').value || 20), asked = Math.max(0, +$('#ch-ov').value || 0), maxOv = Math.floor(size / 2), ov = Math.min(asked, maxOv), out = [];
+      $('#ch-ov').max = maxOv;
+      $('#ch-warn').textContent = asked > maxOv ? `Overlap must be less than the chunk size — at most half of it (${maxOv}) in practice. Using ${maxOv}.` : '';
       for (let s = 0; s < t.length; s += size - ov) { out.push([s, t.slice(s, s + size)]); if (s + size >= t.length) break; }
       $('#ch-out').innerHTML = `<p style="font-size:.85rem;color:var(--muted);margin-top:.6rem">${out.length} chunks</p>` + out.map(([s, c], i) => {
         const o = i ? Math.min(ov, c.length) : 0;
@@ -288,6 +323,53 @@
     if (e.key === '/' && tag !== 'input' && tag !== 'textarea') { e.preventDefault(); sInput.focus(); }
   });
 
+  /* in-browser Python runner (Pyodide, loaded on first use) */
+  const PY = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
+  let pyReady = null;
+  function loadPy() {
+    if (!pyReady) {
+      pyReady = new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = PY + 'pyodide.js';
+        s.onload = () => window.loadPyodide({ indexURL: PY }).then(res, rej);
+        s.onerror = () => rej(new Error('Could not download the Python runtime. Check your internet connection and try again.'));
+        document.head.appendChild(s);
+      });
+      pyReady.catch(() => { pyReady = null; });
+    }
+    return pyReady;
+  }
+  const original = new WeakMap();
+  document.addEventListener('focusin', e => { const c = e.target.closest && e.target.closest('.runnable code'); if (c && !original.has(c)) original.set(c, c.innerHTML); });
+  document.addEventListener('input', e => { const c = e.target.closest && e.target.closest('.runnable code'); if (c) c.closest('.code').querySelector('.reset').hidden = false; });
+  document.addEventListener('click', async e => {
+    const reset = e.target.closest('.reset');
+    if (reset) { const c = reset.closest('.code').querySelector('code'); if (original.has(c)) c.innerHTML = original.get(c); reset.hidden = true; return; }
+    const b = e.target.closest('.run');
+    if (!b) return;
+    const box = b.closest('.code'), out = box.querySelector('.out'), code = box.querySelector('code').textContent;
+    out.hidden = false; out.classList.remove('err'); b.disabled = true;
+    out.textContent = pyReady ? 'Running…' : 'Loading Python into your browser — the first run takes 10–30 seconds…';
+    try {
+      const py = await loadPy();
+      out.textContent = 'Running…';
+      await py.loadPackagesFromImports(code);
+      let buf = '';
+      py.setStdout({ batched: t => { buf += t + '\n'; } });
+      py.setStderr({ batched: t => { buf += t + '\n'; } });
+      const ns = py.globals.get('dict')();
+      await py.runPythonAsync(code, { globals: ns });
+      ns.destroy();
+      out.textContent = buf.trimEnd() || '(The code ran without printing anything.)';
+    } catch (err) {
+      const msg = String(err && err.message || err).split('\n');
+      const i = msg.findIndex(l => l.includes('File "<exec>"'));
+      out.classList.add('err');
+      out.textContent = (i >= 0 ? ['Traceback (most recent call last):'].concat(msg.slice(i)) : msg.slice(-6)).join('\n').trim();
+    }
+    b.disabled = false;
+  });
+
   /* copy buttons (delegated) */
   document.addEventListener('click', e => {
     const b = e.target.closest('.copy');
@@ -314,12 +396,12 @@
     let title = 'AI Engineer Path';
     if (r.view === 'm') {
       const m = findMod(r.mod);
-      if (!m) { r.view = 'home'; }
+      if (!m) { view404(); title = 'Page not found'; }
       else if (!r.lesson) { viewModule(m); title = m.title; }
       else if (r.lesson === 'quiz') { viewQuiz(m); title = 'Quiz · ' + m.title; }
       else {
         const l = m.lessons.find(x => x.id === r.lesson);
-        if (l) { viewLesson(m, l); title = l.title + ' · ' + m.title; } else { location.replace('#/m/' + m.id); return; }
+        if (l) { viewLesson(m, l); title = l.title + ' · ' + m.title; } else { view404(); title = 'Page not found'; }
       }
     }
     if (r.view === 'home') viewHome();
@@ -328,10 +410,10 @@
     else if (r.view === 'projects') { viewProjects(); title = 'Projects'; }
     else if (r.view === 'playground') { viewPlayground(); title = 'Playground'; }
     else if (r.view === 'certificate') { viewCertificate(); title = 'Certificate'; }
-    else if (r.view !== 'm' && r.view !== 'home') { location.replace('#/'); return; }
+    else if (r.view !== 'm') { view404(); title = 'Page not found'; }
     document.title = title + (title === 'AI Engineer Path' ? ' — Learn AI from zero to production' : ' — AI Engineer Path');
     renderChrome();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     main.focus({ preventScroll: true });
     const links = main.querySelectorAll('.toc a');
     if (links.length && 'IntersectionObserver' in window) {

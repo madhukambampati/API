@@ -296,6 +296,63 @@ Models accept images and PDFs in the same `messages` structure (as base64 data o
 
 > **Exercise:** Build a CLI "expense assistant" with two tools — `add_expense(amount, category)` and `total_by_category()` — backed by a list in memory. Let the user type free text such as "I spent 12 on lunch and 40 on a taxi, what's my total?" Log token usage on every call.
 
+> **Solution:**
+> Run this on your computer (it calls the API). It reuses the tool loop from this lesson:
+>
+> ```python
+> import anthropic
+> from collections import defaultdict
+>
+> client = anthropic.Anthropic()
+> MODEL = "claude-sonnet-5-5"            # check the provider docs for current IDs
+> expenses = []                          # in-memory "database"
+>
+> def add_expense(amount: float, category: str) -> str:
+>     if amount <= 0:
+>         return "Error: amount must be positive"
+>     expenses.append({"amount": amount, "category": category.lower()})
+>     return f"Added {amount:.2f} to {category.lower()}"
+>
+> def total_by_category() -> str:
+>     totals = defaultdict(float)
+>     for e in expenses:
+>         totals[e["category"]] += e["amount"]
+>     return str(dict(totals)) if totals else "No expenses yet"
+>
+> TOOLS = [
+>     {"name": "add_expense", "description": "Record one expense. Call once per item the user spent money on.",
+>      "input_schema": {"type": "object", "properties": {
+>          "amount": {"type": "number", "description": "Amount spent, e.g. 12.5"},
+>          "category": {"type": "string", "description": "Short category, e.g. food, transport"}},
+>          "required": ["amount", "category"]}},
+>     {"name": "total_by_category", "description": "Get the totals spent per category so far.",
+>      "input_schema": {"type": "object", "properties": {}}},
+> ]
+> REGISTRY = {"add_expense": add_expense, "total_by_category": total_by_category}
+>
+> def run(user_text):
+>     messages = [{"role": "user", "content": user_text}]
+>     for _ in range(6):
+>         r = client.messages.create(model=MODEL, max_tokens=500, tools=TOOLS, messages=messages,
+>                                    system="You track expenses. Use the tools; never invent totals.")
+>         print(f"  [tokens in={r.usage.input_tokens} out={r.usage.output_tokens}]")
+>         if r.stop_reason != "tool_use":
+>             return "".join(b.text for b in r.content if b.type == "text")
+>         messages.append({"role": "assistant", "content": r.content})
+>         results = []
+>         for b in r.content:
+>             if b.type == "tool_use":
+>                 out = REGISTRY[b.name](**b.input)
+>                 results.append({"type": "tool_result", "tool_use_id": b.id, "content": out})
+>         messages.append({"role": "user", "content": results})
+>     return "Stopped: too many steps."
+>
+> while (text := input("you> ")).lower() not in {"quit", "exit"}:
+>     print("ai>", run(text))
+> ```
+>
+> Try "I spent 12 on lunch and 40 on a taxi, what's my total?" — the model should call `add_expense` twice, then `total_by_category`, then answer from the tool result. The system prompt line "never invent totals" plus the tool make the sum come from code, not from the model's arithmetic.
+
 # Capstone: a robust chatbot skeleton
 
 Pulling the lessons together — a small module you can reuse in projects.
@@ -353,44 +410,44 @@ What this skeleton already does right: timeout, retries with backoff, token logg
 
 # @quiz
 
-? You get `stop_reason = "max_tokens"`. What does that tell you?
-- The answer is complete
-+ The output was cut off at your token limit
-- The API key is invalid
-- The model refused
-! Raise `max_tokens` or shorten the requested output; don't treat a truncated answer as complete.
+? A response arrives with `stop_reason = "max_tokens"`. What does it mean?
+- The answer finished normally
++ The answer was cut off at your output limit
+- Your API key has run out of credit and must be topped up
+- The model refused to answer
+! Raise `max_tokens` or ask for less; never treat a truncated answer as complete.
 
-? Why is streaming valuable?
-+ Users see output as it is generated, greatly reducing perceived latency
-- It makes the model smarter
-- It reduces the number of tokens billed
-- It disables rate limits
-! Time-to-first-token is what users feel.
+? What is the main benefit of streaming responses?
++ Text appears right away
+- The model gives more accurate answers
+- You are billed for fewer output tokens because they arrive in pieces
+- It removes the provider's rate limits
+! Streaming cuts perceived latency — the time until something appears.
 
-? In tool use, who actually executes the function?
+? In tool use, who actually runs the function?
 - The model, on the provider's servers
-+ Your application code, which then sends the result back to the model
-- The user
-- The tokenizer
-! The model only requests a call; execution and its safety are your responsibility.
++ Your code, which then sends the result back
+- The user, by clicking a button
+- The tokenizer, before the model sees it
+! The model only requests a call. Running it — and its safety — is your responsibility.
 
-? What is the safest approach to structured output?
-- Ask nicely for JSON and trust it
-+ Use a schema (e.g. via a tool or structured-output feature) AND validate in code, retrying on failure
-- Parse with regular expressions only
-- Raise the temperature
-! Schemas help with shape; validation catches the rest.
+? What is the most reliable way to get structured output?
+- Ask nicely for JSON and trust what comes back
++ Use a schema or tool definition, then validate in code
+- Parse the reply with regular expressions only
+- Raise the temperature so the model tries harder to match the format
+! A schema fixes the shape; validation in code catches everything else.
 
-? Which error should you NOT blindly retry?
-- 429 rate limit
-- A dropped connection
-+ A 400 bad request caused by your malformed input
-- A 500 server error
-! Retrying a request that is invalid will fail every time.
+? Which error should you NOT retry automatically?
+- 429, rate limited
+- A dropped network connection halfway through
++ 400, malformed request
+- 503, the service is busy
+! A malformed request fails the same way every time. Fix it instead of retrying.
 
-? Why cap the number of iterations in a tool loop?
-- To save disk space
-+ To prevent infinite loops and runaway cost if the model keeps requesting tools
-- Because the API only allows 5 calls
-- To keep the history short
-! Always bound loops that involve a model deciding what happens next.
+? Why cap the number of steps in a tool-use loop?
+- The API allows at most five calls per minute
++ A model that keeps calling tools could loop forever
+- Capping the steps makes each individual answer more accurate and shorter
+- Long loops delete the conversation history
+! Any loop where a model decides what happens next needs a hard limit.

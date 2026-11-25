@@ -172,42 +172,42 @@ Treat an LLM like a **very fast, widely-read, sometimes overconfident junior col
 
 ? What is a "base model"?
 - A model that has been fully safety-tuned
-+ A model after pre-training that continues text but has not been taught to follow instructions
-- The cheapest tier of any model family
-- A model that only handles code
-! Instruction following and assistant behaviour are added in later fine-tuning stages.
++ A pre-trained model that continues text but cannot follow instructions
+- The cheapest tier in a provider's model family
+- A small model that only handles source code
+! Instruction following and assistant behaviour are added in later tuning stages.
 
-? Why do you re-send the whole conversation history on every API call?
-- To increase cost
-+ Because the model is stateless — it only knows what is in the current context window
-- Because history is deleted after a day
-- The API requires it for billing
-! The model has no memory between calls; your application supplies the history.
+? Why does a chat app re-send the conversation history on every API call?
+- Providers charge less for repeated text
++ The model is stateless and only knows the current request
+- The provider deletes the history after a day, so it must be uploaded again
+- It makes responses stream faster to the user
+! Nothing is remembered between calls; your application must supply the history each time.
 
-? Which temperature is most appropriate for extracting fields from invoices?
-- 1.5
+? Which temperature suits extracting fields from invoices?
+- 1.5, for variety
 + 0 to 0.3
-- 2.0
-- It doesn't matter
-! Extraction needs consistency, so low randomness is better.
+- 2.0, for creativity
+- It makes no real difference for extraction tasks
+! Extraction should give the same answer every time, so low randomness is best.
 
-? Which is the best way to choose between models for your product?
-- Pick the one at the top of a public leaderboard
-- Pick the largest
-+ Run candidates on your own eval set and choose the cheapest that meets your quality bar
-- Pick the newest
-! Your task-specific eval is the only reliable comparison.
+? You must pick a model for your product. What is the most reliable method?
+- Choose whichever model is currently at the top of a well-known public leaderboard
+- Choose the model with the most parameters
++ Test candidates on your own eval; pick the cheapest that passes
+- Choose the newest release from any provider
+! Public benchmarks are hints. Your task-specific eval is the only comparison that counts.
 
-? What is the most effective mitigation for hallucinated facts about your company's documents?
-- Raising the temperature
-+ Grounding answers in retrieved source text and permitting "I don't know"
-- Asking the model to "be accurate"
-- Using a shorter prompt
-! Supplying sources and requiring answers from them reduces invention.
+? An assistant invents details about your company's refund policy. What is the most effective fix?
+- Raise the temperature so it explores more
++ Supply the policy text and allow "I don't know"
+- Tell it to "be accurate and never make anything up" in capital letters
+- Shorten the system prompt to one sentence
+! Grounding answers in supplied sources, with permission to abstain, sharply reduces invention.
 
-? Which of these is a typical reason a long document's details get missed?
-+ Quality can degrade for information buried in the middle of very long contexts
-- The model reads only the first word
-- Long contexts are free so the model ignores them
-- Tokens are deleted after 1000 characters
-! Retrieval or restructuring helps; don't assume long context equals perfect recall.
+? A key detail sits in the middle of a 300-page document you pasted in. What risk should you expect?
++ Details deep inside may be missed
+- The model reads only the first word of each page
+- Long inputs are free, so the model skips them
+- The API always rejects requests that are longer than a hundred pages
+! Quality can drop for information in the middle of huge contexts. Retrieve or restructure instead.

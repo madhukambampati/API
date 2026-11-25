@@ -12,6 +12,17 @@ Build the dataset you will reuse throughout the course.
 
 **Done when:** a script prints the summary table and the most-similar pair, and the repo has a README and `requirements.txt`.
 
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Runs | `python explore.py` works in a fresh venv using `requirements.txt` | Runs only on your machine | Crashes |
+| Correctness | Summary numbers match a hand check of 3 rows | Mostly right | Numbers not checked |
+| Similarity | Most-similar pair is printed with its score and makes sense | Pair printed, no score | Missing |
+| README | Explains what it does, how to run it, and one thing you learned | Run steps only | No README |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
+
 # Classic ML ticket classifier
 @level Beginner
 @time 3–4 hours
@@ -25,6 +36,17 @@ Build the dataset you will reuse throughout the course.
 **Stretch:** compare against a majority-class baseline and against 5-fold cross-validation.
 
 **Done when:** you can explain, with numbers, how much better than baseline the model is and where it fails.
+
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Proper split | Stratified train/test split, test set used once | Split but test reused while tuning | No split |
+| Metrics | Per-class precision, recall, F1 and confusion matrix | Accuracy only | No metrics |
+| Baseline | Compared with majority-class baseline, with numbers | Baseline mentioned | None |
+| Error analysis | 5 mistakes read and a pattern named | Mistakes listed | None |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
 
 # Prompted chatbot with memory
 @level Beginner
@@ -40,6 +62,17 @@ Build the dataset you will reuse throughout the course.
 
 **Done when:** it survives a dropped network connection and a 50-turn conversation, and logs cost per turn.
 
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Reliability | Timeout, retries with backoff, clear error message to the user | Retries only | Crashes on network error |
+| Cost awareness | Logs tokens and cost per turn | Logs tokens | Nothing logged |
+| History | Bounded history (trim or summary) proven with a 50-turn chat | Trims, untested | Grows forever |
+| Safety | No API key in code or repo; key read from environment | Key in a local file | Key committed |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
+
 # Structured extractor
 @level Intermediate
 @time 4–6 hours
@@ -54,6 +87,17 @@ Turn messy text (invoices, résumés, or emails) into validated JSON.
 
 **Done when:** you have a table of field-level accuracy, you have improved it at least twice, and each improvement is explained in the README.
 
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Validation | Pydantic schema, retry on invalid output, nulls for missing | Schema without retry | Raw JSON trusted |
+| Eval set | 30 labelled documents incl. messy ones | 10–20 documents | None |
+| Measurement | Per-field accuracy table, before/after each change | One overall number | No numbers |
+| Honesty | README lists fields that still fail and why | Partial | Claims it works |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
+
 # Document Q&A with RAG
 @level Intermediate
 @time 6–10 hours
@@ -65,6 +109,17 @@ Turn messy text (invoices, résumés, or emails) into validated JSON.
 - Add hybrid search (BM25 + vectors) and a reranking step.
 
 **Done when:** answers cite sources, unanswerable questions get “I don’t know”, and a log shows retrieved chunks for each query.
+
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Grounding | Answers cite sources; unanswerable questions get "I don't know" | Citations only | Free-form answers |
+| Retrieval | Hybrid search + reranking, retrieved chunks logged | Vector search, logged | Not inspectable |
+| Chunking | Structure-aware chunks with metadata | Fixed-size chunks | Whole documents |
+| Evidence | Shows 3 good and 2 failing queries with explanations | Good examples only | None |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
 
 # RAG evaluation harness
 @level Intermediate
@@ -80,6 +135,17 @@ Turn messy text (invoices, résumés, or emails) into validated JSON.
 
 **Done when:** every change to your RAG project is justified by a number.
 
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Dataset | 40 questions incl. 8 unanswerable, gold chunk for each | 20+ questions | Ad-hoc questions |
+| Metrics | Recall@k, faithfulness, correctness, abstention | Two of these | One score |
+| Judge validated | Agreement with 25 human labels reported | Judge used unvalidated | No judge |
+| CI gate | Script exits non-zero below threshold | Manual run only | None |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
+
 # Tool-using agent
 @level Advanced
 @time 8–12 hours
@@ -93,6 +159,17 @@ Turn messy text (invoices, résumés, or emails) into validated JSON.
 
 **Done when:** you can show a failure trace, explain its cause and show the harness change that fixed it.
 
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Bounds | Step, time and cost budgets enforced | Step limit only | Unbounded loop |
+| Safety | Approval before side effects; read-only by default | Some gating | Everything automatic |
+| Verification | Success checked in code, not by the agent's claim | Self-check prompt | None |
+| Reliability eval | 15 tasks × 5 runs: pass rate, steps, cost | Single runs | Anecdotes |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
+
 # Production hardening
 @level Advanced
 @time 8–12 hours
@@ -105,6 +182,17 @@ Turn messy text (invoices, résumés, or emails) into validated JSON.
 - A threat model, a prompt-injection test document, and two mitigations — added to your eval suite as permanent cases.
 
 **Done when:** you can run a script that attacks the service and see it fail safely.
+
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Service | Auth, input validation, rate limits, streaming | Two of these | Open endpoint |
+| Resilience | Retries, fallback model, budget, kill switch | Retries only | None |
+| Observability | Structured traces per request | Plain logs | None |
+| Security | Threat model + injection test in the eval suite | Threat model only | Not considered |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.
 
 # Capstone: a domain assistant
 @level Advanced
@@ -122,3 +210,15 @@ Choose a real domain you care about (a university, a hobby, a small business, an
 - Cost and latency table, plus a comparison against at least one cheaper model or an open model.
 
 **Deliverables:** public repo, architecture diagram, README with eval tables and failure analysis, a 3-minute demo video, and a short write-up of what you would do next. This is your portfolio centrepiece.
+
+**Grade yourself**
+
+| Criterion | Strong | Partial | Missing |
+| --- | --- | --- | --- |
+| Usefulness | Solves a real problem for real users, with feedback gathered | Plausible problem, no users | Toy demo |
+| Quality evidence | 100-case eval, slices, validated judge, CI gate | Smaller or unvalidated eval | No eval |
+| Engineering | Full harness: validation, guardrails, budgets, traces | Partial harness | Prompt only |
+| Responsibility | Security, fairness and red-team report with fixes | Brief notes | None |
+| Communication | Clear README, diagram, demo, honest limitations | README only | Hard to follow |
+
+Aim for *Strong* on every row before moving on. A *Missing* row means the project is not done yet.

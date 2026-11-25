@@ -22,7 +22,7 @@ A neuron takes numbers in, multiplies each by a **weight**, adds them with a **b
  x3 ──w3──┘
 ```
 
-```python
+```python run
 import math
 
 def neuron(inputs, weights, bias):
@@ -31,6 +31,13 @@ def neuron(inputs, weights, bias):
 
 print(neuron([1.0, 2.0, 3.0], [0.2, -0.1, 0.4], bias=0.1))   # 1.3
 ```
+
+> **Expected output:**
+> ```text
+> 1.3000000000000003
+> ```
+
+That is 1.3 — the `…0003` is normal floating-point rounding, because computers store decimals in binary. You will see this often; it is not a bug.
 
 ## Why activation functions matter
 
@@ -92,6 +99,63 @@ weight = weight − learning_rate × gradient
 
 Calculating gradients for millions of weights sounds impossible. **Backpropagation** does it efficiently using the chain rule: it works backward from the loss, passing blame to each layer in turn. Frameworks like PyTorch do this automatically (*autograd*) — you only define the forward pass.
 
+## Train a neuron yourself (NumPy, runs in the page)
+
+Before using a framework, see the whole loop with nothing hidden. This single neuron learns to tell "pass" from "fail" using hours studied and hours slept. Every line maps onto the steps above.
+
+```python run
+import numpy as np
+
+rng = np.random.default_rng(0)
+# 200 students: [hours studied, hours slept]; pass if 2*study + sleep > 14 (with noise)
+X = rng.uniform(0, 8, size=(200, 2))
+y = ((2 * X[:, 0] + X[:, 1] + rng.normal(0, 1.5, 200)) > 14).astype(float)
+
+w = np.zeros(2)          # weights start at zero: the model knows nothing
+b = 0.0
+lr = 0.05                # learning rate
+
+def predict(X):
+    return 1 / (1 + np.exp(-(X @ w + b)))      # sigmoid gives a probability 0..1
+
+for epoch in range(2001):
+    p = predict(X)                                             # 1. forward pass
+    loss = -np.mean(y * np.log(p + 1e-9) + (1 - y) * np.log(1 - p + 1e-9))   # 2. loss
+    grad_w = X.T @ (p - y) / len(y)                            # 3. gradients
+    grad_b = np.mean(p - y)
+    w -= lr * grad_w                                           # 4. step downhill
+    b -= lr * grad_b
+    if epoch % 500 == 0:
+        acc = np.mean((p > 0.5) == y)
+        print(f"epoch {epoch:4}  loss {loss:.3f}  accuracy {acc:.2f}")
+
+print("learned weights:", w.round(2), "bias:", round(b, 2))
+print("P(pass | 6h study, 7h sleep) =", round(float(predict(np.array([[6, 7]]))[0]), 2))
+print("P(pass | 2h study, 8h sleep) =", round(float(predict(np.array([[2, 8]]))[0]), 2))
+```
+
+> **Expected output:**
+> ```text
+> epoch    0  loss 0.693  accuracy 0.56
+> epoch  500  loss 0.425  accuracy 0.87
+> epoch 1000  loss 0.345  accuracy 0.91
+> epoch 1500  loss 0.304  accuracy 0.93
+> epoch 2000  loss 0.278  accuracy 0.94
+> learned weights: [0.84 0.36] bias: -5.47
+> P(pass | 6h study, 7h sleep) = 0.9
+> P(pass | 2h study, 8h sleep) = 0.3
+> ```
+
+Watch the loss fall and the accuracy rise as the weights move. The learned weight on "study" ends up larger than on "sleep" — the model *discovered* that studying matters more, because that is how the data was generated. Nobody wrote that rule.
+
+> **Exercise:** Change `lr` to `2.0`, then to `0.0005`, and run each. What happens, and why?
+
+> **Solution:**
+> - **`0.0005` (too small):** after 2,000 epochs the loss has only fallen from 0.693 to about 0.63 and accuracy is stuck near 0.67. The steps are so tiny that training crawls.
+> - **`2.0` (too big):** the loss drops quickly at first, then stalls around 0.38, clearly worse than the 0.28 you get with `0.05`. Each step overshoots the bottom of the valley, so it keeps jumping past the best weights instead of settling into them. In larger networks a rate that is too high often makes the loss blow up to `nan`.
+>
+> This is why the learning rate is usually the first setting people tune.
+
 ## Batches, epochs, optimisers
 
 - **Batch** — a small group of examples used for one update (e.g. 32). Faster and noisier than using all data.
@@ -99,6 +163,8 @@ Calculating gradients for millions of weights sounds impossible. **Backpropagati
 - **Optimiser** — the update strategy. **SGD** is the basic one; **Adam/AdamW** adapts step sizes per weight and is the usual default.
 
 ## A tiny network in PyTorch
+
+PyTorch is too large to run inside a web page, so run this one on your computer (`pip install torch`). It does exactly what the NumPy example did — the framework just computes the gradients for you.
 
 Install with `pip install torch`. This learns the XOR function — something a single neuron cannot do:
 
@@ -209,6 +275,44 @@ Mechanically, each token produces three vectors:
 
 Each token compares its query with all keys (dot products), softmax turns scores into weights, and the output is a weighted blend of the values.
 
+### Attention with real numbers
+
+Here are three made-up 4-number token vectors for "the cat sat". Watch each token compute how much to attend to every other token (each row of weights sums to 1).
+
+```python run
+import numpy as np
+
+np.set_printoptions(precision=2, suppress=True)
+tokens = ["the", "cat", "sat"]
+x = np.array([[0.1, 0.0, 0.2, 0.1],     # "the"
+              [0.9, 0.8, 0.1, 0.3],     # "cat"
+              [0.7, 0.9, 0.2, 0.4]])    # "sat"
+
+rng = np.random.default_rng(1)
+Wq, Wk, Wv = (rng.normal(0, 1, (4, 4)) for _ in range(3))   # learned in a real model
+Q, K, V = x @ Wq, x @ Wk, x @ Wv
+
+scores = Q @ K.T / np.sqrt(4)                          # how relevant is each token to each other?
+weights = np.exp(scores) / np.exp(scores).sum(axis=1, keepdims=True)   # softmax per row
+output = weights @ V                                   # blend the values
+
+print("attention weights (row = the token doing the looking):")
+for name, row in zip(tokens, weights):
+    print(f"{name:>4}", row)
+print("output shape:", output.shape)
+```
+
+> **Expected output:**
+> ```text
+> attention weights (row = the token doing the looking):
+>  the [0.34 0.33 0.33]
+>  cat [0.4  0.34 0.26]
+>  sat [0.4  0.34 0.26]
+> output shape: (3, 4)
+> ```
+
+In a trained model the matrices `Wq`, `Wk` and `Wv` are learned, so the weights become meaningful (e.g. "sat" attends strongly to "cat", its subject). Here they are random, so only the *mechanics* are real — which is the point. A **causal mask** (used in LLMs) would also set every weight above the diagonal to 0, so no token can look at tokens after it.
+
 ## Multi-head attention
 
 Instead of one attention pattern, the model runs many **heads** in parallel. One head may track grammar, another coreference, another nearby words. Their outputs are combined.
@@ -265,50 +369,50 @@ Attention compares every token with every other: compute grows roughly with the 
 # @quiz
 
 ? What does gradient descent do?
-- Randomly searches for good weights
-+ Adjusts weights step by step in the direction that reduces the loss
-- Deletes neurons that are wrong
-- Increases the learning rate over time
-! The gradient shows which way loss decreases; each step moves weights that way.
+- Tries thousands of random weight settings and keeps whichever one works best
++ Nudges each weight in the direction that lowers the loss
+- Removes the neurons that make mistakes
+- Raises the learning rate every epoch
+! The gradient says which way the loss goes down; each step moves the weights that way.
 
 ? Why do neural networks need non-linear activation functions?
-- To make training slower
-+ Without them, stacked layers collapse into a single linear function and can't model complex patterns
-- To reduce memory
-- Only the output layer needs them
-! Non-linearity gives depth its power.
+- They make training slower, but the final model ends up more accurate
++ Layers would collapse into one
+- They reduce the memory a network needs
+- Only the output layer ever needs one
+! Non-linearity is what lets depth model curved, complex patterns.
 
 ? In a PyTorch training loop, what does `loss.backward()` do?
-- Runs inference
-+ Computes gradients of the loss with respect to the weights (backpropagation)
-- Updates the weights
-- Saves the model
-! `backward()` computes gradients; `opt.step()` then applies the update.
+- Updates every weight in the model using the learning rate you set
++ Computes the gradient of the loss for every weight
+- Runs the model forward on a new batch
+- Saves the model's weights to disk
+! `backward()` computes gradients (backpropagation); `optimizer.step()` then applies the update.
 
-? Why do LLMs sometimes miscount letters in a word?
-- They can't read English
-+ They process tokens (sub-word chunks), not individual characters
-- Their vocabulary is tiny
-- Letters are removed during training
-! Tokenisation hides character-level structure from the model.
+? Your loss barely moves after many epochs. Which change is most likely to help?
+- Lower the learning rate further
++ Increase the learning rate a little
+- Delete the loss function
+- Remove the activation functions
+! A tiny learning rate makes steps too small to make progress. Too large a rate overshoots instead.
 
-? What problem does self-attention solve?
-+ Letting each token directly use relevant information from other tokens in the sequence, in parallel
-- Reducing the vocabulary size
-- Storing the model on disk
-- Converting images to text
-! Attention lets every position weigh every other position, regardless of distance.
+? Why might an LLM miscount the letters in "strawberry"?
+- Its vocabulary has fewer than 100 entries
++ It sees sub-word tokens, not individual letters
+- Letters are stripped out of words during training to save memory
+- It only reads the first half of each word
+! Tokenisation hides character-level detail, so letter counting is surprisingly hard for LLMs.
 
-? What is the KV cache used for?
-- Storing user passwords
-+ Reusing the keys and values of already-processed tokens so generation doesn't recompute them
-- Compressing the training data
-- Choosing the temperature
-! It makes each new token cheap to compute, at the cost of GPU memory that grows with context length.
+? In self-attention, what does the softmax over Q·K scores produce?
+- The final next-token prediction
++ How much each token uses the others
+- A list of the tokens in alphabetical order
+- The embedding table that the model's first layer looks words up in
+! The scores become weights that sum to 1; the output is a weighted blend of the value vectors.
 
-? A decoder-only LLM is trained to…
-- Classify images
-+ Predict the next token at each position, attending only to earlier tokens
-- Translate between two fixed languages only
-- Cluster documents
-! Next-token prediction with a causal mask is the core objective.
+? Why does a very long context use a lot of GPU memory during generation?
+- The tokenizer stores every token as an image
++ The KV cache keeps keys and values for every earlier token
+- The model reloads all of its weights from disk for every new token
+- Long prompts force the model into training mode
+! Caching past keys and values makes each new token cheap, but the cache grows with context length.
