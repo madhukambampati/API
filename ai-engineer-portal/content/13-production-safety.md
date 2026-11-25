@@ -3,7 +3,6 @@ title: Production, Safety & Ethics
 summary: Deploying AI features, securing them against prompt injection and data leaks, handling privacy and bias, and building responsibly.
 time: 3.5 hours
 level: Advanced
-icon: 🛡️
 outcomes:
   - Package and deploy an LLM service with sensible architecture and operations
   - Identify and mitigate prompt injection, data leakage and excessive agency

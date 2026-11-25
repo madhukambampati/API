@@ -3,7 +3,6 @@ title: AGI Frontiers & Your Career
 summary: Where capabilities are heading, the open questions, how to stay current — and a practical plan to become hireable as an AI engineer.
 time: 3 hours
 level: Intermediate
-icon: 🚀
 outcomes:
   - Describe current frontier capabilities and honest limits without hype or doom
   - Explain AGI, scaling, reasoning, world models and alignment debates in plain terms

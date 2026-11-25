@@ -3,7 +3,6 @@ title: Agentic Systems
 summary: Tools, planning, memory, multi-agent patterns and the agent loop — when to build agents, how, and how to keep them under control.
 time: 4.5 hours
 level: Advanced
-icon: 🤖
 outcomes:
   - Distinguish workflows from agents and choose the simplest design that works
   - Build an agent loop with tools, a step budget and error handling

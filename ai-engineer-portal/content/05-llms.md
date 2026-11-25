@@ -3,7 +3,6 @@ title: LLMs
 summary: How large language models are trained, what their settings do, how to choose one — and, crucially, where they fail.
 time: 3.5 hours
 level: Intermediate
-icon: 💬
 outcomes:
   - Describe the stages of building a modern assistant: pre-training, instruction tuning, preference tuning
   - Use context windows, temperature and other parameters deliberately

@@ -20,9 +20,9 @@ a{color:var(--accent)}
 .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:.9rem;padding:.6rem 1rem;background:var(--bg2);border-bottom:1px solid var(--line)}
 .logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--accent);font-weight:700;font-size:1.15rem;white-space:nowrap}
 .logo-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:800}
-.icon-btn{background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;width:36px;height:36px;font-size:1.05rem;cursor:pointer}
+.icon-btn{background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;min-width:36px;height:36px;padding:0 .65rem;font-size:.85rem;cursor:pointer}
 .icon-btn:hover{border-color:var(--accent)}
-#menu-btn{display:none}
+#menu-btn{display:none;place-items:center}
 .search{position:relative;flex:1;max-width:420px}
 .search input{width:100%;padding:.5rem .8rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:.95rem}
 .search-results{position:absolute;top:110%;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);max-height:70vh;overflow:auto}
@@ -120,7 +120,7 @@ a.card:hover{transform:translateY(-2px);border-color:var(--accent)}
 .phase b{color:var(--accent)}
 
 /* module overview */
-.mod-head{display:flex;gap:1rem;align-items:center;margin-bottom:.5rem}.mod-head .big{font-size:2.4rem}
+.mod-head{display:flex;gap:1rem;align-items:center;margin-bottom:.5rem}.mod-head .big{display:grid;place-items:center;width:3rem;height:3rem;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:1.4rem;font-weight:800}
 .lesson-list{list-style:none;margin:1rem 0}
 .lesson-list a{display:flex;gap:.8rem;align-items:center;padding:.8rem 1rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.5rem;background:var(--card);text-decoration:none;color:var(--text)}
 .lesson-list a:hover{border-color:var(--accent)}.lesson-list small{margin-left:auto;color:var(--muted)}
@@ -168,7 +168,7 @@ footer.site{border-top:1px solid var(--line);margin-top:3rem;padding:1.5rem 0;co
 
 @media (max-width:1180px){.lesson-grid{grid-template-columns:minmax(0,1fr)}.toc{display:none}}
 @media (max-width:900px){
-  #menu-btn{display:block}.top-links,.logo-text{display:none}.search{max-width:none}
+  #menu-btn{display:grid}.top-links,.logo-text{display:none}.search{max-width:none}
   .layout{grid-template-columns:minmax(0,1fr)}
   .sidebar{position:fixed;left:0;top:56px;width:min(320px,86vw);z-index:60;transform:translateX(-100%);transition:transform .2s;height:calc(100vh - 56px)}
   body.menu-open .sidebar{transform:none}

@@ -47,7 +47,7 @@
         `<li><a href="#/m/${m.id}" class="${route.mod === m.id && !route.lesson ? 'on' : ''}"><span class="dot"></span>Overview</a></li>` +
         m.lessons.map(l => `<li><a href="#/m/${m.id}/${l.id}" class="${route.mod === m.id && route.lesson === l.id ? 'on' : ''}"><span class="dot">${isDone(m, l) ? '✓' : ''}</span>${esc(l.title)}</a></li>`).join('') +
         `<li><a href="#/m/${m.id}/quiz" class="${route.mod === m.id && route.lesson === 'quiz' ? 'on' : ''}"><span class="dot">${quizPassed(m) ? '✓' : ''}</span>Module quiz</a></li></ul></details>`;
-    }).join('') + `<p style="padding:.8rem .5rem;font-size:.85rem"><a href="#/certificate">🎓 Certificate</a></p>`;
+    }).join('') + `<p style="padding:.8rem .5rem;font-size:.85rem"><a href="#/certificate">Certificate</a></p>`;
     const on = $('#sidebar a.on');
     if (on) on.scrollIntoView({ block: 'nearest' });
   }
@@ -81,21 +81,21 @@
       <h2 class="section-title">The roadmap</h2><p class="section-sub">Follow it in order, or jump to what you need. Each module ends with a quiz; 70% marks it complete.</p>
       <div class="phases">${phases.map(p => `<div class="phase"><h3>${p[0]}</h3><p><b>${p[1]}</b><br>${p[2]}</p></div>`).join('')}</div>
       <h2 class="section-title">All modules</h2><p class="section-sub">Prerequisites: none. Curiosity and a computer are enough — the course teaches the Python you need.</p>
-      <div class="grid">${C.modules.map(m => `<a class="card" href="#/m/${m.id}"><h3>${m.icon} ${m.n}. ${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div><div class="row"><span class="tag ${m.level}">${m.level}</span><span>${m.lessons.length} lessons · ${esc(m.time)}</span></div></a>`).join('')}</div>
+      <div class="grid">${C.modules.map(m => `<a class="card" href="#/m/${m.id}"><h3>${m.n}. ${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div><div class="row"><span class="tag ${m.level}">${m.level}</span><span>${m.lessons.length} lessons · ${esc(m.time)}</span></div></a>`).join('')}</div>
       <h2 class="section-title">How this portal works</h2>
       <div class="grid">
-        <div class="card"><h3>📖 Read &amp; run</h3><p>Lessons are short and concrete, with code you can copy and run. Mark each one complete as you go.</p></div>
-        <div class="card"><h3>✅ Check yourself</h3><p>Every module ends with a quiz that explains the right answer, not just the score.</p></div>
-        <div class="card"><h3>🛠 Build things</h3><p>${C.projects.length} projects take you from a first chatbot to a capstone agent, with an eval suite.</p></div>
-        <div class="card"><h3>🧪 Play</h3><p>The <a href="#/playground">Playground</a> lets you feel temperature, token cost, similarity and chunking directly.</p></div>
-        <div class="card"><h3>🔎 Look things up</h3><p>Press <code>/</code> to search every lesson and the glossary instantly.</p></div>
-        <div class="card"><h3>🎓 Finish</h3><p>Complete everything to unlock a printable <a href="#/certificate">completion certificate</a>.</p></div>
+        <div class="card"><h3>Read &amp; run</h3><p>Lessons are short and concrete, with code you can copy and run. Mark each one complete as you go.</p></div>
+        <div class="card"><h3>Check yourself</h3><p>Every module ends with a quiz that explains the right answer, not just the score.</p></div>
+        <div class="card"><h3>Build things</h3><p>${C.projects.length} projects take you from a first chatbot to a capstone agent, with an eval suite.</p></div>
+        <div class="card"><h3>Play</h3><p>The <a href="#/playground">Playground</a> lets you feel temperature, token cost, similarity and chunking directly.</p></div>
+        <div class="card"><h3>Look things up</h3><p>Press <code>/</code> to search every lesson and the glossary instantly.</p></div>
+        <div class="card"><h3>Finish</h3><p>Complete everything to unlock a printable <a href="#/certificate">completion certificate</a>.</p></div>
       </div>${footer}</div>`;
   }
 
   function viewModule(m) {
     main.innerHTML = `<div class="wrap" style="max-width:820px"><div class="crumbs"><a href="#/">Home</a> / Module ${m.n}</div>
-      <div class="mod-head"><span class="big">${m.icon}</span><div><h1>${m.n}. ${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag">${esc(m.time)}</span></div></div>
+      <div class="mod-head"><span class="big">${m.n}</span><div><h1>${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag">${esc(m.time)}</span></div></div>
       <p style="color:var(--muted);margin:.8rem 0">${esc(m.summary)}</p>
       <div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div>
       <h2 class="section-title" style="font-size:1.2rem">After this module you can</h2><ul class="outcomes article" style="padding-left:1.3rem">${m.outcomes.map(o => `<li>${esc(o)}</li>`).join('')}</ul>
@@ -154,7 +154,7 @@
       if (score > (P.quiz[m.id] || 0)) { P.quiz[m.id] = score; save(); }
       renderChrome();
       const nx = flat[flat.findIndex(x => x.m === m && x.quiz) + 1];
-      $('#result').innerHTML = `<div class="score ${pass ? 'pass' : 'fail'}">${right}/${m.quiz.length} — ${pass ? 'Module complete 🎉' : 'Review the lessons and try again'}</div>
+      $('#result').innerHTML = `<div class="score ${pass ? 'pass' : 'fail'}">${right}/${m.quiz.length} — ${pass ? 'Module complete' : 'Review the lessons and try again'}</div>
         <a class="btn ghost" href="#/m/${m.id}/quiz" onclick="location.reload()">Retry</a> ${nx ? `<a class="btn" href="${href(nx)}">Next: ${esc(nx.m.id === m.id ? 'module' : nx.m.title)} →</a>` : `<a class="btn" href="#/certificate">Get your certificate →</a>`}`;
       $('#result').scrollIntoView({ block: 'center' });
     };

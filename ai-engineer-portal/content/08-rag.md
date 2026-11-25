@@ -3,7 +3,6 @@ title: RAG
 summary: Retrieval-Augmented Generation end to end — embeddings, chunking, vector search, reranking, generation, failure modes and fixes.
 time: 4.5 hours
 level: Intermediate
-icon: 🔎
 outcomes:
   - Explain why RAG exists and when to choose it over long context or fine-tuning
   - Build a working RAG pipeline: chunk, embed, store, retrieve, generate

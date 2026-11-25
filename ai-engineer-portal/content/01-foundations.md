@@ -3,7 +3,6 @@ title: Foundations
 summary: What AI, machine learning and LLMs actually are — the mental models and vocabulary everything else builds on.
 time: 2.5 hours
 level: Beginner
-icon: 🧭
 outcomes:
   - Explain the difference between AI, machine learning, deep learning and generative AI
   - Describe how a model learns from data, and the difference between training and inference

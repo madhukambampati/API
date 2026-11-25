@@ -3,7 +3,6 @@ title: Python & Math Essentials
 summary: Just enough Python, command-line, Git, HTTP/JSON and math intuition to build and understand AI systems — taught from scratch.
 time: 4 hours
 level: Beginner
-icon: 🐍
 outcomes:
   - Set up a clean Python environment and run scripts and notebooks
   - Write functions, loops, classes and work with lists, dicts and files
