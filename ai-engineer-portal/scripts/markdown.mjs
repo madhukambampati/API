@@ -50,7 +50,7 @@ function inline(s) {
   return s.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${esc(codes[+i])}</code>`);
 }
 
-const CALLOUTS = { 'key idea': 'key', tip: 'tip', warning: 'warn', note: 'note', example: 'example', exercise: 'exercise', 'common mistake': 'warn', 'try it': 'exercise' };
+const CALLOUTS = { 'key idea': 'key', tip: 'tip', warning: 'warn', note: 'note', example: 'example', exercise: 'exercise', 'common mistake': 'warn', 'try it': 'exercise', solution: 'solution', 'expected output': 'output' };
 
 export function render(md) {
   const lines = md.split('\n');
@@ -66,7 +66,7 @@ function block(lines, toc) {
     const line = lines[i];
     if (!line.trim()) { i++; continue; }
     let m;
-    if ((m = line.match(/^```(\w*)/))) {
+    if ((m = line.match(/^```(\w*)(\s+run)?/))) {
       const buf = [];
       i++;
       while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
@@ -74,6 +74,7 @@ function block(lines, toc) {
       const lang = m[1] || 'text';
       const code = buf.join('\n');
       if (lang === 'diagram') out += `<pre class="diagram"><code>${esc(code)}</code></pre>`;
+      else if (m[2] && lang === 'python') out += `<div class="code runnable"><div class="code-head"><span>python · edit &amp; run here</span><span class="code-btns"><button class="reset" type="button" hidden>Reset</button><button class="copy" type="button">Copy</button><button class="run" type="button">Run</button></span></div><pre><code contenteditable="plaintext-only" spellcheck="false">${highlight(code, lang)}</code></pre><pre class="out" hidden aria-live="polite"></pre></div>`;
       else out += `<div class="code"><div class="code-head"><span>${lang}</span><button class="copy" type="button">Copy</button></div><pre><code>${highlight(code, lang)}</code></pre></div>`;
     } else if ((m = line.match(/^(#{2,3}) (.+)$/))) {
       const level = m[1].length, text = m[2].trim(), id = slug(text);
@@ -87,7 +88,8 @@ function block(lines, toc) {
       const lm = buf[0].match(/^\*\*([^*:]+):?\*\*:?\s*(.*)$/);
       let kind = 'note', label = '';
       if (lm && CALLOUTS[lm[1].toLowerCase()]) { kind = CALLOUTS[lm[1].toLowerCase()]; label = lm[1]; buf[0] = lm[2]; }
-      out += `<aside class="callout ${kind}">${label ? `<div class="callout-label">${esc(label)}</div>` : ''}${block(buf, [])}</aside>`;
+      if (kind === 'solution') out += `<details class="callout solution"><summary>Show solution</summary>${block(buf, [])}</details>`;
+      else out += `<aside class="callout ${kind}">${label ? `<div class="callout-label">${esc(label)}</div>` : ''}${block(buf, [])}</aside>`;
     } else if (line.startsWith('|') && lines[i + 1] && /^\|[\s:|-]+\|?$/.test(lines[i + 1])) {
       const row = l => l.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
       const head = row(line);

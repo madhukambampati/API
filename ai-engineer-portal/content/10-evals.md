@@ -103,7 +103,9 @@ Choose the **cheapest grader that is reliable** for the task.
 
 Fast, free, perfectly repeatable. Use them for everything they can cover.
 
-```python
+Here is a complete, runnable eval. The "system under test" is a deliberately simple keyword classifier so it runs anywhere; in real life `task` would call your prompt or model.
+
+```python run
 def grade_label(output: str, expected: str) -> bool:
     return output.strip().lower() == expected.lower()
 
@@ -116,9 +118,36 @@ def run_eval(cases, task):
     print(f"{passed}/{len(results)} = {passed/len(results):.0%}")
     for r in results:
         if not r["pass"]:
-            print("FAIL", r["id"], "→", r["output"][:80])
+            print("FAIL", r["id"], "->", r["output"][:80])
     return results
+
+# --- the system under test (swap in your LLM call here) ---
+def classify(text):
+    t = text.lower()
+    if any(w in t for w in ["refund", "charge", "invoice"]):
+        return "billing"
+    if any(w in t for w in ["crash", "error"]):
+        return "bug"
+    return "other"
+
+cases = [
+    {"id": "t1", "tags": ["typical"], "input": "Please refund my last order", "expected": "billing"},
+    {"id": "t2", "tags": ["typical"], "input": "The app crashes on start", "expected": "bug"},
+    {"id": "t3", "tags": ["edge"],    "input": "My card was declined", "expected": "billing"},
+    {"id": "t4", "tags": ["edge"],    "input": "Error: refund button does nothing", "expected": "bug"},
+    {"id": "t5", "tags": ["typical"], "input": "How do I change my username?", "expected": "other"},
+]
+results = run_eval(cases, classify)
 ```
+
+> **Expected output:**
+> ```text
+> 3/5 = 60%
+> FAIL t3 -> other
+> FAIL t4 -> billing
+> ```
+
+Two failures, and both are informative: "card was declined" has no keyword the classifier knows, and "refund button does nothing" is a bug *about* billing, which the rule mislabels. Each failure tells you exactly what to improve — that is the point of reading failures, not just the score.
 
 ## 2. LLM-as-judge — for open-ended quality
 
@@ -145,6 +174,32 @@ Best practices:
 - **Give the reference answer or source** when one exists.
 - **Use a different (ideally stronger) model** than the one being judged to reduce self-preference bias.
 - **Randomise the order** when comparing two answers (judges favour position A and longer answers).
+
+### Measuring judge agreement
+
+Before trusting a judge, compare it with your own labels on the same outputs:
+
+```python run
+human = ["pass", "pass", "fail", "pass", "fail", "pass", "fail", "pass", "pass", "fail"]
+judge = ["pass", "pass", "fail", "pass", "pass", "pass", "fail", "fail", "pass", "fail"]
+
+agree = sum(h == j for h, j in zip(human, judge)) / len(human)
+print(f"agreement: {agree:.0%}")
+
+# Where do they disagree? These are the rubric problems to fix.
+for i, (h, j) in enumerate(zip(human, judge)):
+    if h != j:
+        print(f"case {i}: human={h} judge={j}")
+```
+
+> **Expected output:**
+> ```text
+> agreement: 80%
+> case 4: human=fail judge=pass
+> case 7: human=pass judge=fail
+> ```
+
+80% agreement on 10 cases is a start, not proof. Read each disagreement: is the rubric ambiguous, or is the judge missing something? Fix the rubric, re-run, and only trust scores once agreement is high on 50+ cases.
 
 > **Warning:** An LLM judge is itself a model that can be wrong. **Validate it:** have a human label ~50 cases, run the judge, and measure agreement. If agreement is poor, fix the rubric before trusting any number it produces.
 
@@ -263,53 +318,64 @@ Teams that build this loop improve steadily; teams that don't, plateau and fear 
 
 > **Exercise:** For your RAG project from module 8, write 30 questions (5 unanswerable). Record recall@3 and a faithfulness check with an LLM judge. Hand-label 20 outputs and compute the judge's agreement with you. Fix the worst failure cluster and report the before/after numbers.
 
+> **Solution:**
+> What a good result looks like:
+>
+> - **A dataset file** (`evals/rag.jsonl`) with 30 rows: question, the chunk ID that should be retrieved, a reference answer, and tags (`typical`, `edge`, `unanswerable`).
+> - **A script** that prints recall@3 (use the recall code from module 8's solution), the judge's faithfulness score, and per-tag pass rates.
+> - **Judge validation**: the agreement code above, run on your 20 hand labels, with each disagreement explained.
+> - **A before/after table**, for example: *recall@3 0.70 → 0.87 after adding keyword (BM25) search; faithfulness 0.80 → 0.93 after adding "answer only from the sources"; unanswerable handled 2/5 → 5/5.*
+> - **One paragraph** on what still fails and why.
+>
+> If your numbers did not improve, that is still a valid result — write down what you tried and what you learned.
+
 # @quiz
 
-? Why are evals described as the foundation of AI engineering?
-- They make the model larger
-+ They let you measure quality, compare options, catch regressions and change things safely
-- They are required by law
-- They replace the need for prompts
-! Without measurement, every change is a guess.
+? Why are evals called the foundation of AI engineering?
+- They make the model larger and smarter
++ They make change measurable
+- They are a legal requirement for every AI product sold to customers
+- They replace the need to write prompts
+! Without measurement, every prompt or model change is a guess.
 
-? Which grader should you prefer when a task has a verifiable correct answer?
-- LLM-as-judge
-+ A deterministic code-based check (exact match, schema, unit tests)
-- Human review of every case
-- A thumbs-up button
-! Code graders are fast, free and perfectly repeatable.
+? A task has a checkable right answer (a category label). Which grader should you prefer?
+- An LLM judge with a rubric
++ A code check such as exact match
+- A human reviewer for every case
+- User thumbs-up and thumbs-down
+! Code graders are free, instant and perfectly repeatable. Use them wherever they apply.
 
-? Why should you validate an LLM judge?
-- Judges never make mistakes
-+ A judge is itself a model; check its agreement with human labels before trusting its scores
-- To make it cheaper
-- Because judges can't read text
-! Calibrate against ~50 human-labelled cases first.
+? Your LLM judge and your own labels agree on 6 of 10 cases. What should you do?
+- Trust the judge, because models are always more consistent than people are
++ Read the disagreements and fix the rubric before trusting it
+- Average the judge and your labels together
+- Drop the cases where you disagree
+! A judge is a model that can be wrong. Calibrate it against human labels first.
 
 ? A RAG system has low recall@k. Where should you focus?
-- The generation prompt
-+ Retrieval (chunking, embeddings, hybrid search, reranking, query rewriting)
-- The UI colours
-- Lowering temperature
-! If the right chunk isn't retrieved, generation can't recover.
+- On the wording of the generation prompt
++ On retrieval: chunking, search and query rewriting
+- On the colours of the chat interface
+- On lowering the model's temperature
+! If the right chunk is not retrieved, generation cannot recover the answer.
 
-? Why run an agent eval multiple times per task?
-- To increase cost
-+ Outputs vary; reporting pass rate and consistency avoids being misled by one lucky or unlucky run
-- Agents only work on the third try
-- To warm up the cache
-! Reliability, not best-case performance, determines production value.
+? Why run each agent task several times in an eval?
+- Agents only succeed on the third attempt
++ Outputs vary, so one run can be lucky or unlucky
+- Repeated runs warm up the provider's cache
+- The eval framework requires at least three runs before it reports a score
+! Report pass rate and consistency; production cares about reliability, not one good run.
 
-? Where should new eval cases mostly come from over time?
-- Random internet text
-+ Real usage and real failures, reviewed and added to the dataset
-- Only synthetic data with no review
-- The model's own training data
-! Production failures turned into permanent test cases form the improvement flywheel.
+? Where should most new eval cases come from over time?
+- Random text collected from the internet
++ Real usage and failures, reviewed
+- Synthetic data that nobody has checked
+- The model's own descriptions of what it is good and bad at
+! Turning production failures into permanent test cases is the improvement flywheel.
 
-? What is "contamination" in evals?
-- Dirty hardware
-+ Eval examples leaking into prompts or training data, inflating scores
-- Using too many tags
-- Slow graders
-! Keep test cases separate from few-shot examples and tuning data.
+? Accuracy moves from 85% to 90% on a 20-case eval. What is the right reading?
+- A clear, proven 5-point improvement
++ Possibly noise: each case is worth 5 points
+- The model has stopped hallucinating
+- Proof that the new prompt is better for every kind of question
+! With 20 cases each case is 5%. Use more cases or repeated runs before trusting small gains.

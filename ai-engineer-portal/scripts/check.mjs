@@ -40,5 +40,19 @@ for (const m of C.modules) {
   if (!m.outcomes.length) errors.push(`${m.id}: no outcomes`);
   for (const q of m.quiz) if (q.answer >= q.options.length || !q.why) errors.push(`${m.id}: bad quiz "${q.q}"`);
 }
+// Quizzes must not be guessable from option length: the correct answer's
+// length rank (longest, 2nd, 3rd, shortest) should be spread out.
+const rank = [0, 0, 0, 0];
+let total = 0;
+for (const m of C.modules) for (const q of m.quiz) {
+  total++;
+  const L = q.options.map(o => o.length), right = L[q.answer];
+  rank[Math.min(3, L.filter(x => x > right).length)]++;
+  if (right > 1.6 * Math.max(...L.filter((_, i) => i !== q.answer))) errors.push(`${m.id}: correct option is far longer than every distractor — "${q.q}"`);
+  if (q.options.length < 3) errors.push(`${m.id}: needs at least 3 options — "${q.q}"`);
+}
+const pct = rank.map(n => Math.round(100 * n / total));
+console.log(`Correct option length rank — longest ${pct[0]}%, 2nd ${pct[1]}%, 3rd ${pct[2]}%, shortest ${pct[3]}%`);
+if (pct.some(p => p > 45)) errors.push(`quizzes are guessable: one length position holds more than 45% of correct answers (${pct.join('/')})`);
 if (errors.length) { console.error('\n' + errors.join('\n')); process.exit(1); }
 console.log('Content checks passed.');

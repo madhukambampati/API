@@ -10,7 +10,7 @@
   --tk-k:#6d28d9;--tk-s:#047857;--tk-n:#be123c;--tk-c:#64748b;--shadow:0 8px 30px rgba(15,23,42,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:5rem}
+html{scroll-padding-top:5rem}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:16px}
 a{color:var(--accent)}
 .skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--accent);color:var(--accent-ink);padding:.5rem 1rem;z-index:100;border-radius:6px}
@@ -69,7 +69,7 @@ main{padding:2rem clamp(1rem,4vw,3rem) 4rem;min-width:0;outline:0}
 .code{border:1px solid var(--line);border-radius:10px;margin:1rem 0 1.3rem;background:var(--code);overflow:hidden}
 .code-head{display:flex;justify-content:space-between;align-items:center;padding:.3rem .8rem;border-bottom:1px solid var(--line);font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;font-size:.72rem;padding:.1rem .5rem;cursor:pointer}.copy:hover{color:var(--accent);border-color:var(--accent)}
-pre{overflow:auto;padding:.9rem 1rem;font-size:.85rem;line-height:1.55}
+pre{overflow:auto;padding:.9rem 1rem;font-size:.85rem;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
 pre code{background:none!important;border:0!important;padding:0!important;font-size:inherit!important;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 pre.diagram{background:var(--card2);border:1px solid var(--line);border-radius:10px;margin:1rem 0 1.3rem;color:var(--text)}
 .tk-k{color:var(--tk-k)}.tk-s{color:var(--tk-s)}.tk-n{color:var(--tk-n)}.tk-c{color:var(--tk-c);font-style:italic}
@@ -180,3 +180,30 @@ footer.site{border-top:1px solid var(--line);margin-top:3rem;padding:1.5rem 0;co
   body{background:#fff;color:#000}.layout{display:block}main{padding:0}
   .cert{border-color:#0369a1;background:#fff}.cert h1{color:#0369a1}.cert p{color:#333}
 }
+
+/* quiz validation, warnings */
+.q.missing{border-color:var(--warn);box-shadow:0 0 0 2px rgba(251,191,36,.25)}
+.warn-text{color:var(--warn);font-size:.85rem;margin-top:.5rem;min-height:1em}
+/* sidebar footer */
+.side-foot{display:flex;flex-direction:column;gap:.45rem;padding:1rem .5rem;margin-top:.6rem;border-top:1px solid var(--line);font-size:.85rem}
+.side-foot button,.side-foot .linkish{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-align:left;cursor:pointer;text-decoration:underline}
+.side-foot small{color:var(--muted);font-size:.75rem}
+/* runnable code */
+.code-btns{display:flex;gap:.4rem}
+.run{background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;font-size:.75rem;font-weight:700;padding:.15rem .75rem;cursor:pointer}
+.run:disabled{opacity:.6;cursor:wait}
+.reset{background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;font-size:.72rem;padding:.1rem .5rem;cursor:pointer}
+.runnable code[contenteditable]{outline:none;display:block;caret-color:var(--accent)}
+.runnable pre:focus-within{box-shadow:inset 0 0 0 2px var(--accent)}
+.out{margin:0;border-top:1px dashed var(--line);background:var(--card2);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;max-height:360px}
+.out::before{content:"Output";display:block;font-family:system-ui,sans-serif;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.3rem}
+.out.err{color:var(--bad)}
+/* solutions and expected output */
+details.solution{border-color:var(--good)}
+details.solution summary{cursor:pointer;font-weight:700;color:var(--good);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+details.solution[open] summary{margin-bottom:.6rem}
+.callout.output{border-color:var(--muted)}.callout.output .callout-label{color:var(--muted)}
+.callout.output pre{background:none;padding:.2rem 0}
+.callout.output .code{border:0;background:none;margin:.2rem 0 0}
+.callout.output .code-head{display:none}
+.callout.output pre{padding:0}

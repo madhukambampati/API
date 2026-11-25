@@ -55,6 +55,15 @@ Every AI system you can use today is **narrow**: very capable across many tasks,
 
 > **Try it:** Pick three apps you use daily. For each, decide: is it rules, classic ML, or generative AI? (A calculator is rules. A photo app's face grouping is ML. A chat assistant is generative AI.)
 
+> **Solution:**
+> Some typical answers:
+>
+> - **Calculator, alarm clock, spreadsheet formulas** — rules. Exact, predictable, written by a programmer.
+> - **Email spam filter, "recommended for you" lists, face grouping in photos, bank fraud alerts** — classic machine learning. They learned patterns from millions of examples and make a prediction or ranking.
+> - **Chat assistants, "help me write" buttons, AI image generators, live caption translation** — generative AI. They *produce new content*.
+>
+> Many apps mix all three: a banking app uses rules for your balance, ML for fraud scoring, and generative AI for its help chat. Spotting which part is which is exactly the judgement you will build in this course.
+
 # How machines learn
 
 Learning in ML means **adjusting numbers until the outputs get better**. That is the whole trick; everything else is detail about which numbers, which data and how to adjust them.
@@ -141,20 +150,20 @@ Neither is "better". Module 12 shows how to choose.
 
 # Core vocabulary
 
-You will see these words constantly. Skim now; the glossary has the full list and each term is explained properly later.
+You will see these words constantly. **Don't try to master them now** — read them once so they feel familiar. Each one gets its own lesson later (the module is noted in brackets), and every term is also in the [Glossary](#/glossary).
 
-- **Parameter / weight** — one adjustable number inside a model. Frontier models have billions to trillions.
-- **Token** — the unit of text a model reads and writes: a word, part of a word, or punctuation. "Unbelievable" might be 3 tokens. Roughly 4 characters or ¾ of a word in English.
-- **Context window** — the maximum number of tokens the model can consider at once (prompt + conversation + its own answer).
-- **Prompt** — the input you give a model.
+- **Parameter / weight** — one adjustable number inside a model. Frontier models have billions to trillions. *(module 4)*
+- **Token** — the unit of text a model reads and writes: a word, part of a word, or punctuation. "Unbelievable" might be 3 tokens. Roughly 4 characters or ¾ of a word in English. *(module 4)*
+- **Context window** — the maximum number of tokens the model can consider at once (prompt + conversation + its own answer). *(module 5)*
+- **Prompt** — the input you give a model. *(module 6)*
 - **Inference** — running a trained model.
-- **Embedding** — a vector (list of numbers) capturing meaning; similar meanings → nearby vectors.
-- **Hallucination** — a fluent but false or unsupported output.
-- **Temperature** — a setting controlling randomness of output.
-- **RAG** — Retrieval-Augmented Generation: look up relevant documents, then have the model answer using them.
-- **Agent** — an LLM that plans, calls tools and takes multiple steps toward a goal.
-- **Eval** — a systematic test of how well an AI system performs.
-- **Harness** — everything around the model (tools, memory, guardrails, retries, logging) that makes it reliable.
+- **Embedding** — a vector (list of numbers) capturing meaning; similar meanings → nearby vectors. *(modules 2 and 4)*
+- **Hallucination** — a fluent but false or unsupported output. *(module 5)*
+- **Temperature** — a setting controlling randomness of output. *(modules 2 and 5)*
+- **RAG** — Retrieval-Augmented Generation: look up relevant documents, then have the model answer using them. *(module 8)*
+- **Agent** — an LLM that plans, calls tools and takes multiple steps toward a goal. *(module 9)*
+- **Eval** — a systematic test of how well an AI system performs. *(module 10)*
+- **Harness** — everything around the model (tools, memory, guardrails, retries, logging) that makes it reliable. *(module 11)*
 
 ## The basic LLM flow
 
@@ -194,43 +203,43 @@ An **AI engineer** builds products and systems *using* models rather than invent
 # @quiz
 
 ? Which statement best describes machine learning?
-- Humans write explicit if-then rules for every case
-+ Software that learns patterns from example data instead of following only hand-written rules
-- A database that stores answers to every possible question
-- Any program that uses a GPU
-! Machine learning adjusts a model's parameters from data. Hand-written rules are classic programming.
+- Programmers write an explicit rule for every situation
++ Software that learns patterns from example data
+- A database that stores an answer for every question
+- Any program that runs on a fast graphics card
+! ML adjusts a model's parameters from data. Hand-written rules are classic programming.
 
-? What is the difference between training and inference?
-- Training is using the model; inference is building it
-+ Training learns the parameters (expensive, done once); inference uses the frozen model to make predictions
-- They are the same thing with different names
-- Inference only happens on phones
-! API calls you make are inference. The model's weights are not changing while you use it.
+? You call a model through an API and get an answer. Which phase is that?
+- Training, because the model learns from you
++ Inference, because the frozen model makes a prediction
+- Fine-tuning, because your prompt changes the weights
+- Pre-training, because it reads text from the internet
+! Weights do not change when you use a model. Using a trained model is inference.
 
-? An LLM generates text by…
-- Looking up the full answer in a database
-- Running a rule for every grammar pattern
-+ Predicting one token at a time based on the tokens so far
-- Copying the nearest training document
-! It repeatedly predicts a probability distribution over the next token and picks from it.
+? How does an LLM produce its answer?
+- It retrieves the closest complete answer from a database
++ It predicts one token at a time, each based on what came before
+- It runs a grammar rule for every sentence pattern it knows
+- It finds the training document most similar to your question and copies it
+! Generation repeats: predict a probability for every next token, pick one, append it, repeat.
 
-? Why do we test models on data they were not trained on?
-- To make training faster
-+ To check they generalise rather than just memorise (overfit) the training data
-- Because test data is always larger
-- To reduce the model size
-! Performance on unseen data is what matters in real use.
+? A model scores 99% on its training data but 70% on new data. What happened?
+- It underfit because the model was too simple
++ It overfit by memorising the training examples
+- The new data must contain a labelling mistake
+- It needs a bigger GPU to reach 99% on new data
+! A big gap between training and new-data performance is the classic sign of overfitting.
 
-? Which is a typical task for an AI engineer (as opposed to a research scientist)?
-- Inventing a new neural network architecture
-+ Building reliable products on top of existing models, with retrieval, tools, evals and guardrails
-- Manufacturing GPUs
-- Labelling every training example by hand
-! AI engineers build systems around models; research scientists create new methods.
+? A team says "let's use AI for support". What should an AI engineer do first?
+- Pick the largest available model and connect it straight to the help desk
++ Define a measurable goal first
+- Train a new neural network architecture from scratch
+- Collect every document the company has ever written
+! Defining a measurable task comes first; without it you cannot tell whether anything works.
 
-? A "token" is…
-- A paid API credit
-+ A chunk of text (word, sub-word or punctuation) that the model reads and writes
-- A security password
-- A single neuron
-! Models see tokens, not characters or words. Context limits and pricing are measured in tokens.
+? Which app feature is most likely generative AI rather than classic machine learning?
+- A bank flagging a payment as possible fraud
+- A shop ranking products you are likely to buy next
++ An email app drafting a reply to a message for you
+- A photo app grouping pictures by the faces in them
+! Generative AI produces new content (a drafted reply). Fraud scores, rankings and grouping are predictions.

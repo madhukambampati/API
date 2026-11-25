@@ -207,44 +207,44 @@ You now have the full path — from "what is AI?" to designing, evaluating, secu
 
 # @quiz
 
-? Which is the best description of the "frontier" challenge for AI engineers today?
-- Models cannot produce text
-+ Specifying tasks, providing context and tools, verifying results and keeping systems safe and affordable
-- Finding a bigger GPU
-- Memorising model names
-! The skills of context, evaluation and harness engineering are the durable ones.
+? What is the main challenge for AI engineers at today's frontier?
+- Getting models to produce fluent text at all
++ Specifying tasks, supplying context and verifying results
+- Finding a large enough GPU for every project
+- Memorising the names of every new model
+! Context, evaluation and harness skills are the durable ones.
 
-? Why is "AGI by year X" often unhelpful as a claim?
-+ There is no single agreed definition, so people measure different things
-- AGI is already agreed to exist
-- Years are inaccurate
-- Models can't be dated
-! Ask: by which definition and measured how?
+? Why is "AGI by year X" often an unhelpful claim?
++ People define AGI differently, so they measure different things
+- AGI has already been achieved and agreed on
+- Forecasts about any technology are never possible, so nobody should try making them
+- Models cannot be compared across years
+! Ask: by which definition, and measured how?
 
-? What is a good way to judge a brand-new model quickly?
-- Read social-media hype
+? A new model is released. What is the fastest reliable way to judge it?
+- Read what people are saying about it online
 + Run it on your own eval set for your domain
-- Check its parameter count only
-- Ask it if it is good
-! A personal eval makes comparison fast and objective.
+- Compare its parameter count with yours
+- Ask the model how good it thinks it is
+! A personal eval makes any new model comparable in minutes.
 
-? Which layer of knowledge should you invest in most deeply because it lasts?
-- Model names and prices
-+ Fundamentals: software engineering, ML, evaluation, transformers
-- The newest framework syntax
-- Leaderboard positions
-! Fundamentals compound; tools change monthly.
+? Which knowledge should you invest in most deeply?
+- Current model names, their prices and their context lengths
++ Fundamentals like ML and evals
+- The newest framework's exact syntax
+- This month's leaderboard rankings
+! Fundamentals compound for years; tools and rankings change monthly.
 
-? What makes an AI portfolio project most convincing to employers?
-- A flashy demo with no measurements
-+ A clear problem, architecture, eval results vs a baseline, failure analysis and cost figures
-- Using the biggest model
-- A long README with buzzwords
-! Evidence of measured results shows engineering judgement.
+? What makes a portfolio project convincing to employers?
+- A flashy demo using the largest model
++ Eval results against a baseline, plus honest failure analysis
+- A long README full of technical buzzwords
+- Using as many frameworks as possible
+! Measured results and honest failure analysis show engineering judgement.
 
-? Which answer structure suits an AI system-design interview?
-+ Clarify requirements → baseline → architecture → evals → failure modes and safety → cost/latency → rollout and monitoring
-- Start with the biggest model and stop
-- Only discuss prompts
-- Skip evaluation
+? In an AI system-design interview, which answer structure works best?
++ Requirements, baseline, design, evals, risks, rollout
+- Name the biggest model you know of, explain why it is the best, then stop
+- Talk only about prompt wording
+- Skip evaluation to save time
 ! It mirrors the whole course: measure, secure, operate.

@@ -224,46 +224,58 @@ Because your **eval suite** is model-agnostic, you can swap in an open model and
 
 > **Exercise:** Install a local runner, pull a small open model, and run your module 10 eval set against it and a hosted model. Produce a table of accuracy, latency and (estimated) cost per 1,000 requests. Write three sentences recommending which to use for which situation.
 
+> **Solution:**
+> Your numbers will differ by hardware and model. A good answer looks like this table plus three sentences:
+>
+> | Model | Accuracy (30 cases) | Median latency | Est. cost / 1,000 requests |
+> | --- | --- | --- | --- |
+> | Hosted mid-size model | 93% | 1.4 s | about $2 (from the provider's price list) |
+> | Local 3B model, 4-bit, laptop CPU | 77% | 4.8 s | $0 per request (your hardware and electricity) |
+>
+> *Recommendation:* use the hosted model for customer-facing answers where accuracy matters; the local model is good enough for internal drafts and works offline and privately; re-test both when either model is updated.
+>
+> To measure latency honestly, time each call with `time.perf_counter()` and report the median, not the average. Keep the eval set identical for both models, or the comparison means nothing.
+
 # @quiz
 
-? What is the best summary of RAG versus fine-tuning?
-- Fine-tuning is always better
-+ RAG supplies knowledge at question time; fine-tuning changes behaviour, style or efficiency
-- RAG changes model weights
-- They are identical
-! Use RAG for facts that change or need citations; fine-tune for habits.
+? Which describes RAG versus fine-tuning?
+- Fine-tuning is better in every situation
++ RAG adds knowledge; fine-tuning changes behaviour
+- RAG changes the model's weights permanently each time a document is added
+- They are two names for the same technique
+! Facts that change or need citations → RAG. Consistent habits, format or cost → fine-tuning.
 
-? Which should you try first when a model gives inconsistent output format?
-+ A clearer prompt with examples and a schema; fine-tune only if evals show prompting can't reach the bar
-- Training from scratch
-- A bigger GPU
-- Removing the system prompt
-! Climb the ladder from cheapest to most expensive.
+? A model's output format is inconsistent. What should you try first?
++ A clearer prompt with examples and a schema
+- Training a new model from scratch
+- Buying a larger GPU for inference
+- Removing the system prompt entirely
+! Climb the ladder from cheapest to most expensive; fine-tune only if evals show prompting is not enough.
 
 ? What does LoRA do?
-- Retrains every weight of the model
-+ Trains small low-rank matrices added to a frozen base model, using a fraction of the memory
-- Deletes layers
-- Compresses the dataset
-! Adapters are small, swappable and cheap to train.
+- Retrains every weight in the model
++ Trains small add-on matrices
+- Removes some layers to make the model smaller and faster to run
+- Compresses the training data before use
+! Adapters are small, cheap to train and swappable on one base model.
 
-? Which matters most for fine-tuning data?
-- Sheer volume
-+ Quality, consistency and match to the real input distribution
-- Using only easy examples
-- Including your test set
-! A few hundred excellent examples often beat thousands of noisy ones.
+? Which matters most in fine-tuning data?
+- Sheer number of examples, whatever quality
++ Quality and consistency that match real inputs
+- Using only easy examples so training converges
+- Including the eval set so scores look good
+! A few hundred excellent, consistent examples often beat thousands of messy ones — and never train on your eval set.
 
-? Roughly how much memory does an 8B-parameter model need at 4-bit quantisation?
-- 0.5 GB
+? Roughly how much memory does an 8-billion-parameter model need at 4-bit?
+- About 0.5 GB
 + About 4–5 GB
-- 160 GB
-- 1 TB
-! Parameters × ~0.5 bytes, plus overhead.
+- About 160 GB
+- About 1 TB
+! Parameters × about 0.5 bytes, plus some overhead for the cache.
 
 ? What is a key advantage of running an open-weight model yourself?
-- It is always more capable than every closed model
-+ Control and privacy — data stays in your infrastructure and the model never changes unexpectedly
-- It needs no hardware
-- It never makes mistakes
-! The trade-off is that you operate infrastructure and safety yourself.
+- It is more capable than every closed model
++ Your data stays in your infrastructure
+- It needs no hardware or maintenance at all
+- It never produces incorrect answers
+! Control and privacy are the gains; running the infrastructure and safety is the cost.

@@ -178,6 +178,46 @@ Many providers offer prompt-improvement tools and you can ask a model to critiqu
 
 > **Exercise:** Take the ticket dataset from module 2. Write a classification prompt, run it on 30 tickets by hand or in a loop (module 7), and compute accuracy. Improve the prompt twice, recording the score each time. Keep the table — it is a miniature eval.
 
+> **Solution:**
+> A strong first prompt, following this module's anatomy:
+>
+> ```text
+> You route customer-support tickets for an online shop.
+>
+> Classify the ticket inside <ticket> tags into exactly one category:
+> - billing: payments, charges, refunds, invoices, subscriptions, pricing
+> - bug: something in the app or website is broken, crashes or shows an error
+> - other: everything else (account settings, questions, feature requests)
+>
+> Rules:
+> - If a ticket mentions both a payment and a technical error, choose billing.
+> - Reply with the category word only, in lowercase.
+>
+> Examples:
+> <ticket>I was charged twice this month</ticket> -> billing
+> <ticket>The export button gives a blank file</ticket> -> bug
+> <ticket>How do I add a teammate?</ticket> -> other
+>
+> <ticket>{ticket}</ticket>
+> ```
+>
+> Then score it. The scoring code is the same whatever produced the answers:
+>
+> ```python run
+> expected = ["billing", "bug", "other", "billing", "bug", "other"]
+> model_v1 = ["billing", "bug", "billing", "Billing.", "bug", "other"]   # answers you pasted in
+> model_v2 = ["billing", "bug", "other", "billing", "bug", "other"]
+>
+> def accuracy(answers):
+>     clean = [a.strip().strip(".").lower() for a in answers]
+>     return sum(a == e for a, e in zip(clean, expected)) / len(expected)
+>
+> print("v1", round(accuracy(model_v1), 2))
+> print("v2", round(accuracy(model_v2), 2))
+> ```
+>
+> This prints `v1 0.83` and `v2 1.0`. Keep a table of *version · change made · accuracy*. The usual first improvements are: listing the allowed labels, defining each label, adding a tie-break rule, and examples for tricky cases.
+
 # Prompting for specific jobs
 
 ## Extraction
@@ -216,44 +256,44 @@ A good system prompt covers: role and audience; tone; capabilities and limits; w
 
 # @quiz
 
-? Which prompt is better for summarising an email?
+? Which prompt is best for summarising an email for a manager?
 - "Summarise."
-+ "Summarise this email in 2 sentences for a busy manager; lead with the request and mention any deadline."
 - "Please summarise this email!!! IMPORTANT!!!"
-- "You are an AI."
-! Specific audience, length and priorities remove ambiguity.
++ "Summarise in 2 sentences for a manager; lead with the request"
+- "You are an AI. Do your best with this."
+! Audience, length and priority remove the guesswork; shouting adds nothing.
 
-? Why wrap input documents in tags like <doc>…</doc>?
-- It makes the prompt shorter
-+ It separates instructions from data, reducing confusion and making injected instructions easier to resist
-- It improves the model's grammar
-- Tags are required by all APIs
-! Clear delimiters help the model treat the content as data.
+? Why wrap a document in tags like <doc>…</doc>?
+- Tags make the prompt shorter, so every request is cheaper
++ They separate instructions from the data
+- Every provider's API requires XML tags
+- Tags improve the grammar of the answer
+! Clear delimiters help the model treat the content as data, and make hidden instructions easier to resist.
 
-? When are few-shot examples especially useful?
-+ When you need a specific format, tone or edge-case handling that is hard to describe in words
-- Never; zero-shot is always best
-- Only for image tasks
-- Only when temperature is high
-! Examples demonstrate the target behaviour directly.
+? When are few-shot examples most useful?
+- Only when the temperature is very high
++ When the format or edge cases are hard to describe in words
+- Never; detailed instructions alone always work better than examples
+- Only for tasks that involve images
+! Examples demonstrate the target behaviour directly — format, tone and tricky cases.
 
-? You change three things in a prompt and accuracy improves. What went wrong with your process?
-- Nothing, it improved
-+ You can't tell which change helped (or hurt other cases); change one thing at a time and re-run the full test set
-- Prompts should never change
-- Accuracy can't be measured
-! Controlled changes plus regression testing are what make prompting engineering.
+? You change three things in a prompt and accuracy rises. What is the problem with that process?
+- Nothing; a rise is a rise
++ You can't tell which change helped
+- Prompts should never be changed once they have been written and tested
+- Accuracy cannot be measured for prompts
+! Change one thing at a time and re-run the full test set; otherwise you are guessing.
 
-? What does prompt chaining mean?
-+ Splitting a task into steps, each with its own prompt, with outputs passed forward
-- Writing one very long prompt
-- Using multiple models at temperature 2
-- Repeating the prompt many times
+? What is prompt chaining?
++ Splitting a task into steps, each with its own prompt
+- Writing one very long prompt with every rule in it
+- Running one prompt many times at high temperature
+- Copying the system prompt into every user message
 ! Chains are easier to debug and evaluate than one giant prompt.
 
-? Is a system prompt a reliable place to hide secrets or enforce permissions?
-- Yes, users can never see it
-+ No — it can leak or be bypassed; keep secrets out and enforce permissions in code
-- Yes if written in capital letters
-- Only for short prompts
-! Treat prompts as visible and persuadable; enforce security outside the model.
+? A user asks your bot to reveal its system prompt and it does. What is the lesson?
+- Write "never reveal this" in capital letters
++ Treat prompts as visible; keep secrets out of them
+- System prompts can never leak, so the user must have hacked the server
+- Move the system prompt into the user message
+! A system prompt is not a security boundary. Keep secrets out and enforce permissions in code.

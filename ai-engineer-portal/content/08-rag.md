@@ -129,6 +129,69 @@ print(answer("Do you ship to Mars?"))      # should say it doesn't know
 
 Notice the two decisive prompt choices: **"ONLY the sources"** and **permission to say "I don't know"**.
 
+### Try the retrieval half right here
+
+The code above needs an embedding model and an API key, so it runs on your computer. The *retrieval* half — the part that decides which text the model gets to see — you can run in the page. This version uses TF-IDF word matching instead of embeddings, chunks a small policy document, and returns the best chunks for each question:
+
+```python run
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+handbook = """Refunds. Customers can request a refund within 30 days of purchase.
+Refunds go to the original payment method within 5-7 business days.
+Shipping. Standard shipping takes 3-5 business days in the US.
+Express shipping takes 1-2 days and costs $15.
+Privacy. We never sell personal data.
+You can ask us to delete your account data by emailing privacy@acme.example.
+Support hours. Our team answers chat from 9am to 6pm, Monday to Friday."""
+
+chunks = [line.strip() for line in handbook.split("\n") if line.strip()]   # one sentence per chunk
+vec = TfidfVectorizer(stop_words="english").fit(chunks)
+chunk_vectors = vec.transform(chunks)
+
+def retrieve(question, k=2):
+    scores = cosine_similarity(vec.transform([question]), chunk_vectors)[0]
+    best = scores.argsort()[::-1][:k]
+    return [(round(float(scores[i]), 2), chunks[i]) for i in best]
+
+for q in ["How long does a refund take?",
+          "How much is express shipping?",
+          "Can you delete my data?",
+          "Do you ship to Mars?"]:
+    print(q)
+    for score, text in retrieve(q):
+        print(f"   {score:.2f}  {text}")
+```
+
+> **Expected output:**
+> ```text
+> How long does a refund take?
+>    0.41  Refunds. Customers can request a refund within 30 days of purchase.
+>    0.00  You can ask us to delete your account data by emailing privacy@acme.example.
+> How much is express shipping?
+>    0.60  Express shipping takes 1-2 days and costs $15.
+>    0.45  Shipping. Standard shipping takes 3-5 business days in the US.
+> Can you delete my data?
+>    0.48  You can ask us to delete your account data by emailing privacy@acme.example.
+>    0.29  Privacy. We never sell personal data.
+> Do you ship to Mars?
+>    0.00  Support hours. Our team answers chat from 9am to 6pm, Monday to Friday.
+>    0.00  You can ask us to delete your account data by emailing privacy@acme.example.
+> ```
+
+Read the output carefully — it shows three real retrieval failures, the same ones you will meet in production:
+
+1. **Question 1 misses its answer.** The sentence that actually answers it ("Refunds go to … within 5-7 business days") is not retrieved, because TF-IDF treats "refund" and "refunds" as different words. The top hit is about the refund *window*, a different question. A model given these chunks would answer the wrong question unless it is allowed to say "I don't know".
+2. **Questions 2 and 3 work** — they share exact words with the right sentences.
+3. **"Do you ship to Mars?" scores 0.00 for everything** ("ship" ≠ "shipping"), yet retrieval still returns two chunks. Retrieval *always* returns its top k, relevant or not.
+
+Now edit the questions and run again:
+
+- Change question 1 to `"How long do refunds take?"` — the right sentence comes back first (score 0.38).
+- Change question 4 to `"Do you offer shipping to Mars?"` — it now matches the shipping policy with a confident-looking **0.71**, even though nothing in the handbook mentions Mars. A high score means "similar words", not "contains the answer".
+
+The lessons: exact word matching misses variants (embeddings, stemming and hybrid search fix this), similarity scores are not proof of relevance, and the generation prompt must always permit "I don't know". Many systems also drop chunks below a score threshold.
+
 # Better retrieval
 
 Naive RAG (embed → top-k → answer) gets you a demo. These upgrades get you a product.
@@ -219,53 +282,78 @@ Retrieve **only what the asking user is allowed to see** — enforce this with m
 
 > **Exercise:** Take 10 pages of any documentation. Build the pipeline above. Write 15 questions with known answers (plus 3 unanswerable ones). For each, record: was the right chunk retrieved? was the answer correct? Fix the biggest failure bucket and re-measure. You have just done RAG evaluation (module 10).
 
+> **Solution:**
+> There is no single right answer — your documents differ — but here is the measuring part, which is the same for everyone. Record, for each question, which chunk *should* be found; then compute **recall@k** (did it appear in the top k?):
+>
+> ```python run
+> # For each question: the id of the chunk that contains the answer, and what retrieval returned.
+> results = [
+>     {"q": "refund window?",      "gold": "c3", "retrieved": ["c3", "c9", "c1"]},
+>     {"q": "express price?",      "gold": "c7", "retrieved": ["c2", "c7", "c4"]},
+>     {"q": "delete my data?",     "gold": "c5", "retrieved": ["c8", "c1", "c2"]},
+>     {"q": "support hours?",      "gold": "c6", "retrieved": ["c6", "c5", "c3"]},
+> ]
+>
+> def recall_at(k):
+>     hits = [r["gold"] in r["retrieved"][:k] for r in results]
+>     return sum(hits) / len(hits)
+>
+> for k in (1, 3):
+>     print(f"recall@{k} = {recall_at(k):.2f}")
+> for r in results:
+>     if r["gold"] not in r["retrieved"][:3]:
+>         print("RETRIEVAL MISS:", r["q"], "-> fix chunking, keywords or query rewriting")
+> ```
+>
+> This prints recall@1 = 0.50, recall@3 = 0.75 and one retrieval miss. A good write-up then has a small table: *question · right chunk retrieved? · answer correct? · failure type (retrieval / generation / content gap)*. Count the failure types, fix the biggest bucket (often chunking or missing keyword search), and show the before/after numbers.
+
 # @quiz
 
-? What problem does RAG primarily solve?
-- Making the model faster
-+ Giving the model access to specific, up-to-date or private knowledge at question time
-- Reducing the model's size
-- Training the model from scratch
-! RAG retrieves relevant passages and supplies them as context.
+? What problem does RAG mainly solve?
+- Making the model generate text faster
++ Giving the model your current or private knowledge
+- Shrinking the model so that it can run on a phone without an internet connection
+- Training a new model from scratch cheaply
+! RAG retrieves relevant passages at question time and supplies them as context.
 
 ? Why are chunks usually overlapped slightly?
-- To increase storage costs
-+ So sentences or ideas that straddle a boundary are not cut in half and lost
-- Because vector databases require it
-- To remove duplicates
-! Overlap preserves continuity across chunk boundaries.
+- Vector databases reject chunks without overlap
++ So ideas that span a boundary are not cut in half
+- Overlap lowers the cost of embedding
+- It removes duplicate documents automatically
+! Overlap keeps sentences that straddle a boundary intact in at least one chunk.
 
-? Why combine keyword (BM25) and vector search?
-- Vector search is deprecated
-+ Embeddings capture meaning but may miss exact terms (IDs, names, error codes), which keyword search handles
-- It's cheaper than either alone
-- It removes the need for an LLM
-! Hybrid search covers both semantic and lexical matching.
+? Users search for error code "E-4031" and retrieval misses it. What helps most?
+- Raising the generation temperature
++ Adding keyword (BM25) search alongside vector search
+- Making every chunk much larger
+- Switching to a bigger language model with a longer context window
+! Embeddings capture meaning but can miss exact strings; hybrid search covers both.
 
-? A RAG answer is wrong and the correct passage was NOT among the retrieved chunks. Where is the failure?
-- The generation prompt
-+ Retrieval
-- The temperature
-- The user interface
-! Fix chunking, embeddings, hybrid search, reranking or query rewriting.
+? A RAG answer is wrong, and the correct passage was not in the retrieved chunks. Where is the failure?
+- In the generation prompt
++ In retrieval
+- In the model's temperature
+- In the user interface
+! If the right text never reached the model, fix chunking, search or query rewriting first.
 
-? What does a reranker do?
-+ Re-scores a larger candidate set by reading query and passage together, keeping the most relevant few
-- Re-embeds documents nightly
-- Rewrites the user's question
-- Compresses the vector index
-! Rerankers add precision after a fast recall-oriented first pass.
+? What does a reranker add?
++ It re-scores candidates, keeps the best
+- It rewrites each user question into several shorter, simpler questions first
+- It re-embeds the whole document collection every night
+- It compresses the vector index so searches run faster
+! Fast search finds candidates (recall); the reranker reads query and passage together (precision).
 
-? How should you restrict which documents a user can see through RAG?
-- Ask the model not to reveal restricted content
-+ Filter by permissions in the retrieval step, before anything reaches the model
-- Hide them in the system prompt
-- Rely on the temperature
-! Enforce access control in code; the model can't be trusted as the gatekeeper.
+? How should you stop users seeing documents they are not allowed to read?
+- Tell the model not to mention restricted content
++ Filter by the user's permissions during retrieval
+- Hide the restricted text inside the system prompt
+- Lower the temperature for restricted users
+! Access control belongs in code, before anything reaches the model.
 
-? Which instruction most reduces unsupported answers in RAG?
-- "Be creative."
-+ "Answer only from the sources; if they don't contain the answer, say you don't know."
-- "Answer quickly."
-- "Use at least 500 words."
-! Grounding plus an abstain option are the key prompt elements.
+? Retrieval returns chunks with similarity 0.71 for a question about shipping to Mars. What does that tell you?
+- The documents definitely answer the question
++ The words are similar; it does not prove the answer is there
+- The embedding model is broken and must be replaced
+- The score means there is a 71% chance that the retrieved answer is correct
+! Similarity measures word or meaning overlap, not whether the chunk contains the answer.

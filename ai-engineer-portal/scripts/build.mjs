@@ -61,8 +61,11 @@ for (const f of files) {
   for (const s of splitSections(body)) {
     if (s.title === '@quiz') { mod.quiz = parseQuiz(s.body); continue; }
     const { html, toc } = render(s.body);
-    const words = stripTags(html).split(/\s+/).filter(Boolean).length;
-    mod.lessons.push({ id: slug(s.title), title: s.title, html, toc, mins: Math.max(2, Math.round(words / 200)) });
+    // Honest reading time: prose at ~200 wpm, code at ~10 lines/min (code is read slowly).
+    const pre = html.match(/<pre[\s\S]*?<\/pre>/g) || [];
+    const codeLines = pre.reduce((n, p) => n + p.split('\n').length, 0);
+    const words = stripTags(html.replace(/<pre[\s\S]*?<\/pre>/g, ' ')).split(/\s+/).filter(Boolean).length;
+    mod.lessons.push({ id: slug(s.title), title: s.title, html, toc, mins: Math.max(2, Math.round(words / 200 + codeLines / 10)) });
   }
   if (!mod.lessons.length) throw new Error('No lessons in ' + f);
   if (mod.quiz.length < 3) throw new Error('Module needs at least 3 quiz questions: ' + f);
