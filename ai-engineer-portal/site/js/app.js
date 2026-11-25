@@ -95,7 +95,7 @@
 
   function viewModule(m) {
     main.innerHTML = `<div class="wrap" style="max-width:820px"><div class="crumbs"><a href="#/">Home</a> / Module ${m.n}</div>
-      <div class="mod-head"><span class="big">${m.n}</span><div><h1>${m.n}. ${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag">${esc(m.time)}</span></div></div>
+      <div class="mod-head"><span class="big">${m.n}</span><div><h1>${esc(m.title)}</h1><span class="tag ${m.level}">${m.level}</span> <span class="tag">${esc(m.time)}</span></div></div>
       <p style="color:var(--muted);margin:.8rem 0">${esc(m.summary)}</p>
       <div class="bar"><i style="width:${Math.round(modProgress(m) * 100)}%"></i></div>
       <h2 class="section-title" style="font-size:1.2rem">After this module you can</h2><ul class="outcomes article" style="padding-left:1.3rem">${m.outcomes.map(o => `<li>${esc(o)}</li>`).join('')}</ul>
