@@ -1,0 +1,12 @@
+{
+  "name": "ai-engineer-portal",
+  "version": "1.0.0",
+  "description": "A complete, self-contained learning portal that takes someone from zero to AI engineer.",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "node scripts/check.mjs"
+  },
+  "license": "MIT"
+}

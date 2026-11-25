@@ -1,0 +1,85 @@
+# Glossary
+
+- **Activation function** — A non-linear function (ReLU, GELU, sigmoid) applied inside a neural network so that stacked layers can model complex patterns.
+- **Adapter** — A small set of trained weights (for example a LoRA) added to a frozen base model to change its behaviour.
+- **Agent** — An LLM that, in a loop, decides actions, calls tools, observes results and continues toward a goal.
+- **AGI** — Artificial general intelligence: a loosely defined notion of AI that matches human-level ability across most intellectual tasks.
+- **Alignment** — Making AI systems reliably do what people intend and value.
+- **API** — Application programming interface: a way for programs to talk to each other, usually over HTTP with JSON.
+- **Attention** — The mechanism that lets each token weigh information from other tokens in a sequence.
+- **Backpropagation** — The algorithm that computes gradients of the loss for every weight by working backward through the network.
+- **Base model** — A pre-trained model that continues text but has not been taught to follow instructions.
+- **Batch** — A small group of training examples used for a single weight update.
+- **Benchmark** — A standard test used to compare models; useful as a rough hint, not proof of fit for your task.
+- **Bias (data/model)** — Systematic skew in data or outputs that disadvantages some groups or viewpoints.
+- **BM25** — A classic keyword-ranking algorithm used in search engines; often combined with vector search.
+- **Chain of thought** — Having a model write out intermediate reasoning steps before the final answer.
+- **Chunking** — Splitting documents into pieces for embedding and retrieval in RAG.
+- **Classification** — Predicting a category for an input.
+- **Context engineering** — Deliberately assembling the smallest set of high-signal information in the context window.
+- **Context window** — The maximum number of tokens a model can consider in one request, including its own output.
+- **Cosine similarity** — A measure of the angle between two vectors; 1 means same direction, 0 unrelated, −1 opposite.
+- **Cross-entropy** — A loss function that is small when the model puts high probability on the correct answer.
+- **Data leakage** — Information about the answer slipping into the model's inputs, making evaluation results unrealistically good.
+- **Deep learning** — Machine learning using neural networks with many layers.
+- **Distillation** — Training a smaller model to imitate the outputs of a larger one.
+- **DPO** — Direct preference optimisation: training on pairs of preferred and rejected outputs.
+- **Embedding** — A vector of numbers that represents the meaning of a token, sentence, image or document.
+- **Epoch** — One full pass through the training data.
+- **Eval** — A systematic test of how well an AI system performs on a dataset with a grader.
+- **Few-shot prompting** — Including a few input→output examples in the prompt to demonstrate the task.
+- **Fine-tuning** — Further training a pre-trained model on specific data to change its behaviour.
+- **Function calling** — See *tool use*.
+- **Generative AI** — Models that produce new content such as text, images, audio, video or code.
+- **Gradient descent** — Repeatedly adjusting weights in the direction that reduces the loss.
+- **Grounding** — Basing a model's answer on supplied source material rather than its memory.
+- **Guardrails** — Checks and constraints around a model that prevent unsafe, invalid or off-policy behaviour.
+- **Hallucination** — A fluent but false or unsupported model output.
+- **Harness** — Everything around the model — context assembly, tools, validation, permissions, retries, logging, evals — that makes it reliable.
+- **HNSW** — Hierarchical navigable small world: a popular approximate nearest-neighbour index for vector search.
+- **Hybrid search** — Combining keyword search and vector search and merging the results.
+- **Inference** — Using a trained model to produce outputs; the parameters do not change.
+- **Jailbreak** — A prompt crafted to make a model ignore its safety rules.
+- **KV cache** — Stored attention keys and values of earlier tokens, reused so generation does not recompute them.
+- **Latency** — The time a user waits; often measured as time-to-first-token and tokens per second.
+- **LLM** — Large language model: a very large neural network trained to predict the next token of text.
+- **LLM-as-judge** — Using a language model to grade another model's output against a rubric.
+- **LoRA** — Low-rank adaptation: a parameter-efficient fine-tuning method that trains small added matrices.
+- **Loss** — A single number measuring how wrong a model's predictions are.
+- **MCP** — Model Context Protocol: an open standard for exposing tools and data to AI applications.
+- **Memory (agent)** — Information an agent keeps beyond the current step: scratchpad notes, summaries, or a long-term store.
+- **Multimodal** — Handling more than one type of data, such as text, images and audio.
+- **Neural network** — A model made of layers of simple units with adjustable weights.
+- **Overfitting** — Memorising training data so that performance on new data is poor.
+- **Parameter** — One adjustable number (weight or bias) inside a model.
+- **PEFT** — Parameter-efficient fine-tuning: methods that train only a small number of added or selected weights.
+- **Pre-training** — The first and largest training stage, where a model learns to predict the next token on huge text corpora.
+- **Precision** — Of the items the model labelled positive, the fraction that really were positive.
+- **Prompt** — The input given to a model.
+- **Prompt caching** — Provider feature that makes repeated prompt prefixes cheaper and faster.
+- **Prompt injection** — An attack that hides instructions in content so that a model follows them as if they were commands.
+- **Quantisation** — Storing model weights with fewer bits to shrink memory and speed up inference.
+- **RAG** — Retrieval-augmented generation: retrieve relevant documents, then have the model answer using them.
+- **Recall** — Of all real positives, the fraction the model found.
+- **Red-teaming** — Deliberately attacking your own system to find safety and security failures.
+- **Regularisation** — Techniques that discourage overfitting, such as weight penalties or dropout.
+- **Reinforcement learning** — Learning from a reward signal after taking actions.
+- **Reranker** — A model that re-scores candidate passages by reading query and passage together.
+- **RLHF** — Reinforcement learning from human feedback: tuning a model toward responses people prefer.
+- **Sampling** — Choosing the next token randomly according to the model's probabilities.
+- **Self-supervised learning** — Learning from labels that come from the data itself, such as the next word in a sentence.
+- **Softmax** — A function that turns raw scores into probabilities that sum to one.
+- **Streaming** — Delivering model output token by token as it is generated.
+- **Supervised learning** — Learning from examples that include the correct answers.
+- **System prompt** — Standing instructions that set a model's role, rules and format.
+- **Temperature** — A setting that controls how random sampling is; low is predictable, high is varied.
+- **Token** — A chunk of text — word, sub-word or punctuation — that a model reads and writes.
+- **Tokenizer** — The component that converts text to token IDs and back.
+- **Tool use** — A model requesting that your code run a function, then using the result.
+- **Top-p** — Sampling only from the smallest set of tokens whose probabilities add up to p.
+- **Transformer** — The neural network architecture, built on attention, behind modern LLMs.
+- **Underfitting** — A model too simple, or trained too little, to capture the pattern.
+- **Unsupervised learning** — Finding structure in data without labels.
+- **Vector database** — A database optimised to store embeddings and find nearest neighbours quickly.
+- **Weights** — The learned numbers inside a model; another word for parameters.
+- **Zero-shot** — Asking a model to do a task with instructions only and no examples.
