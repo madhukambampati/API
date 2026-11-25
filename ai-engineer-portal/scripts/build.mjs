@@ -56,7 +56,7 @@ for (const f of files) {
   const mod = {
     id, n: modules.length + 1,
     title: meta.title, summary: meta.summary, time: meta.time, level: meta.level || 'Beginner',
-    icon: meta.icon || '📘', outcomes: meta.outcomes || [], lessons: [], quiz: []
+    outcomes: meta.outcomes || [], lessons: [], quiz: []
   };
   for (const s of splitSections(body)) {
     if (s.title === '@quiz') { mod.quiz = parseQuiz(s.body); continue; }

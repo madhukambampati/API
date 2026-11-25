@@ -3,7 +3,6 @@ title: Prompt Engineering
 summary: Write prompts that work reliably — clear instructions, examples, structure, reasoning, and a method for improving them.
 time: 3 hours
 level: Beginner
-icon: ✍️
 outcomes:
   - Write clear, specific prompts with role, task, context, format and constraints
   - Use few-shot examples, delimiters and structured output

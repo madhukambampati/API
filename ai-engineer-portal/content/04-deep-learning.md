@@ -3,7 +3,6 @@ title: Deep Learning & Transformers
 summary: Neurons, backpropagation, tokenisation, embeddings, attention and the transformer — the machinery inside every modern LLM.
 time: 4.5 hours
 level: Intermediate
-icon: 🧠
 outcomes:
   - Explain what a neural network is and how gradient descent trains it
   - Train a small network in PyTorch

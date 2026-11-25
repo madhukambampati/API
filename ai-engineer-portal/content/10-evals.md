@@ -3,7 +3,6 @@ title: Evals
 summary: How to test and evaluate non-deterministic AI systems systematically — datasets, graders, LLM-as-judge, RAG and agent evals, and CI.
 time: 4 hours
 level: Intermediate
-icon: 🧪
 outcomes:
   - Explain why evals are the foundation of AI engineering and what makes a good one
   - Build an eval dataset from real usage, with edge cases and negatives

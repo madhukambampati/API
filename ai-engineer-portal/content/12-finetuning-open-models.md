@@ -3,7 +3,6 @@ title: Fine-tuning & Open Models
 summary: When to fine-tune (and when not to), LoRA, running open-weight models locally, quantisation and serving — plus multimodal and speech basics.
 time: 3.5 hours
 level: Advanced
-icon: 🧬
 outcomes:
   - Decide between prompting, RAG and fine-tuning with a clear decision rule
   - Explain LoRA and how to prepare a fine-tuning dataset

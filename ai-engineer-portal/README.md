@@ -19,8 +19,7 @@ Content lives in `content/` as Markdown — one file per module (`NN-name.md`), 
 
 ```
 ---
-title: ...  summary: ...  time: 4 hours  level: Beginner|Intermediate|Advanced  icon: 🧠
-outcomes:
+title: ...  summary: ...  time: 4 hours  level: Beginner|Intermediate|Advancedoutcomes:
   - ...
 ---
 # Lesson title          ← each top-level "# " starts a lesson

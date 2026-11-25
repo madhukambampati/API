@@ -3,7 +3,6 @@ title: Machine Learning Essentials
 summary: Classic ML done properly — the workflow, data splits, overfitting, metrics and a first real model with scikit-learn.
 time: 4 hours
 level: Beginner
-icon: 📊
 outcomes:
   - Walk through the end-to-end ML workflow and name each stage
   - Split data correctly and explain overfitting, underfitting and data leakage

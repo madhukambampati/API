@@ -3,7 +3,6 @@ title: Harness Engineering
 summary: Everything around the model that makes AI reliable in production — context engineering, validation, guardrails, retries, caching, observability, sandboxing and cost control.
 time: 4 hours
 level: Advanced
-icon: 🛠️
 outcomes:
   - Explain what a harness is and why reliability comes from it, not from the model alone
   - Engineer context deliberately, including caching, compaction and memory

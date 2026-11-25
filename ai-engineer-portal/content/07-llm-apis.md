@@ -3,7 +3,6 @@ title: Building with LLM APIs
 summary: Call models from code — messages, streaming, structured output, tool use, multimodal inputs, cost control and a complete chatbot.
 time: 4 hours
 level: Intermediate
-icon: 🔌
 outcomes:
   - Make a model API call, handle errors, and keep a multi-turn conversation
   - Stream responses and control cost with limits and token counting
